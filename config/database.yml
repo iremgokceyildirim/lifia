@@ -1,7 +1,9 @@
 development:
   prepared_statements: false
   adapter: postgresql
-  database: discourse_development
+  database: mi_discourse_development
+  username: discourse
+  password: 'password'
   min_messages: warning
   pool: 5
   timeout: 5000
@@ -18,7 +20,7 @@ development:
 test:
   prepared_statements: false
   adapter: postgresql
-  database: discourse_test
+  database: mi_discourse_test
   min_messages: warning
   pool: 5
   timeout: 5000
