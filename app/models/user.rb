@@ -624,6 +624,11 @@ class User < ActiveRecord::Base
     topics_allowed.where(archetype: Archetype.private_message).count
   end
 
+  def story
+    story_topic = Topic.where(user_id: self.id, story: true)
+    return story_topic
+  end
+
   def posted_too_much_in_topic?(topic_id)
     # Does not apply to staff and non-new members...
     return false if staff? || (trust_level != TrustLevel[0])

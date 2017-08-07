@@ -157,6 +157,21 @@ class TopicQuery
     create_list(:suggested, params, builder.results)
   end
 
+  # The recommended view of topics
+  def list_recommended
+    create_list(:recommended, {}, recommended_results(search:"community"))#search keyword for recommendation based on narrative matching
+  end
+
+  # The catchup topics
+  def list_catchup
+    create_list(:catchup, {}, catchup_results(filter:['bookmarked','liked']))
+  end
+
+  # The justme topics
+  def list_justme
+    create_list(:justme) {|l| l.where('tu.posted') }
+  end
+
   # The latest view of topics
   def list_latest
     create_list(:latest, {}, latest_results)
@@ -353,6 +368,49 @@ class TopicQuery
     list = TopicList.new(filter, @user, topics, options.merge(@options))
     list.per_page = per_page_setting
     list
+  end
+
+
+  def recommended_results(options={})
+    result = default_results(options)
+    result = remove_muted_topics(result, @user) unless options && options[:state] == "muted".freeze
+    result = remove_muted_categories(result, @user, exclude: options[:category])
+    result = remove_muted_tags(result, @user, options)
+
+    # plugins can remove topics here:
+    self.class.results_filter_callbacks.each do |filter_callback|
+      result = filter_callback.call(:recommended, result, @user, options)
+    end
+
+    result
+  end
+
+  def catchup_results(options={})
+    result = default_results(options)
+    result = remove_muted_topics(result, @user) unless options && options[:state] == "muted".freeze
+    result = remove_muted_categories(result, @user, exclude: options[:category])
+    result = remove_muted_tags(result, @user, options)
+
+    # plugins can remove topics here:
+    self.class.results_filter_callbacks.each do |filter_callback|
+      result = filter_callback.call(:catchup, result, @user, options)
+    end
+
+    result
+  end
+
+  def justme_results(options={})
+    result = default_results(options)
+    result = remove_muted_topics(result, @user) unless options && options[:state] == "muted".freeze
+    result = remove_muted_categories(result, @user, exclude: options[:category])
+    result = remove_muted_tags(result, @user, options)
+
+    # plugins can remove topics here:
+    self.class.results_filter_callbacks.each do |filter_callback|
+      result = filter_callback.call(:justme, result, @user, options)
+    end
+
+    result
   end
 
   def latest_results(options = {})

@@ -85,7 +85,7 @@ module Discourse
   class CSRF < StandardError; end
 
   def self.filters
-    @filters ||= [:latest, :unread, :new, :read, :posted, :bookmarks]
+    @filters ||= [:latest, :unread, :new, :read, :posted, :bookmarks, :recommended, :catchup, :justme]
   end
 
   def self.anonymous_filters

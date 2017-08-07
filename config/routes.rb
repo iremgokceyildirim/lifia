@@ -37,6 +37,8 @@ Discourse::Application.routes.draw do
     end
   end
 
+  resources :library
+
   get "finish-installation" => "finish_installation#index"
   get "finish-installation/register" => "finish_installation#register"
   post "finish-installation/register" => "finish_installation#register"
@@ -382,6 +384,7 @@ Discourse::Application.routes.draw do
     get "#{root_path}/:username/invited_count" => "users#invited_count", constraints: { username: USERNAME_ROUTE_FORMAT }
     get "#{root_path}/:username/invited/:filter" => "users#invited", constraints: { username: USERNAME_ROUTE_FORMAT }
     post "#{root_path}/action/send_activation_email" => "users#send_activation_email"
+    get "#{root_path}/:username/story" => "users#story", constraints: {username: USERNAME_ROUTE_FORMAT}
     get "#{root_path}/:username/summary" => "users#show", constraints: { username: USERNAME_ROUTE_FORMAT }
     get "#{root_path}/:username/activity/topics.rss" => "list#user_topics_feed", format: :rss, constraints: { username: USERNAME_ROUTE_FORMAT }
     get "#{root_path}/:username/activity.rss" => "posts#user_posts_feed", format: :rss, constraints: { username: USERNAME_ROUTE_FORMAT }

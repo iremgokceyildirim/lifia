@@ -1,0 +1,28 @@
+{{#d-section pageClass="library"}}
+  <div class='container'>
+    <div class='contents clearfix body-page'>
+
+      <ul class="nav-pills">
+        <li class="nav-item-library">{{#link-to 'library' class="active"}}{{i18n 'library.general'}}{{/link-to}}</li>
+        <li class="nav-item-books">{{#link-to 'about'}}{{i18n 'library.books'}}{{/link-to}}</li>
+        <li class="nav-item-articles">{{#link-to 'about'}}{{i18n 'library.articles'}}{{/link-to}}</li>
+
+      </ul>
+
+      <section class='library'>
+        <h2>{{i18n 'library.title' title=model.title}}</h2>
+        <p>{{model.description}}</p>
+        <p><img src="assets/books.jpeg"></p>
+      </section>
+
+
+      {{#if contactInfo}}
+        <section class='library contact'>
+            <h3>{{i18n 'library.contact'}}</h3>
+            <p>{{{contactInfo}}}</p>
+        </section>
+      {{/if}}
+
+    </div>
+  </div>
+{{/d-section}}

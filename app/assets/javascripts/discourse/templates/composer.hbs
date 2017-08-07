@@ -76,7 +76,12 @@
                       {{popup-input-tip validation=categoryValidation}}
                     </div>
                     {{#if model.archetype.hasOptions}}
-                      {{d-button action="showOptions" label="topic.options"}}
+                        {{#if model.creatingStory}}
+                            {{d-button action="showOptions" label="topic.options"}}
+                        {{/if}}
+                        {{#if model.creatingTopic}}
+                            {{d-button action="showOptions" label="topic.options"}}
+                        {{/if}}
                     {{/if}}
                   {{/if}}
                 </div>

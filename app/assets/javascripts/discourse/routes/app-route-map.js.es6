@@ -4,6 +4,8 @@ export default function() {
 
   this.route('about', { path: '/about', resetNamespace: true });
 
+  this.route('library', { path: '/library', resetNamespace: true });
+
   // Topic routes
   this.route('topic', { path: '/t/:slug/:id', resetNamespace: true }, function() {
     this.route('fromParams', { path: '/' });
