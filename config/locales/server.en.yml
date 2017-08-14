@@ -78,6 +78,7 @@ en:
         topic_closed_error: "Happens when a reply came in but the related topic has been closed."
         bounced_email_error: "Email is a bounced email report."
         screened_email_error: "Happens when the sender's email address was already screened."
+      unrecognized_error: "Unrecognized Error"
 
   errors: &errors
     format: ! '%{attribute} %{message}'
@@ -231,6 +232,7 @@ en:
   num_participants: "Participants:"
   read_full_topic: "Read full topic"
   private_message_abbrev: "Msg"
+
   rss_description:
     latest: "Latest topics"
     hot: "Hot topics"
@@ -248,6 +250,8 @@ en:
     user_posts: "Latest posts by @%{username}"
     user_topics: "Latest topics by @%{username}"
     tag: "Tagged topics"
+    badge: "%{display_name} badge on %{site_title}"
+
   too_late_to_edit: "That post was created too long ago. It can no longer be edited or deleted."
   revert_version_same: "The current version is same as the version you are trying to revert to."
 
@@ -279,7 +283,6 @@ en:
       trust_level_4: "trust_level_4"
     request_membership_pm:
       title: "Membership Request for @%{group_name}"
-      body: "I would like to apply for membership in @%{group_name}."
 
   education:
     until_posts:
@@ -986,6 +989,7 @@ en:
     post_onebox_maxlength: "Maximum length of a oneboxed Discourse post in characters."
     onebox_domains_blacklist: "A list of domains that will never be oneboxed."
     inline_onebox_domains_whitelist: "A list of domains that will be oneboxed in miniature form if linked without a title"
+    enable_inline_onebox_on_all_domains: "Ignore inline_onebox_domain_whitelist site setting and allow inline onebox on all domains."
     max_oneboxes_per_post: "Maximum number of oneboxes in a post."
 
     logo_url: "The logo image at the top left of your site, should be a wide rectangle shape. If left blank site title text will be shown."
@@ -1995,7 +1999,7 @@ en:
 
         Multiple community members flagged this post before it was hidden, so please consider how you might revise your post to reflect their feedback. **You can edit your post after %{edit_delay} minutes, and it will be automatically unhidden.**
 
-        However, if the post is hidden by the community a second time, it will remain hidden until handled by staff – and there may be further action, including the possible suspension of your account.
+        However, if the post is hidden by the community a second time, it will remain hidden until handled by staff.
 
         For additional guidance, please refer to our [community guidelines](%{base_url}/guidelines).
 
@@ -3493,7 +3497,7 @@ en:
             description: "General contact web page for you or your organization. Will be displayed on <a href='/about' target='_blank'>your about page</a>."
           site_contact:
             label: "Automated Messages"
-            description: "All automated Discourse personal messages will be sent from this user, such as the welcome message sent to each new user."
+            description: "All automated Discourse personal messages will be sent from this user, such as flag warnings and backup completion notices."
 
       corporate:
         title: "Organization"
@@ -3559,7 +3563,7 @@ en:
 
       invites:
         title: "Invite Staff"
-        description: "You’re almost done! Let’s invite some staff members to help <a href='https://blog.discourse.org/2014/08/building-a-discourse-community/' target='blank'>seed your discussions</a> with interesting topics and replies to get your community started."
+        description: "You’re almost done! Let’s invite some people to help <a href='https://blog.discourse.org/2014/08/building-a-discourse-community/' target='blank'>seed your discussions</a> with interesting topics and replies to get your community started."
 
       finished:
         title: "Your Discourse is Ready!"
