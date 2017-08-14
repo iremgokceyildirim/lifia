@@ -196,7 +196,6 @@ class UsersController < ApplicationController
   end
 
   def summary
-    print "ozet"
     user = fetch_user_from_params
     summary = UserSummary.new(user, guardian)
     serializer = UserSummarySerializer.new(summary, scope: guardian)
@@ -204,10 +203,8 @@ class UsersController < ApplicationController
   end
 
   def story
-    print "ozet3"
     user = fetch_user_from_params
     story = user.story
-    print story
     if(story.nil?)
       story_topic = Topic.new(story, guardian)
       serializer = TopicSerializer.new(story_topic, scope: guardian)
