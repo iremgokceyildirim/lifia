@@ -203,16 +203,20 @@ class UsersController < ApplicationController
   end
 
   def story
-    user = fetch_user_from_params
-    story = user.story
-    if(story.nil?)
-      story_topic = Topic.new(story, guardian)
-      serializer = TopicSerializer.new(story_topic, scope: guardian)
-      render_json_dump(serializer)
-    else
-      render json: {
-      }
-    end
+    # print "aloha"
+    # user = fetch_user_from_params
+    # story = user.story
+    # print story + "hereis"
+    # if (story.nil?)
+    #   print "###irem\n"
+    #   story_topic = Topic.new(story, guardian)
+    #   serializer = TopicSerializer.new(story_topic, scope: guardian)
+    #   render_json_dump(serializer)
+    # else
+    #   print "###gokce\n"
+    #   render json: {
+    #   }
+    # end
   end
 
   def invited

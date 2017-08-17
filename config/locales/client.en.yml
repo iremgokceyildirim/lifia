@@ -899,6 +899,8 @@ en:
         ok: "Your password looks good."
         instructions: "at least %{count} characters"
 
+      story: "Story"
+
       summary:
         title: "Summary"
         stats: "Stats"

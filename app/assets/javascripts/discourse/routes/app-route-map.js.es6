@@ -72,6 +72,7 @@ export default function() {
   });
   this.route('user', { path: '/u/:username', resetNamespace: true }, function() {
     this.route('summary');
+    this.route('story');
     this.route('userActivity', { path: '/activity', resetNamespace: true }, function() {
       this.route('topics');
       this.route('replies');

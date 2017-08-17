@@ -218,6 +218,13 @@ class TopicQuery
     end
   end
 
+  def list_story_by(user)
+    @options[:filtered_to_user] = user.id
+    create_list(:user_topics) do |topics|
+      topics.where(user_id: user.id, category_id: Category.where(name: "Story"))
+    end
+  end
+
   def not_archived(list, user)
     list.joins("LEFT JOIN user_archived_messages um
                        ON um.user_id = #{user.id.to_i} AND um.topic_id = topics.id")

@@ -26,6 +26,7 @@ class ListController < ApplicationController
 
   before_filter :ensure_logged_in, except: [
     :topics_by,
+    :story_by,
     # anonymous filters
     Discourse.anonymous_filters,
     Discourse.anonymous_filters.map { |f| "#{f}_feed" },
@@ -131,6 +132,16 @@ class ListController < ApplicationController
     respond_with_list(list)
   end
 
+  def story_by
+    list_opts = build_topic_list_options
+    #list_opts[:category] = Category.find_by_name("Story")
+    target_user = fetch_user_from_params({ include_inactive: current_user.try(:staff?) }, [:user_stat, :user_option])
+    list = generate_list_for("story_by", target_user, list_opts)
+    list.more_topics_url = url_for(construct_url_with(:next, list_opts))
+    list.prev_topics_url = url_for(construct_url_with(:prev, list_opts))
+    respond_with_list(list)
+  end
+
   def self.generate_message_route(action)
     define_method("#{action}") do
       list_opts = build_topic_list_options
@@ -201,6 +212,7 @@ class ListController < ApplicationController
     @atom_link = "#{Discourse.base_url}/u/#{target_user.username}/activity/topics.rss"
     @description = I18n.t("rss_description.user_topics", username: target_user.username)
     @topic_list = TopicQuery.new(nil, order: 'created').send("list_topics_by", target_user)
+    @story = TopicQuery.new(nil, order: 'created').send("list_story_by", target_user)
 
     render 'list', formats: [:rss]
   end

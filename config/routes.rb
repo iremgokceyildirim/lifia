@@ -577,6 +577,7 @@ Discourse::Application.routes.draw do
   resources :similar_topics
 
   get "topics/feature_stats"
+  get "topics/story/:username" => "list#story_by", as: "story_by", constraints: { username: USERNAME_ROUTE_FORMAT }
   get "topics/created-by/:username" => "list#topics_by", as: "topics_by", constraints: { username: USERNAME_ROUTE_FORMAT }
   get "topics/private-messages/:username" => "list#private_messages", as: "topics_private_messages", constraints: { username: USERNAME_ROUTE_FORMAT }
   get "topics/private-messages-sent/:username" => "list#private_messages_sent", as: "topics_private_messages_sent", constraints: { username: USERNAME_ROUTE_FORMAT }
