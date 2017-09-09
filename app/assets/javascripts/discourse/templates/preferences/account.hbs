@@ -66,6 +66,12 @@
 </div>
 {{/if}}
 
+{{#each userFields as |uf|}}
+  <div class="control-group">
+    {{user-field field=uf.field value=uf.value}}
+  </div>
+{{/each}}
+
 <div class="control-group pref-avatar">
   <label class="control-label">{{i18n 'user.avatar.title'}}</label>
   <div class="controls">

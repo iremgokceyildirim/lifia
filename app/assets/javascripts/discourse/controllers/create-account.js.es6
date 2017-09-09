@@ -56,6 +56,13 @@ export default Ember.Controller.extend(ModalFunctionality, PasswordValidation, U
     return false;
   }.property('passwordRequired', 'nameValidation.failed', 'emailValidation.failed', 'usernameValidation.failed', 'passwordValidation.failed', 'userFieldsValidation.failed', 'formSubmitted'),
 
+  // isHotline: function() {
+  //    //alert (this.get("isHotline"));
+  //    if(this.get("isHotline"))
+  //        return true;
+  //    else
+  //        return false;
+  // }.property(),
 
   usernameRequired: Ember.computed.not('authOptions.omit_username'),
 
@@ -156,7 +163,48 @@ export default Ember.Controller.extend(ModalFunctionality, PasswordValidation, U
       this.get('login').send('externalLogin', provider);
     },
 
-    createAccount() {
+      /**
+       Sends an verification code SMS to the currently entered mobile phone number
+
+       @method verifyMobilePhone
+       **/
+      verifyMobilePhone() {
+          var self = this;
+
+          this.setProperties({
+              sendingSMS: true,
+              sentSMS: false
+          });
+
+          // userFields = this.get('userFields');
+          // entered_mobile_phone = "";
+          //
+          // // Add the userfields to the data
+          // if (!Ember.isEmpty(userFields)) {
+          //     userFields.forEach(function(f) {
+          //         if(f.get('field.name') == "Mobile phone")
+          //             entered_mobile_phone = f.get('value');
+          //     });
+          // }
+
+          ajax("/send_verification_sms", {
+              type: 'POST',
+              data: { mobile_phone: this.get('userFields')[0].get('value')}
+          }).then(function () {
+              self.set('sentSMS', true);
+          }, function(e) {
+              if (e.responseJSON && e.responseJSON.errors) {
+                  bootbox.alert(I18n.t('admin.email.error', { server_error: e.responseJSON.errors[0] }));
+              } else {
+                  bootbox.alert(I18n.t('admin.email.test_error'));
+              }
+          }).finally(function() {
+              self.set('sendingSMS', false);
+          });
+      },
+
+
+      createAccount() {
       const self = this,
           attrs = this.getProperties('accountName', 'accountEmail', 'accountPassword', 'accountUsername', 'accountPasswordConfirm', 'accountChallenge'),
           userFields = this.get('userFields');

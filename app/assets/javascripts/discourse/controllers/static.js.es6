@@ -24,5 +24,12 @@ export default Ember.Controller.extend({
         });
       }
     }
+
+      //showCreateAccount(param){
+      //  alert(param);
+          ////if(params == "hotline")
+            ////  this.set("isHotline", true);
+        ////  this.trigger('showCreateAccount');
+      //}
   }
 });

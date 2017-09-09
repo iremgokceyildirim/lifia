@@ -7,7 +7,10 @@ import { popupAjaxError } from 'discourse/lib/ajax-error';
 
 export default Ember.Controller.extend(CanCheckEmails, PreferencesTabController, {
 
-  saveAttrNames: ['name'],
+  saveAttrNames: [
+      'name',
+      'custom_fields',
+      'user_fields'],
 
   canEditName: setting('enable_names'),
 
@@ -39,11 +42,40 @@ export default Ember.Controller.extend(CanCheckEmails, PreferencesTabController,
     return !this.siteSettings.enable_sso && this.siteSettings.enable_local_logins;
   },
 
+    @computed("model.user_fields.@each.value")
+    userFields() {
+        let siteUserFields = this.site.get('user_fields');
+        if (!Ember.isEmpty(siteUserFields)) {
+            const userFields = this.get('model.user_fields');
+
+            // Staff can edit fields that are not `editable`
+            if (!this.get('currentUser.staff')) {
+                siteUserFields = siteUserFields.filterBy('editable', true);
+            }
+            return siteUserFields.sortBy('position').map(function(field) {
+                const value = userFields ? userFields[field.get('id').toString()] : null;
+                return Ember.Object.create({ value, field });
+            });
+        }
+    },
+
   actions: {
     save() {
       this.set('saved', false);
 
       const model = this.get('model');
+
+        userFields = this.get('userFields');
+
+        // Update the user fields
+        if (!Ember.isEmpty(userFields)) {
+            const modelFields = model.get('user_fields');
+            if (!Ember.isEmpty(modelFields)) {
+                userFields.forEach(function(uf) {
+                    modelFields[uf.get('field.id').toString()] = uf.get('value');
+                });
+            }
+        }
 
       model.set('name', this.get('newNameInput'));
 

@@ -221,6 +221,7 @@ en:
     generic_error: "Sorry, an error has occurred."
     generic_error_with_reason: "An error occurred: %{error}"
     sign_up: "Sign Up"
+    hotline_sign_up: "Hotline"
     log_in: "Log In"
     age: "Age"
     joined: "Joined"
@@ -1061,6 +1062,8 @@ en:
       disclaimer: "By registering, you agree to the <a href='{{privacy_link}}'>privacy policy</a> and <a href='{{tos_link}}'>terms of service</a>."
       title: "Create New Account"
       failed: "Something went wrong, perhaps this email is already registered, try the forgot password link"
+      verify_mobile_phone: "Verify Mobile Phone"
+      verification_sent: "Verification code is sent!"
 
     forgot_password:
       title: "Password Reset"

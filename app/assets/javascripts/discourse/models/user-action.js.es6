@@ -18,6 +18,7 @@ const UserActionTypes = {
   messages_sent: 12,
   messages_received: 13,
   pending: 14
+  //story: 15
 };
 const InvertedActionTypes = {};
 

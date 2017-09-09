@@ -92,7 +92,7 @@ createWidget('header-dropdown', jQuery.extend({
 
     return h(
       'a.icon.btn-flat',
-      { attributes: { 
+      { attributes: {
         href: attrs.href,
           'data-auto-route': true,
           title,
@@ -160,7 +160,7 @@ createWidget('header-buttons', {
     if (attrs.canSignUp && !attrs.topic) {
       buttons.push(this.attach('button', { label: "sign_up",
                                            className: 'btn-primary btn-small sign-up-button',
-                                           action: "showCreateAccount" }));
+                                           action: "showCreateAccount"}));
     }
 
 

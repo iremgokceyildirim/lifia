@@ -90,12 +90,32 @@
             <div class='user-fields'>
               {{#each userFields as |f|}}
                 {{user-field field=f.field value=f.value}}
+                <!--<span>{{f.field.name}}</span>
+                <span>{{f.value}}</span>-->
               {{/each}}
             </div>
           {{/if}}
 
+
+          {{d-button action="verifyMobilePhone" class="btn-primary" icon="phone" label="create_account.verify_mobile_phone"}}
+              {{#if sentSMS}}<span class='result-message'>{{i18n 'create_account.verification_sent'}}</span><br>
+                <table>
+                    <tr class="input">
+                      <td class="label"><label for='new-account-password'>Verification Code</label></td>
+                      <td>
+                      {{input value=verificationCode id="verification-code" name="verificationCode" maxlength=maxUsernameLength autocomplete="off"}}
+                                                         &nbsp;{{input-tip validation=verificationCodeValidation id="verification-code-validation"}}
+                                       <span class='required'>*</span>
+                      </td>
+                      </tr>
+                  </table>
+
+              {{/if}}
+
+
           </form>
         </div>
+        <br>
       {{/if}}
     {{/d-modal-body}}
 

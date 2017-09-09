@@ -301,6 +301,7 @@ Discourse::Application.routes.draw do
   get "composer_messages" => "composer_messages#index"
 
   resources :static
+  post "send_verification_sms" => "static#send_verification_sms"
   post "login" => "static#enter", constraints: { format: /(json|html)/ }
   get "login" => "static#show", id: "login", constraints: { format: /(json|html)/ }
   get "password-reset" => "static#show", id: "password_reset", constraints: { format: /(json|html)/ }

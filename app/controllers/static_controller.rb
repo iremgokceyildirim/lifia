@@ -8,6 +8,16 @@ class StaticController < ApplicationController
 
   PAGES_WITH_EMAIL_PARAM = ['login', 'password_reset', 'signup']
 
+  def send_verification_sms
+    params.require(:mobile_phone)
+    begin
+      Jobs::SendSMS.new.verify(to_number: params[:mobile_phone])
+      render nothing: true
+    rescue => e
+      render json: { errors: [e.message] }, status: 422
+    end
+  end
+
   def show
     return redirect_to(path '/') if current_user && (params[:id] == 'login' || params[:id] == 'signup')
     return redirect_to path('/login') if SiteSetting.login_required? && current_user.nil? && (params[:id] == 'faq' || params[:id] == 'guidelines')
@@ -190,5 +200,4 @@ class StaticController < ApplicationController
     send_file(path, opts)
 
   end
-
 end

@@ -22,6 +22,7 @@ module Email
     end
 
     def send
+      print "irem***********************"
       return if SiteSetting.disable_emails && @email_type.to_s != "admin_login"
 
       return if ActionMailer::Base::NullMail === @message

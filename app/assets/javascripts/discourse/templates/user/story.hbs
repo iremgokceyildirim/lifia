@@ -1,14 +1,21 @@
 {{#d-section pageClass="user-activity" class="user-navigation" scrollTop="false"}}
   {{#mobile-nav class='activity-nav' desktopClass='action-list activity-list nav-stacked' currentPath=currentPath}}
     <li class='no-glyph'>
+      {{#link-to 'userActivity.index'}}{{i18n 'user.filters.all'}}{{/link-to}}
+    </li>
+    <li class='no-glyph'>
       {{#link-to 'userActivity.topics'}}{{i18n 'user_action_groups.4'}}{{/link-to}}
     </li>
-
     {{plugin-outlet name="user-activity-bottom"
                     connectorTagName='li'
                     args=(hash model=model)}}
   {{/mobile-nav}}
 
+  {{#if viewingSelf}}
+    <div class='user-archive'>
+      {{d-button action="createTopic" label="topic.create" icon="download"}}
+    </div>
+  {{/if}}
 {{/d-section}}
 
 <section class='user-right'>
