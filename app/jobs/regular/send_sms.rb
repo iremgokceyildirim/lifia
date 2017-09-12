@@ -10,7 +10,7 @@ module Jobs
       raise Discourse::InvalidParameters.new(:to_number) unless args[:to_number].present?
 
       #message = TestMailer.send_test(args[:to_address]) //verification code
-      TwilioNotifications.send_verification_sms(args[:to_number])
+      TwilioNotifications.send_verification_sms(args[:to_number], args[:code])
     end
 
   end

@@ -56,6 +56,8 @@
                           args=(hash accountName=accountName
                                      accountUsername=accountUsername
                                      accountPassword=accountPassword
+                                     verificationCode=verificationCode
+                                     phoneNumber=phoneNumber
                                      userFields=userFields)}}
 
           {{#if passwordRequired}}
@@ -89,22 +91,30 @@
           {{#if userFields}}
             <div class='user-fields'>
               {{#each userFields as |f|}}
-                {{user-field field=f.field value=f.value}}
+                {{user-field field=f.field value=phoneNumber}}
+                &nbsp;{{input-tip validation=phoneNumberValidation}}
+                {{#if f.field.isPhoneNumber}}
+                    <span>YES</span>
+                {{/if}}
                 <!--<span>{{f.field.name}}</span>
-                <span>{{f.value}}</span>-->
+               <span>{{f.value}}</span>-->
               {{/each}}
             </div>
           {{/if}}
 
 
-          {{d-button action="verifyMobilePhone" class="btn-primary" icon="phone" label="create_account.verify_mobile_phone"}}
+            <button class="btn btn-icon-text" disabled={{verifyDisabled}} {{action "verifyMobilePhone"}}>    <i class="fa fa-phone d-icon d-icon-phone"></i>
+
+                {{i18n 'create_account.verify_mobile_phone'}}
+
+              </button>
+
               {{#if sentSMS}}<span class='result-message'>{{i18n 'create_account.verification_sent'}}</span><br>
                 <table>
                     <tr class="input">
                       <td class="label"><label for='new-account-password'>Verification Code</label></td>
                       <td>
-                      {{input value=verificationCode id="verification-code" name="verificationCode" maxlength=maxUsernameLength autocomplete="off"}}
-                                                         &nbsp;{{input-tip validation=verificationCodeValidation id="verification-code-validation"}}
+                      {{input value=verificationCode id="verification-code" name="verification_code" maxlength=maxUsernameLength autocomplete="off"}}
                                        <span class='required'>*</span>
                       </td>
                       </tr>

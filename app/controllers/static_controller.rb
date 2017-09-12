@@ -11,7 +11,9 @@ class StaticController < ApplicationController
   def send_verification_sms
     params.require(:mobile_phone)
     begin
-      Jobs::SendSMS.new.verify(to_number: params[:mobile_phone])
+      verification_code = (Random.rand(100000...999999)).to_s
+      Jobs::SendSMS.new.verify(to_number: params[:mobile_phone].delete("^0-9"), code: verification_code)
+      PhoneNumber.create(number: params[:mobile_phone], verification_code: verification_code)
       render nothing: true
     rescue => e
       render json: { errors: [e.message] }, status: 422

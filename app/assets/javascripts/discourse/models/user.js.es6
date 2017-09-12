@@ -584,7 +584,8 @@ User.reopenClass(Singleton, {
         username: attrs.accountUsername,
         password_confirmation: attrs.accountPasswordConfirm,
         challenge: attrs.accountChallenge,
-        user_fields: attrs.userFields
+        user_fields: attrs.userFields,
+        verification_code: attrs.verificationCode
       },
       type: 'POST'
     });

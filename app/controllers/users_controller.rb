@@ -311,6 +311,8 @@ class UsersController < ApplicationController
   def create
     params.require(:email)
     params.permit(:user_fields)
+    phone_number = null
+    phone_number_record = null
 
     unless SiteSetting.allow_new_registrations
       return fail_with("login.new_registrations_disabled")
@@ -347,10 +349,20 @@ class UsersController < ApplicationController
           return fail_with("login.missing_user_field") if f.required?
         else
           fields["user_field_#{f.id}"] = field_val[0...UserField.max_length]
+          if f.name == "Mobile phone"
+            phone_number = field_val
+          end
         end
       end
 
       user.custom_fields = fields
+    end
+
+    if phone_number
+      phone_number_record = PhoneNumber.find_by_number(phone_number)
+      if !params[:verification_code] || params[:verification_code] != phone_number_record.verification_code
+        return fail_with("login.verification_code_not_match")
+      end
     end
 
     authentication = UserAuthenticator.new(user, session)
@@ -371,7 +383,9 @@ class UsersController < ApplicationController
     if user.save
       authentication.finish
       activation.finish
-
+      if phone_number != null
+        phone_number_record.update(user_id: user.id)
+      end
       # save user email in session, to show on account-created page
       session["user_created_message"] = activation.message
       session[SessionController::ACTIVATE_USER_KEY] = user.id

@@ -8,9 +8,10 @@ import PasswordValidation from "discourse/mixins/password-validation";
 import UsernameValidation from "discourse/mixins/username-validation";
 import NameValidation from "discourse/mixins/name-validation";
 import UserFieldsValidation from "discourse/mixins/user-fields-validation";
+import PhoneNumberValidation from "discourse/mixins/phone-number-validation";
 import { userPath } from 'discourse/lib/url';
 
-export default Ember.Controller.extend(ModalFunctionality, PasswordValidation, UsernameValidation, NameValidation, UserFieldsValidation, {
+export default Ember.Controller.extend(ModalFunctionality, PasswordValidation, UsernameValidation, NameValidation, UserFieldsValidation, PhoneNumberValidation, {
   login: Ember.inject.controller(),
 
   complete: false,
@@ -39,7 +40,9 @@ export default Ember.Controller.extend(ModalFunctionality, PasswordValidation, U
       rejectedEmails: [],
       rejectedPasswords: [],
       prefilledUsername: null,
-      isDeveloper: false
+      isDeveloper: false,
+      phoneNumber: '',
+      verificationCode: ''
     });
     this._createUserFields();
   },
@@ -55,6 +58,12 @@ export default Ember.Controller.extend(ModalFunctionality, PasswordValidation, U
 
     return false;
   }.property('passwordRequired', 'nameValidation.failed', 'emailValidation.failed', 'usernameValidation.failed', 'passwordValidation.failed', 'userFieldsValidation.failed', 'formSubmitted'),
+
+
+    verifyDisabled: function() {
+        if (this.get('phoneNumberValidation.failed')) return true;
+        return false;
+    }.property('phoneNumberValidation.failed'),
 
   // isHotline: function() {
   //    //alert (this.get("isHotline"));
@@ -189,14 +198,14 @@ export default Ember.Controller.extend(ModalFunctionality, PasswordValidation, U
 
           ajax("/send_verification_sms", {
               type: 'POST',
-              data: { mobile_phone: this.get('userFields')[0].get('value')}
+              data: { mobile_phone: this.get('phoneNumber')}
           }).then(function () {
               self.set('sentSMS', true);
           }, function(e) {
               if (e.responseJSON && e.responseJSON.errors) {
-                  bootbox.alert(I18n.t('admin.email.error', { server_error: e.responseJSON.errors[0] }));
+                  bootbox.alert(I18n.t('admin.sms.error', { server_error: e.responseJSON.errors[0] }));
               } else {
-                  bootbox.alert(I18n.t('admin.email.test_error'));
+                  bootbox.alert("There was a problem sending the sms message."); //I18n.t('admin.sms.send_error')
               }
           }).finally(function() {
               self.set('sendingSMS', false);
@@ -206,7 +215,7 @@ export default Ember.Controller.extend(ModalFunctionality, PasswordValidation, U
 
       createAccount() {
       const self = this,
-          attrs = this.getProperties('accountName', 'accountEmail', 'accountPassword', 'accountUsername', 'accountPasswordConfirm', 'accountChallenge'),
+          attrs = this.getProperties('accountName', 'accountEmail', 'accountPassword', 'accountUsername', 'accountPasswordConfirm', 'accountChallenge','verificationCode'),
           userFields = this.get('userFields');
 
       // Add the userfields to the data
