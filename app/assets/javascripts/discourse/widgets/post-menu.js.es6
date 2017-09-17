@@ -173,20 +173,18 @@ registerButton('reply', attrs => {
 registerButton('bookmark', attrs => {
   if (!attrs.canBookmark) { return; }
 
-  let iconClass = 'read-icon';
-  let buttonClass = 'bookmark';
-  let tooltip = 'bookmarks.not_bookmarked';
+  let className = 'bookmark';
 
   if (attrs.bookmarked) {
-    iconClass += ' bookmarked';
-    buttonClass += ' bookmarked';
-    tooltip = 'bookmarks.created';
+    className += ' bookmarked';
   }
 
-  return { action: 'toggleBookmark',
-           title: tooltip,
-           className: buttonClass,
-           contents: h('div', { className: iconClass }) };
+  return {
+    action: 'toggleBookmark',
+    title: attrs.bookmarked ? "bookmarks.created" : "bookmarks.not_bookmarked",
+    className,
+    icon: 'bookmark'
+  };
 });
 
 registerButton('admin', attrs => {
@@ -219,6 +217,11 @@ function replaceButton(buttons, find, replace) {
 export default createWidget('post-menu', {
   tagName: 'section.post-menu-area.clearfix',
 
+  settings: {
+    collapseButtons: true,
+    buttonType: 'flat-button'
+  },
+
   defaultState() {
     return { collapsed: true, likedUsers: [], adminVisible: false };
   },
@@ -230,7 +233,7 @@ export default createWidget('post-menu', {
     if (builder) {
       const buttonAtts = builder(attrs, this.state, this.siteSettings);
       if (buttonAtts) {
-        return this.attach('flat-button', buttonAtts);
+        return this.attach(this.settings.buttonType, buttonAtts);
       }
     }
   },
@@ -258,11 +261,16 @@ export default createWidget('post-menu', {
       const button = this.attachButton(i, attrs);
       if (button) {
         allButtons.push(button);
+
         if ((attrs.yours && button.attrs.alwaysShowYours) || (hiddenButtons.indexOf(i) === -1)) {
           visibleButtons.push(button);
         }
       }
     });
+
+    if (!this.settings.collapseButtons) {
+      visibleButtons = allButtons;
+    }
 
     // Only show ellipsis if there is more than one button hidden
     // if there are no more buttons, we are not collapsed
@@ -286,7 +294,7 @@ export default createWidget('post-menu', {
           const { position, beforeButton } = buttonAtts;
           delete buttonAtts.position;
 
-          let button = this.attach('button', buttonAtts);
+          let button = this.attach(this.settings.buttonType, buttonAtts);
 
           if (beforeButton) {
             button = h('span', [beforeButton(h), button]);

@@ -44,6 +44,7 @@ config/discourse.conf
 /logfile
 log/
 bootsnap-load-path-cache
+bootsnap-compile-cache/
 
 # Ignore plugins except for the bundled ones.
 /plugins/*
@@ -54,6 +55,7 @@ bootsnap-load-path-cache
 !/plugins/discourse-nginx-performance-report
 !/plugins/discourse-narrative-bot
 !/plugins/twilio
+!/plugins/discourse-presence
 /plugins/*/auto_generated/
 
 /spec/fixtures/plugins/my_plugin/auto_generated
@@ -118,3 +120,7 @@ vendor/bundle/*
 
 #ignore jetbrains ide file
 *.iml
+
+# ignore nodejs files
+/node_modules
+/package-lock.json

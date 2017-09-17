@@ -504,7 +504,7 @@ describe Admin::UsersController do
     context 'ip-info' do
 
       it "uses ipinfo.io webservice to retrieve the info" do
-        Excon.expects(:get).with("http://ipinfo.io/123.123.123.123/json", read_timeout: 30, connect_timeout: 30)
+        Excon.expects(:get).with("https://ipinfo.io/123.123.123.123/json", read_timeout: 10, connect_timeout: 10)
         xhr :get, :ip_info, ip: "123.123.123.123"
       end
 
@@ -621,7 +621,7 @@ describe Admin::UsersController do
 
       xhr :post, :sync_sso, Rack::Utils.parse_query(sso.payload)
       expect(response.status).to eq(403)
-      expect(JSON.parse(response.body)["message"]).to include("Primary email is invalid")
+      expect(JSON.parse(response.body)["message"]).to include("Primary email can't be blank")
     end
   end
 end

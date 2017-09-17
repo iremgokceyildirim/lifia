@@ -37,6 +37,7 @@ class Admin::GroupsController < Admin::AdminController
         valid_emails[email] = valid_usernames[username_lower] = id
         id
       end
+      valid_users.uniq!
       invalid_users = users.reject! { |u| valid_emails[u] || valid_usernames[u] }
       group.bulk_add(valid_users) if valid_users.present?
       users_added = valid_users.count
@@ -59,7 +60,8 @@ class Admin::GroupsController < Admin::AdminController
 
   def save_group(group)
     group.name = group_params[:name] if group_params[:name].present? && !group.automatic
-    group.alias_level = group_params[:alias_level].to_i if group_params[:alias_level].present?
+    group.mentionable_level = group_params[:mentionable_level].to_i if group_params[:mentionable_level].present?
+    group.messageable_level = group_params[:messageable_level].to_i if group_params[:messageable_level].present?
 
     if group_params[:visibility_level]
       group.visibility_level = group_params[:visibility_level]
@@ -191,7 +193,8 @@ class Admin::GroupsController < Admin::AdminController
   def group_params
     params.require(:group).permit(
       :name,
-      :alias_level,
+      :mentionable_level,
+      :messageable_level,
       :visibility_level,
       :automatic_membership_email_domains,
       :automatic_membership_retroactive,

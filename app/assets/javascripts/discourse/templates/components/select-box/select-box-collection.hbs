@@ -1,16 +1,27 @@
 <ul class="collection">
-  {{#each filteredData as |data|}}
+  {{#if clearSelectionLabel}}
+    <li {{action "onClearSelection" on="click"}} class="select-box-row clear-selection">
+      {{i18n clearSelectionLabel}}
+    </li>
+  {{/if}}
+
+  {{#each filteredContent as |content|}}
     {{component selectBoxRowComponent
-      data=data
-      lastHoveredId=lastHoveredId
+      content=content
+      templateForRow=templateForRow
+      idForRow=idForRow
+      titleForRow=titleForRow
+      shouldHighlightRow=shouldHighlightRow
+      shouldSelectRow=shouldSelectRow
+      highlightedValue=highlightedValue
       onSelect=onSelectRow
       onHover=onHoverRow
-      selectedId=selectedId
+      value=value
     }}
   {{else}}
-    {{#if noDataText}}
-      <li class="select-box-row no-data">
-        {{noDataText}}
+    {{#if noContentLabel}}
+      <li class="select-box-row no-content">
+        {{noContentLabel}}
       </li>
     {{/if}}
   {{/each}}

@@ -4,38 +4,52 @@
   aria-haspopup="true"
   role="button"
   aria-labelledby="select-box-input-{{componentId}}"
+  tabindex={{tabindex}}
 />
 
 {{component selectBoxHeaderComponent
-  data=selectedData
+  text=generatedHeadertext
+  selectedTitle=selectedTitle
   focused=focused
   caretUpIcon=caretUpIcon
   caretDownIcon=caretDownIcon
   onToggle=(action "onToggle")
   icon=icon
   expanded=expanded
+  value=value
 }}
 
 <div class="select-box-body">
-  {{#if _renderBody}}
+  {{#if renderBody}}
     {{#if filterable}}
       {{component selectBoxFilterComponent
         onFilterChange=(action "onFilterChange")
-        filterIcon=filterIcon
-        filterPlaceholder=filterPlaceholder
+        icon=filterIcon
+        focused=filterFocused
+        placeholder=filterPlaceholder
+        tabindex=tabindex
       }}
     {{/if}}
 
     {{component selectBoxCollectionComponent
-      filteredData=filteredData
+      clearSelectionLabel=clearSelectionLabel
+      filteredContent=filteredContent
       selectBoxRowComponent=selectBoxRowComponent
-      lastHoveredId=lastHoveredId
+      templateForRow=templateForRow
+      shouldHighlightRow=shouldHighlightRow
+      shouldSelectRow=shouldSelectRow
+      titleForRow=titleForRow
+      idForRow=idForRow
       onSelectRow=(action "onSelectRow")
       onHoverRow=(action "onHoverRow")
-      noDataText=noDataText
-      selectedId=value
+      onClearSelection=(action "onClearSelection")
+      noContentLabel=noContentLabel
+      highlightedValue=highlightedValue
+      value=value
     }}
   {{/if}}
 </div>
 
-<div class="select-box-wrapper"></div>
+{{#if wrapper}}
+  <div class="select-box-wrapper"></div>
+{{/if}}

@@ -78,7 +78,8 @@ class Group < ActiveRecord::Base
     )
   end
 
-  validates :alias_level, inclusion: { in: ALIAS_LEVELS.values }
+  validates :mentionable_level, inclusion: { in: ALIAS_LEVELS.values }
+  validates :messageable_level, inclusion: { in: ALIAS_LEVELS.values }
 
   scope :visible_groups, ->(user) {
     groups = Group.order(name: :asc).where("groups.id > 0")
@@ -126,6 +127,23 @@ class Group < ActiveRecord::Base
 
   scope :mentionable, lambda { |user|
 
+    where("mentionable_level in (:levels) OR
+          (
+            mentionable_level = #{ALIAS_LEVELS[:members_mods_and_admins]} AND id in (
+            SELECT group_id FROM group_users WHERE user_id = :user_id)
+          )", levels: alias_levels(user), user_id: user && user.id)
+  }
+
+  scope :messageable, lambda { |user|
+
+    where("messageable_level in (:levels) OR
+          (
+            messageable_level = #{ALIAS_LEVELS[:members_mods_and_admins]} AND id in (
+            SELECT group_id FROM group_users WHERE user_id = :user_id)
+          )", levels: alias_levels(user), user_id: user && user.id)
+  }
+
+  def self.alias_levels(user)
     levels = [ALIAS_LEVELS[:everyone]]
 
     if user && user.admin?
@@ -139,12 +157,8 @@ class Group < ActiveRecord::Base
                 ALIAS_LEVELS[:members_mods_and_admins]]
     end
 
-    where("alias_level in (:levels) OR
-          (
-            alias_level = #{ALIAS_LEVELS[:members_mods_and_admins]} AND id in (
-            SELECT group_id FROM group_users WHERE user_id = :user_id)
-          )", levels: levels, user_id: user && user.id)
-  }
+    levels
+  end
 
   def downcase_incoming_email
     self.incoming_email = (incoming_email || "").strip.downcase.presence
@@ -414,12 +428,18 @@ class Group < ActiveRecord::Base
     users.pluck(:username).join(",")
   end
 
+  PUBLISH_CATEGORIES_LIMIT = 10
+
   def add(user)
     self.users.push(user) unless self.users.include?(user)
 
-    MessageBus.publish('/categories', {
-      categories: ActiveModel::ArraySerializer.new(self.categories).as_json
-    }, user_ids: [user.id])
+    if self.categories.count < PUBLISH_CATEGORIES_LIMIT
+      MessageBus.publish('/categories', {
+        categories: ActiveModel::ArraySerializer.new(self.categories).as_json
+      }, user_ids: [user.id])
+    else
+      Discourse.request_refresh!(user_ids: [user.id])
+    end
 
     self
   end
@@ -609,7 +629,8 @@ end
 #  updated_at                         :datetime         not null
 #  automatic                          :boolean          default(FALSE), not null
 #  user_count                         :integer          default(0), not null
-#  alias_level                        :integer          default(0)
+#  mentionable_level                  :integer          default(0)
+#  messageable_level                  :integer          default(0)
 #  automatic_membership_email_domains :text
 #  automatic_membership_retroactive   :boolean          default(FALSE)
 #  primary_group                      :boolean          default(FALSE), not null
@@ -622,12 +643,13 @@ end
 #  flair_color                        :string
 #  bio_raw                            :text
 #  bio_cooked                         :text
-#  public_admission                   :boolean          default(FALSE), not null
 #  allow_membership_requests          :boolean          default(FALSE), not null
 #  full_name                          :string
 #  default_notification_level         :integer          default(3), not null
 #  visibility_level                   :integer          default(0), not null
 #  public_exit                        :boolean          default(FALSE), not null
+#  public_admission                   :boolean          default(FALSE), not null
+#  membership_request_template        :text
 #
 # Indexes
 #

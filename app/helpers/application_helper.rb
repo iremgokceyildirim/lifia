@@ -212,6 +212,10 @@ module ApplicationHelper
       result << tag(:meta, name: 'twitter:data2', value: "#{opts[:like_count]} ❤")
     end
 
+    if opts[:ignore_canonical]
+      result << tag(:meta, property: 'og:ignore_canonical', content: true)
+    end
+
     result.join("\n")
   end
 
@@ -246,7 +250,7 @@ module ApplicationHelper
   end
 
   def crawler_layout?
-    controller.try(:use_crawler_layout?)
+    controller&.use_crawler_layout?
   end
 
   def include_crawler_content?

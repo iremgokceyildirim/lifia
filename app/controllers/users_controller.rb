@@ -50,7 +50,7 @@ class UsersController < ApplicationController
 
     topic_id = params[:include_post_count_for].to_i
     if topic_id != 0
-      user_serializer.topic_post_count = { topic_id => Post.where(topic_id: topic_id, user_id: @user.id).count }
+      user_serializer.topic_post_count = { topic_id => Post.secured(guardian).where(topic_id: topic_id, user_id: @user.id).count }
     end
 
     if !params[:skip_track_visit] && (@user != current_user)
@@ -344,6 +344,12 @@ class UsersController < ApplicationController
       user = User.new(user_params)
     end
 
+    # Handle API approval
+    if user.approved
+      user.approved_by_id ||= current_user.id
+      user.approved_at ||= Time.zone.now
+    end
+
     # Handle custom fields
     user_fields = UserField.all
     if user_fields.present?
@@ -394,14 +400,21 @@ class UsersController < ApplicationController
         user_id: user.id
       }
     else
+      errors = user.errors.to_hash
+      errors[:email] = errors.delete(:primary_email) if errors[:primary_email]
+
       render json: {
         success: false,
         message: I18n.t(
           'login.errors',
           errors: user.errors.full_messages.join("\n")
         ),
-        errors: user.errors.to_hash,
-        values: user.attributes.slice('name', 'username', 'email'),
+        errors: errors,
+        values: {
+          name: user.name,
+          username: user.username,
+          email: user.primary_email&.email
+        },
         is_developer: UsernameCheckerService.is_developer?(user.email)
       }
     end
@@ -634,9 +647,12 @@ class UsersController < ApplicationController
     raise Discourse::InvalidAccess.new if current_user.present?
 
     User.transaction do
-      @user.email = params[:email]
+      primary_email = @user.primary_email
 
-      if @user.save
+      primary_email.email = params[:email]
+      primary_email.should_validate_email = true
+
+      if primary_email.save
         @user.email_tokens.create(email: @user.email)
         enqueue_activation_email
         render json: success_json
@@ -870,7 +886,7 @@ class UsersController < ApplicationController
           current_user.present? &&
           current_user.admin?
 
-        result.merge!(params.permit(:active, :staged))
+        result.merge!(params.permit(:active, :staged, :approved))
       end
 
       result

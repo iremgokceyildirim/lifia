@@ -20,8 +20,8 @@ class Highlighted extends RawHtml {
 function createSearchResult({ type, linkField, builder }) {
   return createWidget(`search-result-${type}`, {
     html(attrs) {
-      return attrs.results.map(r => {
 
+      return attrs.results.map(r => {
         let searchResultId;
         if (type === "topic") {
           searchResultId = r.get('topic_id');
@@ -91,6 +91,15 @@ createSearchResult({
   }
 });
 
+createSearchResult({
+  type: 'tag',
+  linkField: 'url',
+  builder(t) {
+    const tag = Handlebars.Utils.escapeExpression(t.get('id'));
+    return h('a', { attributes: { href: t.get('url') }, className: `tag-${tag} discourse-tag ${Discourse.SiteSettings.tag_style}`}, tag);
+  }
+});
+
 createWidget('search-menu-results', {
   tagName: 'div.results',
 
@@ -121,15 +130,19 @@ createWidget('search-menu-results', {
                                                            className: "filter filter-type"})));
       }
 
-      return [
+      let resultNode = [
         h('ul', this.attach(rt.componentName, {
           searchContextEnabled: attrs.searchContextEnabled,
           searchLogId: attrs.results.grouped_search_result.search_log_id,
           results: rt.results,
           term: attrs.term
         })),
-        h('div.no-results', more)
       ];
+      if (more.length) {
+        resultNode.push(h('div.no-results', more));
+      }
+
+      return resultNode;
     });
   }
 });

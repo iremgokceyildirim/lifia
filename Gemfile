@@ -68,7 +68,7 @@ gem 'aws-sdk', require: false
 gem 'excon', require: false
 gem 'unf', require: false
 
-gem 'email_reply_trimmer', '0.1.7'
+gem 'email_reply_trimmer', '0.1.8'
 
 # Forked until https://github.com/toy/image_optim/pull/149 is merged
 gem 'discourse_image_optim', require: 'image_optim'
@@ -140,6 +140,7 @@ group :test, :development do
   gem 'rspec-html-matchers'
   gem 'pry-nav'
   gem 'byebug', require: ENV['RM_INFO'].nil?
+  gem 'rubocop', require: false
 end
 
 group :development do
@@ -148,7 +149,6 @@ group :development do
   gem 'binding_of_caller'
   gem 'annotate'
   gem 'foreman', require: false
-  gem 'rubocop', require: false
 end
 
 # this is an optional gem, it provides a high performance replacement

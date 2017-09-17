@@ -455,7 +455,7 @@ describe Topic do
 
           it 'can add admin to allowed groups' do
             admins = Group[:admins]
-            admins.update!(alias_level: Group::ALIAS_LEVELS[:everyone])
+            admins.update!(messageable_level: Group::ALIAS_LEVELS[:everyone])
 
             expect(topic.invite_group(topic.user, admins)).to eq(true)
             expect(topic.allowed_groups.include?(admins)).to eq(true)
@@ -1066,6 +1066,21 @@ describe Topic do
             expect(topic_timer.execute_at).to be_within(1.second).of(Time.zone.now + 5.hours)
           end
 
+          describe 'when topic is already closed' do
+            before do
+              SiteSetting.queue_jobs = true
+              topic.update_status('closed', true, Discourse.system_user)
+            end
+
+            it 'should not set a topic timer' do
+              expect { topic.change_category_to_id(new_category.id) }
+                .to change { TopicTimer.with_deleted.count }.by(0)
+
+              expect(topic.closed).to eq(true)
+              expect(topic.reload.category).to eq(new_category)
+            end
+          end
+
           describe 'when topic has an existing topic timer' do
             let(:topic_timer) { Fabricate(:topic_timer, topic: topic) }
 
@@ -1162,8 +1177,6 @@ describe Topic do
     let(:admin) { Fabricate(:admin) }
     let(:trust_level_4) { Fabricate(:trust_level_4) }
 
-    before { Discourse.stubs(:system_user).returns(admin) }
-
     it 'can take a number of hours as an integer' do
       freeze_time now
 
@@ -1233,12 +1246,12 @@ describe Topic do
 
     it 'sets topic status update user to system user if given user is not staff or a TL4 user' do
       topic.set_or_create_timer(TopicTimer.types[:close], 3, by_user: Fabricate.build(:user, id: 444))
-      expect(topic.topic_timers.first.user).to eq(admin)
+      expect(topic.topic_timers.first.user).to eq(Discourse.system_user)
     end
 
     it 'sets topic status update user to system user if user is not given and topic creator is not staff nor TL4 user' do
       topic.set_or_create_timer(TopicTimer.types[:close], 3)
-      expect(topic.topic_timers.first.user).to eq(admin)
+      expect(topic.topic_timers.first.user).to eq(Discourse.system_user)
     end
 
     it 'sets topic status update user to topic creator if it is a staff user' do
@@ -1263,6 +1276,15 @@ describe Topic do
       freeze_time now
       closing_topic.set_or_create_timer(TopicTimer.types[:close], 48)
       expect(closing_topic.reload.public_topic_timer.execute_at).to eq(2.days.from_now)
+    end
+
+    it 'should not delete topic_timer of another status_type' do
+      freeze_time
+      closing_topic.set_or_create_timer(TopicTimer.types[:open], nil)
+      topic_timer = closing_topic.public_topic_timer
+
+      expect(topic_timer.execute_at).to eq(5.hours.from_now)
+      expect(topic_timer.status_type).to eq(TopicTimer.types[:close])
     end
 
     it 'should allow status_type to be updated' do
@@ -1327,113 +1349,131 @@ describe Topic do
   describe 'for_digest' do
     let(:user) { Fabricate.build(:user) }
 
-    it "returns none when there are no topics" do
-      expect(Topic.for_digest(user, 1.year.ago, top_order: true)).to be_blank
+    context "no edit grace period" do
+      before do
+        SiteSetting.editing_grace_period = 0
+      end
+
+      it "returns none when there are no topics" do
+        expect(Topic.for_digest(user, 1.year.ago, top_order: true)).to be_blank
+      end
+
+      it "doesn't return category topics" do
+        Fabricate(:category)
+        expect(Topic.for_digest(user, 1.year.ago, top_order: true)).to be_blank
+      end
+
+      it "returns regular topics" do
+        topic = Fabricate(:topic)
+        expect(Topic.for_digest(user, 1.year.ago, top_order: true)).to eq([topic])
+      end
+
+      it "doesn't return topics from muted categories" do
+        user = Fabricate(:user)
+        category = Fabricate(:category)
+        Fabricate(:topic, category: category)
+
+        CategoryUser.set_notification_level_for_category(user, CategoryUser.notification_levels[:muted], category.id)
+
+        expect(Topic.for_digest(user, 1.year.ago, top_order: true)).to be_blank
+      end
+
+      it "doesn't return topics from suppressed categories" do
+        user = Fabricate(:user)
+        category = Fabricate(:category)
+        Fabricate(:topic, category: category)
+
+        SiteSetting.digest_suppress_categories = "#{category.id}"
+
+        expect(Topic.for_digest(user, 1.year.ago, top_order: true)).to be_blank
+      end
+
+      it "doesn't return topics from TL0 users" do
+        new_user = Fabricate(:user, trust_level: 0)
+        Fabricate(:topic, user_id: new_user.id)
+
+        expect(Topic.for_digest(user, 1.year.ago, top_order: true)).to be_blank
+      end
+
+      it "returns topics from TL0 users if given include_tl0" do
+        new_user = Fabricate(:user, trust_level: 0)
+        topic = Fabricate(:topic, user_id: new_user.id)
+
+        expect(Topic.for_digest(user, 1.year.ago, top_order: true, include_tl0: true)).to eq([topic])
+      end
+
+      it "returns topics from TL0 users if enabled in preferences" do
+        new_user = Fabricate(:user, trust_level: 0)
+        topic = Fabricate(:topic, user_id: new_user.id)
+
+        u = Fabricate(:user)
+        u.user_option.include_tl0_in_digests = true
+
+        expect(Topic.for_digest(u, 1.year.ago, top_order: true)).to eq([topic])
+      end
+
+      it "doesn't return topics with only muted tags" do
+        user = Fabricate(:user)
+        tag = Fabricate(:tag)
+        TagUser.change(user.id, tag.id, TagUser.notification_levels[:muted])
+        Fabricate(:topic, tags: [tag])
+
+        expect(Topic.for_digest(user, 1.year.ago, top_order: true)).to be_blank
+      end
+
+      it "returns topics with both muted and not muted tags" do
+        user = Fabricate(:user)
+        muted_tag, other_tag = Fabricate(:tag), Fabricate(:tag)
+        TagUser.change(user.id, muted_tag.id, TagUser.notification_levels[:muted])
+        topic = Fabricate(:topic, tags: [muted_tag, other_tag])
+
+        expect(Topic.for_digest(user, 1.year.ago, top_order: true)).to eq([topic])
+      end
+
+      it "returns topics with no tags too" do
+        user = Fabricate(:user)
+        muted_tag = Fabricate(:tag)
+        TagUser.change(user.id, muted_tag.id, TagUser.notification_levels[:muted])
+        topic1 = Fabricate(:topic, tags: [muted_tag])
+        topic2 = Fabricate(:topic, tags: [Fabricate(:tag), Fabricate(:tag)])
+        topic3 = Fabricate(:topic)
+
+        topics = Topic.for_digest(user, 1.year.ago, top_order: true)
+        expect(topics.size).to eq(2)
+        expect(topics).to contain_exactly(topic2, topic3)
+      end
+
+      it "sorts by category notification levels" do
+        category1, category2 = Fabricate(:category), Fabricate(:category)
+        2.times { |i| Fabricate(:topic, category: category1) }
+        topic1 = Fabricate(:topic, category: category2)
+        2.times { |i| Fabricate(:topic, category: category1) }
+        CategoryUser.create(user: user, category: category2, notification_level: CategoryUser.notification_levels[:watching])
+        for_digest = Topic.for_digest(user, 1.year.ago, top_order: true)
+        expect(for_digest.first).to eq(topic1)
+      end
+
+      it "sorts by topic notification levels" do
+        topics = []
+        3.times { |i| topics << Fabricate(:topic) }
+        user = Fabricate(:user)
+        TopicUser.create(user_id: user.id, topic_id: topics[0].id, notification_level: TopicUser.notification_levels[:tracking])
+        TopicUser.create(user_id: user.id, topic_id: topics[2].id, notification_level: TopicUser.notification_levels[:watching])
+        for_digest = Topic.for_digest(user, 1.year.ago, top_order: true).pluck(:id)
+        expect(for_digest).to eq([topics[2].id, topics[0].id, topics[1].id])
+      end
     end
 
-    it "doesn't return category topics" do
-      Fabricate(:category)
-      expect(Topic.for_digest(user, 1.year.ago, top_order: true)).to be_blank
-    end
+    context "with editing_grace_period" do
+      before do
+        SiteSetting.editing_grace_period = 5.minutes
+      end
 
-    it "returns regular topics" do
-      topic = Fabricate(:topic)
-      expect(Topic.for_digest(user, 1.year.ago, top_order: true)).to eq([topic])
-    end
-
-    it "doesn't return topics from muted categories" do
-      user = Fabricate(:user)
-      category = Fabricate(:category)
-      Fabricate(:topic, category: category)
-
-      CategoryUser.set_notification_level_for_category(user, CategoryUser.notification_levels[:muted], category.id)
-
-      expect(Topic.for_digest(user, 1.year.ago, top_order: true)).to be_blank
-    end
-
-    it "doesn't return topics from suppressed categories" do
-      user = Fabricate(:user)
-      category = Fabricate(:category)
-      Fabricate(:topic, category: category)
-
-      SiteSetting.digest_suppress_categories = "#{category.id}"
-
-      expect(Topic.for_digest(user, 1.year.ago, top_order: true)).to be_blank
-    end
-
-    it "doesn't return topics from TL0 users" do
-      new_user = Fabricate(:user, trust_level: 0)
-      Fabricate(:topic, user_id: new_user.id)
-
-      expect(Topic.for_digest(user, 1.year.ago, top_order: true)).to be_blank
-    end
-
-    it "returns topics from TL0 users if given include_tl0" do
-      new_user = Fabricate(:user, trust_level: 0)
-      topic = Fabricate(:topic, user_id: new_user.id)
-
-      expect(Topic.for_digest(user, 1.year.ago, top_order: true, include_tl0: true)).to eq([topic])
-    end
-
-    it "returns topics from TL0 users if enabled in preferences" do
-      new_user = Fabricate(:user, trust_level: 0)
-      topic = Fabricate(:topic, user_id: new_user.id)
-
-      u = Fabricate(:user)
-      u.user_option.include_tl0_in_digests = true
-
-      expect(Topic.for_digest(u, 1.year.ago, top_order: true)).to eq([topic])
-    end
-
-    it "doesn't return topics with only muted tags" do
-      user = Fabricate(:user)
-      tag = Fabricate(:tag)
-      TagUser.change(user.id, tag.id, TagUser.notification_levels[:muted])
-      Fabricate(:topic, tags: [tag])
-
-      expect(Topic.for_digest(user, 1.year.ago, top_order: true)).to be_blank
-    end
-
-    it "returns topics with both muted and not muted tags" do
-      user = Fabricate(:user)
-      muted_tag, other_tag = Fabricate(:tag), Fabricate(:tag)
-      TagUser.change(user.id, muted_tag.id, TagUser.notification_levels[:muted])
-      topic = Fabricate(:topic, tags: [muted_tag, other_tag])
-
-      expect(Topic.for_digest(user, 1.year.ago, top_order: true)).to eq([topic])
-    end
-
-    it "returns topics with no tags too" do
-      user = Fabricate(:user)
-      muted_tag = Fabricate(:tag)
-      TagUser.change(user.id, muted_tag.id, TagUser.notification_levels[:muted])
-      topic1 = Fabricate(:topic, tags: [muted_tag])
-      topic2 = Fabricate(:topic, tags: [Fabricate(:tag), Fabricate(:tag)])
-      topic3 = Fabricate(:topic)
-
-      topics = Topic.for_digest(user, 1.year.ago, top_order: true)
-      expect(topics.size).to eq(2)
-      expect(topics).to contain_exactly(topic2, topic3)
-    end
-
-    it "sorts by category notification levels" do
-      category1, category2 = Fabricate(:category), Fabricate(:category)
-      2.times { |i| Fabricate(:topic, category: category1) }
-      topic1 = Fabricate(:topic, category: category2)
-      2.times { |i| Fabricate(:topic, category: category1) }
-      CategoryUser.create(user: user, category: category2, notification_level: CategoryUser.notification_levels[:watching])
-      for_digest = Topic.for_digest(user, 1.year.ago, top_order: true)
-      expect(for_digest.first).to eq(topic1)
-    end
-
-    it "sorts by topic notification levels" do
-      topics = []
-      3.times { |i| topics << Fabricate(:topic) }
-      user = Fabricate(:user)
-      TopicUser.create(user_id: user.id, topic_id: topics[0].id, notification_level: TopicUser.notification_levels[:tracking])
-      TopicUser.create(user_id: user.id, topic_id: topics[2].id, notification_level: TopicUser.notification_levels[:watching])
-      for_digest = Topic.for_digest(user, 1.year.ago, top_order: true).pluck(:id)
-      expect(for_digest).to eq([topics[2].id, topics[0].id, topics[1].id])
+      it "excludes topics that are within the grace period" do
+        topic1 = Fabricate(:topic, created_at: 6.minutes.ago)
+        topic2 = Fabricate(:topic, created_at: 4.minutes.ago)
+        expect(Topic.for_digest(user, 1.year.ago, top_order: true)).to eq([topic1])
+      end
     end
 
   end
@@ -1441,7 +1481,7 @@ describe Topic do
   describe 'secured' do
     it 'can remove secure groups' do
       category = Fabricate(:category, read_restricted: true)
-      Fabricate(:topic, category: category)
+      Fabricate(:topic, category: category, created_at: 1.day.ago)
 
       expect(Topic.secured(Guardian.new(nil)).count).to eq(0)
       expect(Topic.secured(Guardian.new(Fabricate(:admin))).count).to eq(2)

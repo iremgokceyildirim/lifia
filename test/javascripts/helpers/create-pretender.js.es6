@@ -20,7 +20,7 @@ export function parsePostData(query) {
   return result;
 };
 
-function response(code, obj) {
+export function response(code, obj) {
   if (typeof code === "object") {
     obj = code;
     code = 200;
@@ -28,7 +28,10 @@ function response(code, obj) {
   return [code, {"Content-Type": "application/json"}, obj];
 }
 
-const success = () => response({ success: true });
+export function success() {
+  return response({ success: true });
+}
+
 const loggedIn = () => !!Discourse.User.current();
 
 
@@ -108,6 +111,16 @@ export default function() {
             id: 1234
           }]
         });
+      } else if (request.queryParams.q === 'evil') {
+        return response({
+          posts: [{
+            id: 1234
+          }],
+          tags: [{
+            id: 6,
+            name: 'eviltrout'
+          }]
+        });
       }
 
       return response({});
@@ -119,6 +132,7 @@ export default function() {
     this.get("/t/28830.json", () => response(fixturesByUrl['/t/28830/1.json']));
     this.get("/t/9.json", () => response(fixturesByUrl['/t/9/1.json']));
     this.get("/t/12.json", () => response(fixturesByUrl['/t/12/1.json']));
+    this.put("/t/1234/re-pin", success);
 
     this.get("/t/id_for/:slug", () => {
       return response({id: 280, slug: "internationalization-localization", url: "/t/internationalization-localization/280"});

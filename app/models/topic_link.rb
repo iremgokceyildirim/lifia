@@ -105,7 +105,7 @@ SQL
 
   # Extract any urls in body
   def self.extract_from(post)
-    return unless post.present?
+    return unless post.present? && !post.whisper?
 
     added_urls = []
     TopicLink.transaction do
@@ -144,7 +144,6 @@ SQL
               url = "#{Discourse.base_url_no_prefix}#{topic.relative_url}"
               url << "/#{post_number}" if post_number.to_i > 1
             end
-
           end
 
           # Skip linking to ourselves
@@ -182,7 +181,7 @@ SQL
           if topic_id.present?
             topic = Topic.find_by(id: topic_id)
 
-            if topic && post.topic && post.topic.archetype != 'private_message' && topic.archetype != 'private_message'
+            if topic && post.topic && topic.archetype != 'private_message' && post.topic.archetype != 'private_message' && post.topic.visible?
               prefix = Discourse.base_url_no_prefix
               reflected_url = "#{prefix}#{post.topic.relative_url(post.post_number)}"
               tl = TopicLink.find_by(topic_id: topic_id,
@@ -276,9 +275,11 @@ end
 #  title         :string
 #  crawled_at    :datetime
 #  quote         :boolean          default(FALSE), not null
+#  extension     :string(10)
 #
 # Indexes
 #
+#  index_topic_links_on_extension                    (extension)
 #  index_topic_links_on_link_post_id_and_reflection  (link_post_id,reflection)
 #  index_topic_links_on_post_id                      (post_id)
 #  index_topic_links_on_topic_id                     (topic_id)

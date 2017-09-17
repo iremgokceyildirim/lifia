@@ -1059,4 +1059,69 @@ HTML
     end
   end
 
+  describe "image decoding" do
+
+    it "can decode upload:// for default setup" do
+      upload = Fabricate(:upload)
+
+      raw = <<~RAW
+      ![upload](#{upload.short_url})
+
+      - ![upload](#{upload.short_url})
+
+      - test
+          - ![upload](#{upload.short_url})
+      RAW
+
+      cooked = <<~HTML
+        <p><img src="#{upload.url}" alt="upload"></p>
+        <ul>
+        <li>
+        <p><img src="#{upload.url}" alt="upload"></p>
+        </li>
+        <li>
+        <p>test</p>
+        <ul>
+        <li><img src="#{upload.url}" alt="upload"></li>
+        </ul>
+        </li>
+        </ul>
+      HTML
+
+      expect(PrettyText.cook(raw)).to eq(cooked.strip)
+    end
+
+    it "can place a blank image if we can not find the upload" do
+
+      raw = "![upload](upload://abcABC.png)"
+
+      cooked = <<~HTML
+        <p><img src="/images/transparent.png" alt="upload" data-orig-src="upload://abcABC.png"></p>
+      HTML
+
+      expect(PrettyText.cook(raw)).to eq(cooked.strip)
+    end
+
+  end
+
+  it "can properly whitelist iframes" do
+    SiteSetting.allowed_iframes = "https://bob.com/a|http://silly.com?EMBED="
+    raw = <<~IFRAMES
+      <iframe src='https://www.google.com/maps/Embed?testing'></iframe>
+      <iframe src='https://bob.com/a?testing'></iframe>
+      <iframe src='HTTP://SILLY.COM?EMBED=111'></iframe>
+    IFRAMES
+
+    # we require explicit HTTPS here
+    html = <<~IFRAMES
+      <iframe src="https://bob.com/a?testing"></iframe>
+      <iframe src="HTTP://SILLY.COM?EMBED=111"></iframe>
+    IFRAMES
+
+    cooked = PrettyText.cook(raw).strip
+
+    expect(cooked).to eq(html.strip)
+
+  end
+
 end

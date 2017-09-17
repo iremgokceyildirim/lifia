@@ -584,7 +584,9 @@ describe User do
 
     it 'whitelist should reject some emails based on the email_domains_whitelist site setting' do
       SiteSetting.email_domains_whitelist = 'vaynermedia.com'
-      expect(Fabricate.build(:user, email: 'notgood@mailinator.com')).not_to be_valid
+      user = Fabricate.build(:user, email: 'notgood@mailinator.com')
+      expect(user).not_to be_valid
+      expect(user.errors.messages[:primary_email]).to include(I18n.t('user.email.not_allowed'))
       expect(Fabricate.build(:user, email: 'sbauch@vaynermedia.com')).to be_valid
     end
 
@@ -615,7 +617,7 @@ describe User do
 
     it 'email whitelist should be used when email is being changed' do
       SiteSetting.email_domains_whitelist = 'vaynermedia.com'
-      u = Fabricate(:user, email: 'good@vaynermedia.com')
+      u = Fabricate(:user_single_email, email: 'good@vaynermedia.com')
       u.email = 'nope@mailinator.com'
       expect(u).not_to be_valid
     end
@@ -1183,6 +1185,15 @@ describe User do
       expect(all_users.include?(inactive)).to eq(true)
       expect(all_users.include?(inactive_old)).to eq(false)
     end
+
+    it "does nothing if purge_unactivated_users_grace_period_days is 0" do
+      SiteSetting.purge_unactivated_users_grace_period_days = 0
+      User.purge_unactivated
+      all_users = User.all
+      expect(all_users.include?(user)).to eq(true)
+      expect(all_users.include?(inactive)).to eq(true)
+      expect(all_users.include?(inactive_old)).to eq(true)
+    end
   end
 
   describe "hash_passwords" do
@@ -1404,7 +1415,7 @@ describe User do
     let(:user) { Fabricate(:user) }
 
     it 'should publish the right message' do
-      message = MessageBus.track_publish { user.logged_out }.first
+      message = MessageBus.track_publish { user.logged_out }.find { |m| m.channel == '/logout' }
 
       expect(message.channel).to eq('/logout')
       expect(message.data).to eq(user.id)

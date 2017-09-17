@@ -1,7 +1,7 @@
 require_dependency 'distributed_cache'
 
 class Category < ActiveRecord::Base
-
+  include Searchable
   include Positionable
   include HasCustomFields
   include CategoryHashtag
@@ -63,7 +63,6 @@ class Category < ActiveRecord::Base
   after_update :rename_category_definition, if: :name_changed?
   after_update :create_category_permalink, if: :slug_changed?
 
-  has_one :category_search_data
   belongs_to :parent_category, class_name: 'Category'
   has_many :subcategories, class_name: 'Category', foreign_key: 'parent_category_id'
 
@@ -200,7 +199,7 @@ SQL
     t = Topic.new(title: I18n.t("category.topic_prefix", category: name), user: user, pinned_at: Time.now, category_id: id)
     t.skip_callbacks = true
     t.ignore_category_auto_close = true
-    t.set_or_create_timer(TopicTimer.types[:close], nil)
+    t.delete_topic_timer(TopicTimer.types[:close])
     t.save!(validate: false)
     update_column(:topic_id, t.id)
     t.posts.create(raw: post_template, user: user)
