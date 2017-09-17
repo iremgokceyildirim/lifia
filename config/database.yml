@@ -1,13 +1,9 @@
 development:
   prepared_statements: false
   adapter: postgresql
-<<<<<<< HEAD
-  database: discourse_development
+  database: <%= ENV['DISCOURSE_DEV_DB'] || 'discourse_development' %>
   username: discourse
   password: 'password'
-=======
-  database: <%= ENV['DISCOURSE_DEV_DB'] || 'discourse_development' %>
->>>>>>> a1ee61ec25d8de128faf46d765d1aeda9d880654
   min_messages: warning
   pool: 5
   timeout: 5000
