@@ -14,9 +14,9 @@ class PhoneNumber < ActiveRecord::Base
     TwilioSMS.send_verification_sms(self.number, self.verification_code)
   end
 
-  def verify(entered_code)
-    update(verified: true) if self.verification_code == entered_code
-  end
+  # def verify(entered_code)
+  #   update(verified: true) if self.verification_code == entered_code
+  # end
 end
 
 # == Schema Information

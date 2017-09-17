@@ -311,6 +311,8 @@ class UsersController < ApplicationController
   def create
     params.require(:email)
     params.permit(:user_fields)
+    params.permit(:phone_number)
+    params.permit(:verification_code)
 
     unless SiteSetting.allow_new_registrations
       return fail_with("login.new_registrations_disabled")
@@ -378,8 +380,8 @@ class UsersController < ApplicationController
     if user.save
       authentication.finish
       activation.finish
-      if phone_number != null
-        phone_number_record.update(user_id: user.id)
+      if phone_number_record
+        phone_number_record.update(user_id: user.id, verified: true)
       end
       # save user email in session, to show on account-created page
       session["user_created_message"] = activation.message

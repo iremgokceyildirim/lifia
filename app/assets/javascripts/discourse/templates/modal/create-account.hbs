@@ -88,7 +88,7 @@
           <tr style="border-top: 1px solid #e9e9e9;" class="input">
             <td class="label"><label for='new-account-phone-number'>{{i18n 'user.phone_number.title'}}</label></td>
             <td>
-            {{input value=accountPhoneNumber id="new-account-phone-number" name="phone_number"  disabled=phoneNumberDisabled maxlength=maxPhoneNumberLength autocomplete="off" }}
+            {{input value=accountPhoneNumber id="new-account-phone-number" name="phone_number"  maxlength=maxPhoneNumberLength autocomplete="off" }}
             &nbsp;{{input-tip validation=phoneNumberValidation id="phone-number-validation"}}
             </td>
           </tr>
@@ -108,12 +108,12 @@
             </tr>
 
             {{#if sentSMS}}
+                <script> document.getElementById('new-account-phone-number').disabled = true; </script>
                 <tr class="input">
-                <td></td>
                   <td class="label"><label for='new-account-phone-verification'>Verification Code</label></td>
                   <td>
                   {{input value=verificationCode id="new-account-phone-verification" name="verification_code" maxlength=maxVerificationCodeLength autocomplete="off"}}
-                                   <span class='required'>*</span>
+                                   <span class='required'>*</span>&nbsp;{{input-tip validation=verificationCodeValidation id="verification-code-validation"}}
                   </td>
                   </tr>
 

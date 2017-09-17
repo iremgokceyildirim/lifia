@@ -582,7 +582,7 @@ User.reopenClass(Singleton, {
         email: attrs.accountEmail,
         password: attrs.accountPassword,
         username: attrs.accountUsername,
-        phone_number: attrs.accountPhoneNumber,
+        phone_number: attrs.accountPhoneNumber.replace(/\D/g, ''),
         password_confirmation: attrs.accountPasswordConfirm,
         challenge: attrs.accountChallenge,
         user_fields: attrs.userFields,

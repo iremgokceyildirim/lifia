@@ -58,22 +58,17 @@ export default Ember.Controller.extend(ModalFunctionality, PasswordValidation, U
     if (this.get('usernameValidation.failed')) return true;
     if (this.get('passwordValidation.failed')) return true;
     if (this.get('phoneNumberValidation.failed')) return true;
+    if (this.get('verificationCodeValidation.failed')) return true;
     if (this.get('userFieldsValidation.failed')) return true;
 
     return false;
-  }.property('passwordRequired', 'nameValidation.failed', 'emailValidation.failed', 'usernameValidation.failed', 'passwordValidation.failed', 'phoneNumberValidation.failed', 'userFieldsValidation.failed', 'formSubmitted'),
+  }.property('passwordRequired', 'nameValidation.failed', 'emailValidation.failed', 'usernameValidation.failed', 'passwordValidation.failed', 'phoneNumberValidation.failed', 'verificationCodeValidation.failed','userFieldsValidation.failed', 'formSubmitted'),
 
 
     sendVerificationDisabled: function() {
         if (this.get('phoneNumberValidation.failed')) return true;
         return false;
     }.property('phoneNumberValidation.failed'),
-
-    phoneNumberDisabled: function() {
-      alert(this.get('sentSMS'));
-        if (this.get('sentSMS')) return true;
-        return false;
-    }.property(),
 
   // isHotline: function() {
   //    //alert (this.get("isHotline"));
