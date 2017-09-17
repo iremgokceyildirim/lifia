@@ -219,7 +219,7 @@ export default Ember.Controller.extend(ModalFunctionality, PasswordValidation, U
 
       createAccount() {
       const self = this,
-          attrs = this.getProperties('accountName', 'accountEmail', 'accountPassword', 'accountUsername', 'accountPasswordConfirm', 'accountPhoneNumber', 'accountChallenge','verificationCode'),
+          attrs = this.getProperties('accountName', 'accountEmail', 'accountPassword', 'accountUsername', 'accountPasswordConfirm', 'accountChallenge'), //,'verificationCode', 'accountPhoneNumber',
           userFields = this.get('userFields');
 
       // Add the userfields to the data
