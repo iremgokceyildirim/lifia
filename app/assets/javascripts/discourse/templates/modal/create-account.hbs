@@ -88,16 +88,17 @@
 
           </table>
 
+
           {{#if userFields}}
             <div class='user-fields'>
               {{#each userFields as |f|}}
                 {{user-field field=f.field value=phoneNumber}}
                 &nbsp;{{input-tip validation=phoneNumberValidation}}
-                {{#if f.field.isPhoneNumber}}
-                    <span>YES</span>
-                {{/if}}
-                <!--<span>{{f.field.name}}</span>
-               <span>{{f.value}}</span>-->
+                    {{#if f.field.isPhoneNumber}}
+                        <span>YES</span>
+                    {{/if}}
+                    <!--<span>{{f.field.name}}</span>
+                   <span>{{f.value}}</span>-->
               {{/each}}
             </div>
           {{/if}}
@@ -105,7 +106,7 @@
 
             <button class="btn btn-icon-text" disabled={{verifyDisabled}} {{action "verifyMobilePhone"}}>    <i class="fa fa-phone d-icon d-icon-phone"></i>
 
-                {{i18n 'create_account.verify_mobile_phone'}}
+                {{i18n 'create_account.send_verification_code_to_mobile_phone'}}
 
               </button>
 

@@ -10,7 +10,9 @@ export default Ember.Mixin.create({
     let userFields = this.site.get('user_fields');
     if (userFields) {
       userFields = _.sortBy(userFields, 'position').map(function(f) {
-        return Ember.Object.create({ value: null, field: f });
+          //alert("ggg:"+f.name);
+          //if(f.name != "Mobile phone")
+              return Ember.Object.create({ value: null, field: f });
       });
     }
     this.set('userFields', userFields);

@@ -1,9 +1,23 @@
 import InputValidation from 'discourse/models/input-validation';
 import { setting } from 'discourse/lib/computed';
-import { default as computed } from 'ember-addons/ember-computed-decorators';
-
+import { on, default as computed } from 'ember-addons/ember-computed-decorators';
 
 export default Ember.Mixin.create({
+
+    // @on('init')
+    // _createMobilePhoneField() {
+    //     if (!this.site) { return; }
+    //
+    //     let userFields = this.site.get('user_fields');
+    //     var phoneNumber;
+    //     if (userFields) {
+    //         phoneNumber = userFields.findBy('name', "Mobile phone");
+    //         alert("aa"+phoneNumber.name);
+    //         return Ember.Object.create({ value: null, field: phoneNumber });
+    //     }
+    //
+    //     this.set('phoneNumber', phoneNumber);
+    // },
 
     @computed('phoneNumber')
     phoneNumberValidation() {

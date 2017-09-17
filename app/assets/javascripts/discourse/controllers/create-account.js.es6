@@ -21,6 +21,7 @@ export default Ember.Controller.extend(ModalFunctionality, PasswordValidation, U
   rejectedEmails: Em.A([]),
   prefilledUsername: null,
   userFields: null,
+  phoneNumber: null,
   isDeveloper: false,
 
   hasAuthOptions: Em.computed.notEmpty('authOptions'),
@@ -45,6 +46,7 @@ export default Ember.Controller.extend(ModalFunctionality, PasswordValidation, U
       verificationCode: ''
     });
     this._createUserFields();
+    this._createMobilePhoneField();
   },
 
   submitDisabled: function() {
@@ -55,6 +57,7 @@ export default Ember.Controller.extend(ModalFunctionality, PasswordValidation, U
     if (this.get('usernameValidation.failed')) return true;
     if (this.get('passwordValidation.failed')) return true;
     if (this.get('userFieldsValidation.failed')) return true;
+    if (this.get('PhoneNumberValidation.failed')) return true;
 
     return false;
   }.property('passwordRequired', 'nameValidation.failed', 'emailValidation.failed', 'usernameValidation.failed', 'passwordValidation.failed', 'userFieldsValidation.failed', 'formSubmitted'),
@@ -217,6 +220,7 @@ export default Ember.Controller.extend(ModalFunctionality, PasswordValidation, U
       const self = this,
           attrs = this.getProperties('accountName', 'accountEmail', 'accountPassword', 'accountUsername', 'accountPasswordConfirm', 'accountChallenge','verificationCode'),
           userFields = this.get('userFields');
+          phoneNumber = this.get('phoneNumber');
 
       // Add the userfields to the data
       if (!Ember.isEmpty(userFields)) {
