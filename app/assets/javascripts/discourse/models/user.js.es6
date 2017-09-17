@@ -582,6 +582,7 @@ User.reopenClass(Singleton, {
         email: attrs.accountEmail,
         password: attrs.accountPassword,
         username: attrs.accountUsername,
+        phone_number: attrs.accountPhoneNumber,
         password_confirmation: attrs.accountPasswordConfirm,
         challenge: attrs.accountChallenge,
         user_fields: attrs.userFields,

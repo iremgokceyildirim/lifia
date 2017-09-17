@@ -56,8 +56,7 @@
                           args=(hash accountName=accountName
                                      accountUsername=accountUsername
                                      accountPassword=accountPassword
-                                     verificationCode=verificationCode
-                                     phoneNumber=phoneNumber
+                                     accountPhoneNumber=accountPhoneNumber
                                      userFields=userFields)}}
 
           {{#if passwordRequired}}
@@ -86,43 +85,52 @@
             </td>
           </tr>
 
+          <tr style="border-top: 1px solid #e9e9e9;" class="input">
+            <td class="label"><label for='new-account-phone-number'>{{i18n 'user.phone_number.title'}}</label></td>
+            <td>
+            {{input value=accountPhoneNumber id="new-account-phone-number" name="phone_number"  disabled=phoneNumberDisabled maxlength=maxPhoneNumberLength autocomplete="off" }}
+            &nbsp;{{input-tip validation=phoneNumberValidation id="phone-number-validation"}}
+            </td>
+          </tr>
+          <tr class="instructions">
+            <td></td>
+            <td><label>{{i18n 'user.phone_number.instructions'}}</label></td>
+          </tr>
+
+          <tr class="verify-button-area">
+              <td></td>
+              <td>
+                <button class="btn btn-icon-text" disabled={{sendVerificationDisabled}} {{action "sendVerificationCode"}}><i class="fa fa-phone d-icon d-icon-phone"></i>
+                    {{i18n 'create_account.send_verification_code_to_mobile_phone'}}
+                </button>
+                {{#if sentSMS}}<span class='result-message'>{{i18n 'create_account.verification_sent'}}</span>{{/if}}
+              </td>
+            </tr>
+
+            {{#if sentSMS}}
+                <tr class="input">
+                <td></td>
+                  <td class="label"><label for='new-account-phone-verification'>Verification Code</label></td>
+                  <td>
+                  {{input value=verificationCode id="new-account-phone-verification" name="verification_code" maxlength=maxVerificationCodeLength autocomplete="off"}}
+                                   <span class='required'>*</span>
+                  </td>
+                  </tr>
+
+              {{/if}}
+
           </table>
 
 
           {{#if userFields}}
             <div class='user-fields'>
               {{#each userFields as |f|}}
-                {{user-field field=f.field value=phoneNumber}}
-                &nbsp;{{input-tip validation=phoneNumberValidation}}
-                    {{#if f.field.isPhoneNumber}}
-                        <span>YES</span>
-                    {{/if}}
+                {{user-field field=f.field value=f.value}}
                     <!--<span>{{f.field.name}}</span>
                    <span>{{f.value}}</span>-->
               {{/each}}
             </div>
           {{/if}}
-
-
-            <button class="btn btn-icon-text" disabled={{verifyDisabled}} {{action "verifyMobilePhone"}}>    <i class="fa fa-phone d-icon d-icon-phone"></i>
-
-                {{i18n 'create_account.send_verification_code_to_mobile_phone'}}
-
-              </button>
-
-              {{#if sentSMS}}<span class='result-message'>{{i18n 'create_account.verification_sent'}}</span><br>
-                <table>
-                    <tr class="input">
-                      <td class="label"><label for='new-account-password'>Verification Code</label></td>
-                      <td>
-                      {{input value=verificationCode id="verification-code" name="verification_code" maxlength=maxUsernameLength autocomplete="off"}}
-                                       <span class='required'>*</span>
-                      </td>
-                      </tr>
-                  </table>
-
-              {{/if}}
-
 
           </form>
         </div>

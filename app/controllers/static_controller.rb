@@ -9,9 +9,9 @@ class StaticController < ApplicationController
   PAGES_WITH_EMAIL_PARAM = ['login', 'password_reset', 'signup']
 
   def send_verification_sms
-    params.require(:mobile_phone)
+    params.require(:phone_number)
     begin
-      phone_number = PhoneNumber.find_or_create_by(number: params[:mobile_phone].delete("^0-9"))
+      phone_number = PhoneNumber.find_or_create_by(number: params[:phone_number])
       phone_number.generate_code
       phone_number.send_code
       render nothing: true

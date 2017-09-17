@@ -21,7 +21,8 @@ export default Ember.Controller.extend(ModalFunctionality, PasswordValidation, U
   rejectedEmails: Em.A([]),
   prefilledUsername: null,
   userFields: null,
-  phoneNumber: null,
+  accountPhoneNumber: '',
+  verificationCode: '',
   isDeveloper: false,
 
   hasAuthOptions: Em.computed.notEmpty('authOptions'),
@@ -35,6 +36,7 @@ export default Ember.Controller.extend(ModalFunctionality, PasswordValidation, U
       accountEmail: '',
       accountUsername: '',
       accountPassword: '',
+      accountPhoneNumber: '',
       authOptions: null,
       complete: false,
       formSubmitted: false,
@@ -42,7 +44,6 @@ export default Ember.Controller.extend(ModalFunctionality, PasswordValidation, U
       rejectedPasswords: [],
       prefilledUsername: null,
       isDeveloper: false,
-      phoneNumber: '',
       verificationCode: ''
     });
     this._createUserFields();
@@ -56,17 +57,23 @@ export default Ember.Controller.extend(ModalFunctionality, PasswordValidation, U
     if (this.get('emailValidation.failed')) return true;
     if (this.get('usernameValidation.failed')) return true;
     if (this.get('passwordValidation.failed')) return true;
+    if (this.get('phoneNumberValidation.failed')) return true;
     if (this.get('userFieldsValidation.failed')) return true;
-    if (this.get('PhoneNumberValidation.failed')) return true;
 
     return false;
-  }.property('passwordRequired', 'nameValidation.failed', 'emailValidation.failed', 'usernameValidation.failed', 'passwordValidation.failed', 'userFieldsValidation.failed', 'formSubmitted'),
+  }.property('passwordRequired', 'nameValidation.failed', 'emailValidation.failed', 'usernameValidation.failed', 'passwordValidation.failed', 'phoneNumberValidation.failed', 'userFieldsValidation.failed', 'formSubmitted'),
 
 
-    verifyDisabled: function() {
+    sendVerificationDisabled: function() {
         if (this.get('phoneNumberValidation.failed')) return true;
         return false;
     }.property('phoneNumberValidation.failed'),
+
+    phoneNumberDisabled: function() {
+      alert(this.get('sentSMS'));
+        if (this.get('sentSMS')) return true;
+        return false;
+    }.property(),
 
   // isHotline: function() {
   //    //alert (this.get("isHotline"));
@@ -180,7 +187,7 @@ export default Ember.Controller.extend(ModalFunctionality, PasswordValidation, U
 
        @method verifyMobilePhone
        **/
-      verifyMobilePhone() {
+      sendVerificationCode() {
           var self = this;
 
           this.setProperties({
@@ -201,7 +208,7 @@ export default Ember.Controller.extend(ModalFunctionality, PasswordValidation, U
 
           ajax("/send_verification_sms", {
               type: 'POST',
-              data: { mobile_phone: this.get('phoneNumber')}
+              data: { phone_number: this.get('accountPhoneNumber').replace(/\D/g, '')}
           }).then(function () {
               self.set('sentSMS', true);
           }, function(e) {
@@ -218,9 +225,8 @@ export default Ember.Controller.extend(ModalFunctionality, PasswordValidation, U
 
       createAccount() {
       const self = this,
-          attrs = this.getProperties('accountName', 'accountEmail', 'accountPassword', 'accountUsername', 'accountPasswordConfirm', 'accountChallenge','verificationCode'),
+          attrs = this.getProperties('accountName', 'accountEmail', 'accountPassword', 'accountUsername', 'accountPasswordConfirm', 'accountPhoneNumber', 'accountChallenge','verificationCode'),
           userFields = this.get('userFields');
-          phoneNumber = this.get('phoneNumber');
 
       // Add the userfields to the data
       if (!Ember.isEmpty(userFields)) {

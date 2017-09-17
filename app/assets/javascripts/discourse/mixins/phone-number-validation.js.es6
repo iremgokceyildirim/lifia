@@ -4,6 +4,8 @@ import { on, default as computed } from 'ember-addons/ember-computed-decorators'
 
 export default Ember.Mixin.create({
 
+    maxPhoneNumberLength: 12,
+    maxVerificationCodeLength: 6,
     // @on('init')
     // _createMobilePhoneField() {
     //     if (!this.site) { return; }
@@ -19,14 +21,14 @@ export default Ember.Mixin.create({
     //     this.set('phoneNumber', phoneNumber);
     // },
 
-    @computed('phoneNumber')
+    @computed('accountPhoneNumber')
     phoneNumberValidation() {
         alert("here");
+        var phoneNumber = this.get('accountPhoneNumber');
         var TEN_DIGITS_FORMAT = /\d{3}-\d{3}-\d{4}/;////^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/
-        var phoneNumber = this.get('phoneNumber');
         alert(phoneNumber);
-        alert(phoneNumber != null);
-        if (phoneNumber != null) {
+        alert(phoneNumber != '');
+        if (phoneNumber != '') {
             alert(TEN_DIGITS_FORMAT.test(phoneNumber));
             if (!TEN_DIGITS_FORMAT.test(phoneNumber)) {
                 return InputValidation.create({
@@ -34,6 +36,13 @@ export default Ember.Mixin.create({
                     reason: I18n.t('user.phone_number.format_error')
                 });
             }
+            // If too long
+            // if (phoneNumber.replace(/\D/g, '').length > this.get('maxPhoneNumberLength')) { // or /[^0-9]/g
+            //     return InputValidation.create({
+            //         failed: true,
+            //         reason: I18n.t('user.phone_number.too_long')
+            //     });
+            // }
         }
 
         if (Ember.isEmpty(phoneNumber)) {
@@ -48,7 +57,11 @@ export default Ember.Mixin.create({
                 reason: I18n.t('user.phone_number.ok')
             });
         }
+    },
 
+    @computed('verification_code')
+    verificationCodeValidation() {
+        alert("here");
 
     }
 });
