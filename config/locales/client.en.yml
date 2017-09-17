@@ -906,6 +906,7 @@ en:
         title: "Mobile phone (Optional)"
         format_error: "This phone number format is not recognized. Please use the given format."
         verification_code_empty: "Enter verification code."
+        verification_code_length_error: "Verification code should have %{count} digits."
         ok: "Phone number format is correct."
         instructions: "e.g. 111-111-1111   Phone Number used for Hotline Access (If you previously posted via Hotline Service, please fill out your phone number here if you wish to connect your history with your profile)"
         too_short: "Phone number should have 10 digits."

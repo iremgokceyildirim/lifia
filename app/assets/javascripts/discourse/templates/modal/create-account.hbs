@@ -56,7 +56,6 @@
                           args=(hash accountName=accountName
                                      accountUsername=accountUsername
                                      accountPassword=accountPassword
-                                     accountPhoneNumber=accountPhoneNumber
                                      userFields=userFields)}}
 
           {{#if passwordRequired}}
@@ -107,17 +106,16 @@
               </td>
             </tr>
 
-            {{#if sentSMS}}
-                <script> document.getElementById('new-account-phone-number').disabled = true; </script>
-                <tr class="input">
-                  <td class="label"><label for='new-account-phone-verification'>Verification Code</label></td>
-                  <td>
-                  {{input value=verificationCode id="new-account-phone-verification" name="verification_code" maxlength=maxVerificationCodeLength autocomplete="off"}}
-                                   <span class='required'>*</span>&nbsp;{{input-tip validation=verificationCodeValidation id="verification-code-validation"}}
-                  </td>
-                  </tr>
+            {{#if sentSMS}}<script> document.getElementById('new-account-phone-number').disabled = true; </script>
+            <tr class="input">
+              <td class="label"><label for='new-account-phone-verification'>Verification Code</label></td>
+              <td>
+              {{input value=verificationCode id="new-account-phone-verification" name="verification_code" maxlength=verificationCodeLength autocomplete="off"}}
+                               &nbsp;{{input-tip validation=verificationCodeValidation id="verification-code-validation"}}
+              </td>
+              </tr>
+            {{/if}}
 
-              {{/if}}
 
           </table>
 
