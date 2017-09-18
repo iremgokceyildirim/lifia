@@ -39,6 +39,8 @@ Discourse::Application.routes.draw do
 
   resources :library
 
+  get "recommended/newcomers" => "list#recommendednewcomers"
+
   get "finish-installation" => "finish_installation#index"
   get "finish-installation/register" => "finish_installation#register"
   post "finish-installation/register" => "finish_installation#register"

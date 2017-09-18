@@ -529,7 +529,7 @@ en:
       "14": "Pending"
 
     categories:
-      all: "all categories"
+      all: "All Categories"
       all_subcategories: "all"
       no_subcategory: "none"
       category: "Category"
@@ -1486,7 +1486,8 @@ en:
         read: "You haven't read any topics yet."
         posted: "You haven't posted in any topics yet."
         recommended: "There are no recommended topics yet."
-        catchup: "There are no updates on the following topics yet. That's sad."
+        recommendednewcomers: "There are no recommended newcomers yet."
+        following: "There are no updates on the following people/topics yet. That's sad."
         justme: "You haven't posted in any topics yet."
         latest: "There are no latest topics. That's sad."
         hot: "There are no hot topics."
@@ -1499,7 +1500,8 @@ en:
           unread: '<p>Your unread topics appear here.</p><p>By default, topics are considered unread and will show unread counts <span class="badge new-posts badge-notification">1</span> if you:</p><ul><li>Created the topic</li><li>Replied to the topic</li><li>Read the topic for more than 4 minutes</li></ul><p>Or if you have explicitly set the topic to Tracked or Watched via the notification control at the bottom of each topic.</p><p>Visit your <a href="%{userPrefsUrl}">preferences</a> to change this.</p>'
       bottom:
         recommended: "There are no more recommended topics."
-        catchup: "There are no more updates on the following topics."
+        recommendednewcomers: "There are no more recommended newcomers."
+        following: "There are no more updates on the following people/topics."
         justme: "There are no more posted topics by you."
         latest: "There are no more latest topics."
         hot: "There are no more hot topics."
@@ -2312,11 +2314,17 @@ en:
           one: "Recommended (1)"
           other: "Recommended ({{count}})"
         help: "recommended topics"
-      catchup:
-        title: "Catch Up"
+      recommendednewcomers:
+        title: "Recommended Newcomers"
         title_with_count:
-          one: "Catch Up (1)"
-          other: "Catch Up ({{count}})"
+          one: "Recommended Newcomer (1)"
+          other: "Recommended Newcomers ({{count}})"
+        help: "recommended newcomers"
+      following:
+        title: "Following"
+        title_with_count:
+          one: "Following (1)"
+          other: "Following ({{count}})"
         help: "updates on followings"
       justme:
         title: "Just Me"
@@ -2568,11 +2576,13 @@ en:
           top: "There are no top topics."
           search: "There are no search results."
           recommended: "There are no recommended topics yet."
-          catchup: "There are no updates on the following topics."
+          recommendednewcomers: "There are no recommended newcomers yet."
+          following: "There are no updates on the following people/topics."
           justme: "You haven't posted in any topics yet."
         bottom:
           recommended: "There are no more recommended topics."
-          catchup: "There are no more updates on the following topics."
+          recommended: "There are no more recommended newcomers."
+          following: "There are no more updates on the following people/topics."
           justme: "There are no more posted topics by you."
           latest: "There are no more latest topics."
           hot: "There are no more hot topics."

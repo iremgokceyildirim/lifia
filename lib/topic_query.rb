@@ -168,9 +168,14 @@ class TopicQuery
     create_list(:recommended, {}, recommended_results(search:"community"))#search keyword for recommendation based on narrative matching
   end
 
-  # The catchup topics
-  def list_catchup
-    create_list(:catchup, {}, catchup_results(filter:['bookmarked','liked']))
+  # The recommended view of topics
+  def list_recommendednewcomers
+    create_list(:recommendednewcomers, {hideCategory:true}, recommended_newcomers_results(search:"community"))#search keyword for recommendation based on narrative matching
+  end
+
+  # The fallowing topics
+  def list_following
+    create_list(:following, {}, following_results(filter:['bookmarked','liked']))
   end
 
   # The justme topics
@@ -316,6 +321,15 @@ class TopicQuery
                regular: TopicUser.notification_levels[:regular], tracking: TopicUser.notification_levels[:tracking])
   end
 
+  # def self.recommended_newcomer_filter(list, user_id, opts)
+  #   col_name = opts[:staff] ? "highest_staff_post_number" : "highest_post_number"
+  #
+  #   list
+  #     .where("tu.last_read_post_number < topics.#{col_name}")
+  #     .where("COALESCE(tu.notification_level, :regular) >= :tracking",
+  #            regular: TopicUser.notification_levels[:regular], tracking: TopicUser.notification_levels[:tracking])
+  # end
+
   def prioritize_pinned_topics(topics, options)
     pinned_clause = options[:category_id] ? "topics.category_id = #{options[:category_id].to_i} AND" : "pinned_globally AND "
     pinned_clause << " pinned_at IS NOT NULL "
@@ -394,7 +408,22 @@ class TopicQuery
     result
   end
 
-  def catchup_results(options={})
+  def recommended_newcomers_results(options={})
+    result = TopicQuery.unread_filter(
+    default_results(options.reverse_merge(unordered: true)),
+    @user&.id,
+    staff: @user&.staff?)
+             .order('CASE WHEN topics.user_id = tu.user_id THEN 1 ELSE 2 END')
+
+    self.class.results_filter_callbacks.each do |filter_callback|
+      result = filter_callback.call(:recommendednewcomers, result, @user, options)
+    end
+
+    suggested_ordering(result, options)
+  end
+
+
+  def following_results(options={})
     result = default_results(options)
     result = remove_muted_topics(result, @user) unless options && options[:state] == "muted".freeze
     result = remove_muted_categories(result, @user, exclude: options[:category])
@@ -402,7 +431,7 @@ class TopicQuery
 
     # plugins can remove topics here:
     self.class.results_filter_callbacks.each do |filter_callback|
-      result = filter_callback.call(:catchup, result, @user, options)
+      result = filter_callback.call(:following, result, @user, options)
     end
 
     result

@@ -59,7 +59,7 @@
     </div>
   <% end %>
 </div>
-
+<%=@list.topics.length %>
 <% if @list.topics.length > 0 && @list.more_topics_url %>
   <div role='navigation' itemscope itemtype='http://schema.org/SiteNavigationElement'>
     <% if params[:page].to_i > 0 %>

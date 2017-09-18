@@ -1,7 +1,56 @@
 {{#d-section bodyClass="navigation-topics" class="navigation-container" scrollTop="false"}}
   {{bread-crumbs categories=categories}}
 
-  {{navigation-bar navItems=navItems filterMode=filterMode}}
+  {{!navigation-bar navItems=navItems filterMode=filterMode}}
+
+    <div class="body-wrap">
+      <div class="container">
+        <nav class="navbar navbar-inverse" role="navigation">
+          <div class="container-fluid">
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+              <ul id="ember1004" class="nav nav-pills ember-view">
+                <li class="dropdown" title="recommended topics" id="ember1015" class="ember-view">
+                  <a href="/recommended" class="dropdown-toggle" data-toggle="dropdown">Recommended <b class="caret-right"></b></a>
+                  <ul class="dropdown-menu" style="bottom: -370%; width:145px;">
+                    <li><a href="/recommended/newcomers">New Comers</a></li>
+                    <li class="divider"></li>
+                    <li><a href="/recommended/foryou">For You</a></li>
+                    <li class="divider"></li>
+                    <li><a href="/recommended/hottopics">Hot Topics</a></li>
+                  </ul>
+                </li>
+
+                <li class="dropdown" title="recommended topics" id="ember1017" class="ember-view">
+                  <a href="/following" class="dropdown-toggle" data-toggle="dropdown">Following <b class="caret-right"></b></a>
+                  <ul class="dropdown-menu" style="bottom: -245%; width:110px;">
+                    <li><a href="/following/people">People</a></li>
+                    <li class="divider"></li>
+                    <li><a href="/following/topics">Topics</a></li>
+                  </ul>
+                </li>
+
+                  <li title="topics shared by you" id="ember1019" class="ember-view"><a href="/justme">Just Me</a></li>
+
+              </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+          </div>
+          <!-- /.container-fluid -->
+        </nav>
+      </div>
+    </div>
+
+    <script>
+        $('ul.nav li.dropdown').hover(function() {
+          $(this).find('.dropdown-menu').stop(true, true).delay(200).fadeIn(500);
+          $(this).find('b').attr("class", "caret");
+        }, function() {
+          $(this).find('.dropdown-menu').stop(true, true).delay(200).fadeOut(500);
+          $(this).find('b').attr("class", "caret-right");
+        });
+    </script>
 
   {{create-topic-button canCreateTopic=canCreateTopic action=(route-action "createTopic")}}
 {{/d-section}}

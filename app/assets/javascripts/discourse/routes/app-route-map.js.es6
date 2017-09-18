@@ -31,6 +31,7 @@ export default function() {
     });
 
     // filters
+    this.route('recommendednewcomers', { path: '/recommended/newcomers'});
     Discourse.Site.currentProp('filters').forEach(filter => {
       this.route(filter, { path: '/' + filter });
       this.route(filter + 'ParentCategory', { path: '/c/:slug/l/' + filter });
