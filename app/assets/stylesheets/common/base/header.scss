@@ -94,7 +94,6 @@
   .drop-down-visible & {
     .active .icon {
       position: relative;
-<<<<<<< HEAD
     }
 
     .login-button, button.sign-up-button {
@@ -114,14 +113,12 @@
       text-align: center;
       margin: 0 0 0 5px;
       list-style: none;
-=======
       color: #7b7b7b;
       background-color: $secondary;
       cursor: default;
       border-top: 1px solid $primary-low;
       border-left: 1px solid $primary-low;
       border-right: 1px solid $primary-low;
->>>>>>> a1ee61ec25d8de128faf46d765d1aeda9d880654
 
       .flagged-posts {
         right: 24px;
