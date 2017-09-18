@@ -34,6 +34,7 @@ class UserSerializer < BasicUserSerializer
 
   attributes :name,
              :email,
+             :phone_number,
              :last_posted_at,
              :last_seen_at,
              :bio_raw,
@@ -48,6 +49,7 @@ class UserSerializer < BasicUserSerializer
              :can_edit_username,
              :can_edit_email,
              :can_edit_name,
+             #:can_edit_phone_number,
              :stats,
              :can_send_private_messages,
              :can_send_private_message_to_user,
@@ -227,6 +229,10 @@ class UserSerializer < BasicUserSerializer
   def can_edit_name
     scope.can_edit_name?(object)
   end
+
+  # def can_edit_phone_number
+  #   scope.can_edit_phone_number(object)
+  # end
 
   def include_stats?
     !omit_stats == true

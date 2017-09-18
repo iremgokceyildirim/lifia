@@ -1,5 +1,4 @@
 import InputValidation from 'discourse/models/input-validation';
-import { setting } from 'discourse/lib/computed';
 import { on, default as computed } from 'ember-addons/ember-computed-decorators';
 
 export default Ember.Mixin.create({
@@ -23,14 +22,13 @@ export default Ember.Mixin.create({
 
     @computed('accountPhoneNumber')
     phoneNumberTypeValidation() {  //for Send Verification Code button
-        alert("here");
         var phoneNumber = this.get('accountPhoneNumber');
-        var TEN_DIGITS_FORMAT = /\d{3}-\d{3}-\d{4}/;////^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/
-        alert(phoneNumber);
-        alert(phoneNumber != '');
+        //var TEN_DIGITS_FORMAT = /\d{3}-\d{3}-\d{4}/;////^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/
+        var regex = new RegExp(/\d{3}-\d{3}-\d{4}/);
+        //alert(regex.test(phoneNumber));
         if (phoneNumber != '') {
-            alert(TEN_DIGITS_FORMAT.test(phoneNumber));
-            if (!TEN_DIGITS_FORMAT.test(phoneNumber)) {
+            alert(regex.test(phoneNumber));
+            if (!regex.test(phoneNumber)) {
                 return InputValidation.create({
                     failed: true,
                     reason: I18n.t('user.phone_number.format_error')

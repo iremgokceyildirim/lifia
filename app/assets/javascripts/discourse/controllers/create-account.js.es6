@@ -8,10 +8,12 @@ import PasswordValidation from "discourse/mixins/password-validation";
 import UsernameValidation from "discourse/mixins/username-validation";
 import NameValidation from "discourse/mixins/name-validation";
 import UserFieldsValidation from "discourse/mixins/user-fields-validation";
-import PhoneNumberValidation from "discourse/mixins/phone-number-validation";
+import PhoneNumberTypeValidation from "discourse/mixins/phone-number-validation";
+import VerificationCodeValidation from "discourse/mixins/phone-number-validation";
+import PhoneNumberExistenceValidation from "discourse/mixins/phone-number-validation";
 import { userPath } from 'discourse/lib/url';
 
-export default Ember.Controller.extend(ModalFunctionality, PasswordValidation, UsernameValidation, NameValidation, UserFieldsValidation, PhoneNumberValidation, {
+export default Ember.Controller.extend(ModalFunctionality, PasswordValidation, UsernameValidation, NameValidation, UserFieldsValidation, PhoneNumberTypeValidation, PhoneNumberExistenceValidation, VerificationCodeValidation,{
   login: Ember.inject.controller(),
 
   complete: false,
@@ -219,7 +221,7 @@ export default Ember.Controller.extend(ModalFunctionality, PasswordValidation, U
 
       createAccount() {
       const self = this,
-          attrs = this.getProperties('accountName', 'accountEmail', 'accountPassword', 'accountUsername', 'accountPasswordConfirm', 'accountChallenge'), //,'verificationCode', 'accountPhoneNumber',
+          attrs = this.getProperties('accountName', 'accountEmail', 'accountPassword', 'accountUsername', 'verificationCode', 'accountPhoneNumber', 'accountPasswordConfirm', 'accountChallenge'),
           userFields = this.get('userFields');
 
       // Add the userfields to the data

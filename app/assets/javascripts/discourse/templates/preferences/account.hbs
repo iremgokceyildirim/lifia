@@ -66,11 +66,21 @@
 </div>
 {{/if}}
 
-{{#each userFields as |uf|}}
-  <div class="control-group">
-    {{user-field field=uf.field value=uf.value}}
-  </div>
-{{/each}}
+
+<div class="control-group pref-phone-number">
+    <label class="control-label">{{i18n 'user.phone_number.title'}}</label>
+    <div class="controls">
+        <span class='static'>{{model.phone_number}}</span>
+
+            {{#link-to "preferences.email" class="btn btn-small pad-left no-text"}}{{d-icon "pencil"}}{{/link-to}}
+
+    </div>
+    <div class='instructions'>
+        {{i18n 'user.phone_number.instructions'}}
+    </div>
+</div>
+
+
 
 <div class="control-group pref-avatar">
   <label class="control-label">{{i18n 'user.avatar.title'}}</label>

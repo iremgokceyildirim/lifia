@@ -33,6 +33,7 @@ Discourse.SiteSettingsOriginal = {
   "enable_facebook_logins":true,
   "enable_github_logins":true,
   "enable_sso":false,
+  "enable_change_phone_number":false, // $irem$
   "min_username_length":3,
   "max_username_length":20,
   "min_password_length":8,

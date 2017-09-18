@@ -311,8 +311,8 @@ class UsersController < ApplicationController
   def create
     params.require(:email)
     params.permit(:user_fields)
-    #params.permit(:phone_number)
-    #params.permit(:verification_code)
+    params.permit(:phone_number)
+    params.permit(:verification_code)
 
     unless SiteSetting.allow_new_registrations
       return fail_with("login.new_registrations_disabled")
@@ -330,12 +330,12 @@ class UsersController < ApplicationController
       return fail_with("login.reserved_username")
     end
 
-    # if params[:phone_number]
-    #   phone_number_record = PhoneNumber.find_by_number(params[:phone_number])
-    #   if !params[:verification_code] || params[:verification_code] != phone_number_record.verification_code
-    #     return fail_with("login.verification_code_not_match")
-    #   end
-    # end
+    if params[:phone_number]
+      phone_number_record = PhoneNumber.find_by_number(params[:phone_number])
+      if !params[:verification_code] || params[:verification_code] != phone_number_record.verification_code
+        return fail_with("login.verification_code_not_match")
+      end
+    end
 
     if user = User.where(staged: true).with_email(params[:email].strip.downcase).first
       user_params.each { |k, v| user.send("#{k}=", v) }
@@ -386,9 +386,9 @@ class UsersController < ApplicationController
     if user.save
       authentication.finish
       activation.finish
-      # if phone_number_record
-      #   phone_number_record.update(user_id: user.id, verified: true)
-      # end
+      if phone_number_record
+        phone_number_record.update(user: user, verified: true)
+      end
       # save user email in session, to show on account-created page
       session["user_created_message"] = activation.message
       session[SessionController::ACTIVATE_USER_KEY] = user.id

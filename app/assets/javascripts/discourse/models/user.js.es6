@@ -582,11 +582,11 @@ User.reopenClass(Singleton, {
         email: attrs.accountEmail,
         password: attrs.accountPassword,
         username: attrs.accountUsername,
-        //phone_number: attrs.accountPhoneNumber.replace(/\D/g, ''),
+        phone_number: attrs.accountPhoneNumber.replace(/\D/g, ''),
         password_confirmation: attrs.accountPasswordConfirm,
         challenge: attrs.accountChallenge,
-        user_fields: attrs.userFields
-        //verification_code: attrs.verificationCode
+        user_fields: attrs.userFields,
+        verification_code: attrs.verificationCode
       },
       type: 'POST'
     });

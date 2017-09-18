@@ -859,6 +859,15 @@ class User < ActiveRecord::Base
     @user_fields
   end
 
+  def phone_number
+    phone_number = PhoneNumber.find_by_user_id(self.id)
+    if phone_number.present?
+     return phone_number.number
+    else
+      return ''
+    end
+  end
+
   def title=(val)
     write_attribute(:title, val)
     if !new_record? && user_profile

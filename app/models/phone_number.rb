@@ -3,7 +3,6 @@ class PhoneNumber < ActiveRecord::Base
   belongs_to :user
   validates :number,   presence: true, length: {minimum: 10, maximum: 10, too_long: "The length of the phone number should be %{count}",too_short: "The length of the phone number should be %{count}"}
   validates :verification_code, length: {maximum: 6, too_long: "The length of the verification code should be %{count}"}
-  attr_accessor :user, :verified
 
   def generate_code
     self.verification_code = (Random.rand(100000...999999)).to_s

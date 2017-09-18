@@ -26,6 +26,13 @@ module UserGuardian
     can_edit?(user)
   end
 
+  # def can_edit_phone_number?(user)
+  #   # return false if not(SiteSetting.enable_change_phone_number?)
+  #   #return true if is_staff?
+  #   # $irem$
+  #   return false
+  # end
+
   def can_see_notifications?(user)
     is_me?(user) || is_admin?
   end
