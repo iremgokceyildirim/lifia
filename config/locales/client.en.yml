@@ -913,6 +913,7 @@ en:
         instructions: "e.g. 111-111-1111   Phone Number used for Hotline Access (If you previously posted via Hotline Service, please fill out your phone number here if you wish to connect your history with your profile)"
         too_short: "Phone number should have 10 digits."
 
+
       summary:
         title: "Summary"
         stats: "Stats"
@@ -1068,6 +1069,10 @@ en:
     created_lowercase: 'created'
     trust_level: 'Trust Level'
     search_hint: 'username, email or IP address'
+    sms:
+      error: "<b>ERROR</b> - %{server_error}"
+      send_error: "There was a problem sending the sms message."
+
 
     create_account:
       disclaimer: "By registering, you agree to the <a href='{{privacy_link}}'>privacy policy</a> and <a href='{{tos_link}}'>terms of service</a>."
@@ -3146,10 +3151,6 @@ en:
             type_placeholder: "digest, signup..."
             reply_key_placeholder: "reply key"
             skipped_reason_placeholder: "reason"
-
-      sms:
-        error: "<b>ERROR</b> - %{server_error}"
-        send_error: "There was a problem sending the sms message."
 
       logs:
         title: "Logs"

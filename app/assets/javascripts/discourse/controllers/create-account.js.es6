@@ -208,10 +208,11 @@ export default Ember.Controller.extend(ModalFunctionality, PasswordValidation, U
           }).then(function () {
               self.set('sentSMS', true);
           }, function(e) {
-              if (e.responseJSON && e.responseJSON.errors) {
-                  bootbox.alert(I18n.t('admin.sms.error', { server_error: e.responseJSON.errors[0] }));
+              //alert(e["errors"]);
+              if (e.jqXHR.responseJSON && e.jqXHR.responseJSON.errors) {
+                  bootbox.alert(I18n.t('sms.error', { server_error: e.jqXHR.responseJSON.errors[0] }));
               } else {
-                  bootbox.alert("There was a problem sending the sms message."); //I18n.t('admin.sms.send_error')
+                  bootbox.alert("There was a problem sending the sms message."); //I18n.t('sms.send_error')
               }
           }).finally(function() {
               self.set('sendingSMS', false);

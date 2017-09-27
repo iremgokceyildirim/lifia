@@ -27,7 +27,7 @@ export default Ember.Mixin.create({
         var regex = new RegExp(/\d{3}-\d{3}-\d{4}/);
         //alert(regex.test(phoneNumber));
         if (phoneNumber != '') {
-            alert(regex.test(phoneNumber));
+            //alert(regex.test(phoneNumber)); //$irem$
             if (!regex.test(phoneNumber)) {
                 return InputValidation.create({
                     failed: true,

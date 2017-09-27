@@ -60,6 +60,7 @@ class User < ActiveRecord::Base
   has_one :user_stat, dependent: :destroy
   has_one :user_profile, dependent: :destroy, inverse_of: :user
   has_one :single_sign_on_record, dependent: :destroy
+  has_one :phone_number, dependent: :destroy
   belongs_to :approved_by, class_name: 'User'
   belongs_to :primary_group, class_name: 'Group'
 
@@ -114,6 +115,7 @@ class User < ActiveRecord::Base
     # These tables don't have primary keys, so destroying them with activerecord is tricky:
     PostTiming.where(user_id: self.id).delete_all
     TopicViewItem.where(user_id: self.id).delete_all
+    #PhoneNumber.where(user_id: self.id)
   end
 
   # Skip validating email, for example from a particular auth provider plugin

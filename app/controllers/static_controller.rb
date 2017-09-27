@@ -11,10 +11,10 @@ class StaticController < ApplicationController
   def send_verification_sms
     params.require(:phone_number)
     begin
-      phone_number = PhoneNumber.find_or_create_by(number: params[:phone_number])
-      phone_number.generate_code
-      phone_number.send_code
-      render nothing: true
+        phone_number = PhoneNumber.find_or_create_by(number: params[:phone_number])
+        phone_number.generate_code
+        phone_number.send_code
+        render json: success_json
     rescue => e
       render json: { errors: [e.message] }, status: 422
     end

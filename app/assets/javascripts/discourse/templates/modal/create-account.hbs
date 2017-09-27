@@ -102,6 +102,7 @@
                 <button class="btn btn-icon-text" disabled={{sendVerificationDisabled}} {{action "sendVerificationCode"}}><i class="fa fa-phone d-icon d-icon-phone"></i>
                     {{i18n 'create_account.send_verification_code_to_mobile_phone'}}
                 </button>
+                {{#conditional-loading-spinner condition=sendingSMS size="small"}}{{/conditional-loading-spinner}}
                 {{#if sentSMS}}<span class='result-message'>{{i18n 'create_account.verification_sent'}}</span>{{/if}}
               </td>
             </tr>

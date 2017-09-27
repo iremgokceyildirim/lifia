@@ -5,6 +5,7 @@ class PhoneNumber < ActiveRecord::Base
   validates :verification_code, length: {maximum: 6, too_long: "The length of the verification code should be %{count}"}
 
   def generate_code
+    raise "This phone number is already registered for another user!" if self.verified?
     self.verification_code = (Random.rand(100000...999999)).to_s
     save
   end

@@ -333,14 +333,12 @@ class UsersController < ApplicationController
 
     if params[:phone_number]
       phone_number_record = PhoneNumber.find_by_number(params[:phone_number])
-      if !params[:phone_number]
-        if phone_number_record.nil?
-          return fail_with("login.phone_number_not_found")
-        elsif phone_number_record.verified
-          return fail_with("login.phone_number_already_taken")
-        elsif !params[:verification_code] || params[:verification_code] != phone_number_record.verification_code
-          return fail_with("login.verification_code_not_match")
-        end
+      if phone_number_record.nil?
+        return fail_with("login.phone_number_not_found")
+      elsif phone_number_record.verified?
+        return fail_with("login.phone_number_already_taken")
+      elsif !params[:verification_code] || params[:verification_code] != phone_number_record.verification_code
+        return fail_with("login.verification_code_not_match")
       end
     end
 
