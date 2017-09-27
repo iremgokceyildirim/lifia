@@ -91,13 +91,18 @@ describe ActiveRecord::ConnectionHandling do
         postgresql_fallback_handler.initiate_fallback_to_master
 
         expect(Discourse.readonly_mode?).to eq(false)
-
         expect(postgresql_fallback_handler.master_down?).to eq(nil)
-
         expect(ActiveRecord::Base.connection_pool.connections.count).to eq(0)
 
-        expect(ActiveRecord::Base.connection)
-          .to be_an_instance_of(ActiveRecord::ConnectionAdapters::PostgreSQLAdapter)
+        ActiveRecord::Base.clear_all_connections!
+        connection = ActiveRecord::Base.connection
+
+        begin
+          expect(connection)
+            .to be_an_instance_of(ActiveRecord::ConnectionAdapters::PostgreSQLAdapter)
+        ensure
+          connection.close
+        end
       end
     end
 
@@ -111,6 +116,16 @@ describe ActiveRecord::ConnectionHandling do
           expect { ActiveRecord::Base.postgresql_fallback_connection(config) }
             .to raise_error(PG::ConnectionBad)
         end
+      end
+    end
+  end
+
+  describe '.verify_replica' do
+    describe 'when database is not in recovery' do
+      it 'should raise the right error' do
+        expect do
+          ActiveRecord::Base.send(:verify_replica, ActiveRecord::Base.connection)
+        end.to raise_error(RuntimeError, "Replica database server is not in recovery mode.")
       end
     end
   end
