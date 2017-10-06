@@ -301,6 +301,10 @@ class User < ActiveRecord::Base
     Digest::MD5.hexdigest(email.strip.downcase)
   end
 
+  def story_field
+    return self.custom_fields["user_field_#{(UserField.find_by name: 'Story').id}"]
+  end
+
   def email_hash
     User.email_hash(email)
   end
