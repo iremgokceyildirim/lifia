@@ -16,6 +16,7 @@ module TopicListResponder
       end
       format.json do
         render_serialized(list, TopicListSerializer)
+
       end
     end
   end

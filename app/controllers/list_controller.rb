@@ -2,6 +2,7 @@ require_dependency 'topic_list_responder'
 
 class ListController < ApplicationController
   include TopicListResponder
+  include UserListResponder
 
   skip_before_action :check_xhr
 
@@ -69,27 +70,38 @@ class ListController < ApplicationController
         end
       end
 
-      list = TopicQuery.new(user, list_opts).public_send("list_#{filter}")
+      if filter == :recommendednewcomers
+        list = UserQuery.new(user, list_opts).public_send("list_#{filter}")
+        #list.more_topics_url = construct_url_with(:next, list_opts)
+        #list.prev_topics_url = construct_url_with(:prev, list_opts)
+        @title = I18n.t("js.filters.#{filter.to_s}.title", count: 0)
+        respond_with_user_list(list)
+      else
+        list = TopicQuery.new(user, list_opts).public_send("list_#{filter}")
 
-      list.more_topics_url = construct_url_with(:next, list_opts)
-      list.prev_topics_url = construct_url_with(:prev, list_opts)
-      if Discourse.anonymous_filters.include?(filter)
-        @description = SiteSetting.site_description
-        @rss = filter
+        list.more_topics_url = construct_url_with(:next, list_opts)
+        list.prev_topics_url = construct_url_with(:prev, list_opts)
+        if Discourse.anonymous_filters.include?(filter)
+          @description = SiteSetting.site_description
+          @rss = filter
 
-        # Note the first is the default and we don't add a title
-        if (filter.to_s != current_homepage) && use_crawler_layout?
-          filter_title = I18n.t("js.filters.#{filter.to_s}.title", count: 0)
-          if list_opts[:category] && @category
-            @title = I18n.t('js.filters.with_category', filter: filter_title, category: @category.name)
-          else
-            @title = I18n.t('js.filters.with_topics', filter: filter_title)
+          # Note the first is the default and we don't add a title
+          if (filter.to_s != current_homepage) && use_crawler_layout?
+            filter_title = I18n.t("js.filters.#{filter.to_s}.title", count: 0)
+            if list_opts[:category] && @category
+              @title = I18n.t('js.filters.with_category', filter: filter_title, category: @category.name)
+            else
+              @title = I18n.t('js.filters.with_topics', filter: filter_title)
+            end
+            @title << " - #{SiteSetting.title}"
           end
-          @title << " - #{SiteSetting.title}"
         end
+
+        respond_with_list(list)
       end
 
-      respond_with_list(list)
+
+
     end
 
     define_method("category_#{filter}") do
@@ -168,7 +180,7 @@ class ListController < ApplicationController
 
   def latest_feed
     discourse_expires_in 1.minute
-
+    puts "girdi"
     @title = "#{SiteSetting.title} - #{I18n.t("rss_description.latest")}"
     @link = "#{Discourse.base_url}/latest"
     @atom_link = "#{Discourse.base_url}/latest.rss"
