@@ -6,6 +6,10 @@ export default function() {
 
   this.route('library', { path: '/library', resetNamespace: true });
 
+  this.route('recommended', { path: '/recommended', resetNamespace: true }, function() {
+      this.route('people');
+  });
+
   // Topic routes
   this.route('topic', { path: '/t/:slug/:id', resetNamespace: true }, function() {
     this.route('fromParams', { path: '/' });
@@ -31,7 +35,6 @@ export default function() {
     });
 
     // filters
-    this.route('recommendednewcomers', { path: '/recommended/newcomers'});
     Discourse.Site.currentProp('filters').forEach(filter => {
       this.route(filter, { path: '/' + filter });
       this.route(filter + 'ParentCategory', { path: '/c/:slug/l/' + filter });

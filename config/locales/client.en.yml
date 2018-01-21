@@ -1491,7 +1491,6 @@ en:
         read: "You haven't read any topics yet."
         posted: "You haven't posted in any topics yet."
         recommended: "There are no recommended topics yet."
-        recommendednewcomers: "There are no recommended newcomers yet."
         following: "There are no updates on the following people/topics yet. That's sad."
         justme: "You haven't posted in any topics yet."
         latest: "There are no latest topics. That's sad."
@@ -1505,7 +1504,6 @@ en:
           unread: '<p>Your unread topics appear here.</p><p>By default, topics are considered unread and will show unread counts <span class="badge new-posts badge-notification">1</span> if you:</p><ul><li>Created the topic</li><li>Replied to the topic</li><li>Read the topic for more than 4 minutes</li></ul><p>Or if you have explicitly set the topic to Tracked or Watched via the notification control at the bottom of each topic.</p><p>Visit your <a href="%{userPrefsUrl}">preferences</a> to change this.</p>'
       bottom:
         recommended: "There are no more recommended topics."
-        recommendednewcomers: "There are no more recommended newcomers."
         following: "There are no more updates on the following people/topics."
         justme: "There are no more posted topics by you."
         latest: "There are no more latest topics."
@@ -2310,21 +2308,22 @@ en:
 
     categories_list: "Categories List"
 
+    recommended:
+      title: "Recommended"
+      title_with_count:
+        one: "Recommended (1)"
+        other: "Recommended ({{count}})"
+      help: "all recommendations"
+      people:
+        title: "Recommended People"
+        title_with_count:
+          one: "Recommended People (1)"
+          other: "Recommended People ({{count}})"
+        help: "recommended people"
+
     filters:
       with_topics: "%{filter} topics"
       with_category: "%{filter} %{category} topics"
-      recommended:
-        title: "Recommended"
-        title_with_count:
-          one: "Recommended (1)"
-          other: "Recommended ({{count}})"
-        help: "recommended topics"
-      recommendednewcomers:
-        title: "Recommended Newcomers"
-        title_with_count:
-          one: "Recommended Newcomer (1)"
-          other: "Recommended Newcomers ({{count}})"
-        help: "recommended newcomers"
       following:
         title: "Following"
         title_with_count:
@@ -2581,7 +2580,6 @@ en:
           top: "There are no top topics."
           search: "There are no search results."
           recommended: "There are no recommended topics yet."
-          recommendednewcomers: "There are no recommended newcomers yet."
           following: "There are no updates on the following people/topics."
           justme: "You haven't posted in any topics yet."
         bottom:

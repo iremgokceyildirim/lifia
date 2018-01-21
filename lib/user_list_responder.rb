@@ -1,6 +1,6 @@
 module UserListResponder
   def respond_with_user_list(list)
-    #discourse_expires_in 1.minute
+    discourse_expires_in 1.minute
 
     #list.draft_key = Draft::NEW_TOPIC
     #list.draft_sequence = DraftSequence.current(current_user, Draft::NEW_TOPIC)
@@ -10,11 +10,10 @@ module UserListResponder
       format.html do
         @users = list.users
         #store_preloaded(list.preload_key, MultiJson.dump(UserListSerializer.new(list, scope: guardian)))
-        render 'list/list_users'
+        render 'recommended/people'
       end
       format.json do
         render_serialized(list, UserListSerializer)
-
       end
     end
   end

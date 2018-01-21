@@ -55,7 +55,8 @@ class Group < ActiveRecord::Base
     trust_level_1: 11,
     trust_level_2: 12,
     trust_level_3: 13,
-    trust_level_4: 14
+    trust_level_4: 14,
+    hotline: 15
   }
 
   AUTO_GROUP_IDS = Hash[*AUTO_GROUPS.to_a.flatten.reverse]

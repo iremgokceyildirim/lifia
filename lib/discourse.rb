@@ -91,7 +91,7 @@ module Discourse
   class Deprecation < StandardError; end
 
   def self.filters
-    @filters ||= [:latest, :unread, :new, :read, :posted, :bookmarks, :recommended, :recommendednewcomers, :following, :justme]
+    @filters ||= [:latest, :unread, :new, :read, :posted, :bookmarks]
   end
 
   def self.anonymous_filters

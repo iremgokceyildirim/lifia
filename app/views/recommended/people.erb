@@ -1,0 +1,23 @@
+<%- if include_crawler_content? %>
+    <div class='topic-list' itemscope itemtype='http://schema.org/ItemList'>
+      <meta itemprop='itemListOrder' content='http://schema.org/ItemListOrderDescending'>
+      <% if @users %>
+          <script>
+              alert(<%= @users.size %>);
+          </script>
+          <% @users.each_with_index do |u,i| %>
+              <div itemprop='itemListElement' itemscope itemtype='http://schema.org/ListItem'>
+                <span class='posts' title='<%= t 'users' %>'>(<%= u.name %>)</span>
+                <span class='posts' title='<%= t 'users' %>'>(<%= u.jaccard_index %>)</span>
+              </div>
+          <% end %>
+      <% else %>
+          <span>No recommended users!</span>
+      <% end %>
+    </div>
+
+<%- end %> <!-- include_crawler_content? -->
+
+<% if @title %>
+    <% content_for :title do %><%= @title %><% end %>
+<% end %>

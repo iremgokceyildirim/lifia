@@ -60,16 +60,14 @@ class UserQuery
     @guardian = Guardian.new(@user)
   end
 
-  # The recommended newcomers list
-  def list_recommendednewcomers
-    create_list(:list_recommendednewcomers, {}, recommendednewcomers_results)
+  def list_recommended
+    create_list(:recommended, {}, recommended_results)
   end
 
-  def recommendednewcomers_results(options = {})
+  def recommended_results(options = {})
     recommender = UserRecommenderByStory.new(@user)
     recommender.update_similarity
     result = recommender.recommended_users
-    puts "aydin" + result.size.to_s
     result
   end
 

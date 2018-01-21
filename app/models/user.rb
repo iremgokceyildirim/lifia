@@ -637,7 +637,7 @@ class User < ActiveRecord::Base
   end
 
   def story
-    story_topic = Topic.where(user_id: self.id, story: true)
+    story_topic = Topic.find_by(user_id: self.id, story: true)
     return story_topic
   end
 
@@ -1129,6 +1129,11 @@ class User < ActiveRecord::Base
     end
 
     true
+  end
+
+  def self.similarity_with(user_id)
+    user_s = UserNarrativeSimilarity.where(user1_id:self.id, user2_id:user_id.id).or(user2_id:self.id, user1_id:user_id.id)
+    user_s.index
   end
 
 end

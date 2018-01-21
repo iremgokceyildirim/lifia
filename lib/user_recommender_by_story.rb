@@ -9,10 +9,11 @@ class UserRecommenderByStory
   end
 
   def get_words_of_user_story user
-    if user.story_field.nil?
+    #if user.story_field.nil?
+    if user.story.nil?
       @words_of_user_story = []
     else
-      @words_of_user_story = user.story_field.gsub(/[a-zA-Z]{3,}/).map(&:downcase).uniq.sort
+      @words_of_user_story = user.story.first_post.raw.gsub(/[a-zA-Z]{3,}/).map(&:downcase).uniq.sort#user.story_field.gsub(/[a-zA-Z]{3,}/).map(&:downcase).uniq.sort
     end
 
   end
@@ -27,9 +28,13 @@ class UserRecommenderByStory
 
       intersection = (get_words_of_user_story(@current_user) & get_words_of_user_story(this_user)).size
       union = (get_words_of_user_story(@current_user) | get_words_of_user_story(this_user)).size
+      if union != 0
+        jaccard_index = intersection.to_f / union.to_f
+      else
+        jaccard_index = 0.0
+      end
 
-      this_user.jaccard_index = (intersection.to_f / union.to_f) rescue 0.0
-      puts this_user.jaccard_index
+      this_user.jaccard_index = jaccard_index
       this_user
     end.sort_by { |user| 1 - user.jaccard_index }
   end

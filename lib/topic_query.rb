@@ -168,17 +168,6 @@ class TopicQuery
     create_list(:recommended, {}, recommended_results(search:"community"))#search keyword for recommendation based on narrative matching
   end
 
-  # The recommended view of topics
-  def list_recommendednewcomers
-    create_list(:recommendednewcomers, {hideCategory:true}, recommended_newcomers_results)
-    #Jobs::UpdateUserNarrativeSimilarity.new.execute({})
-    #create_list(:recommendednewcomers, {hideCategory:true }, recommended_newcomers_results(search:"community")) do |topics|
-    #  topics.where('tu.last_visited_at IS NULL')
-    #end
-    #create_list(:recommendednewcomers, {hideCategory:true}, recommended_newcomers_results(search:"community"))#search keyword for recommendation based on narrative matching
-    #create_list(:recommendednewcomers, { unordered: true, hideCategory:true }, recommended_newcomers_results(search:"community"))
-  end
-
   # The following topics
   def list_following
     create_list(:following, {}, following_results(filter:['bookmarked','liked']))
@@ -412,68 +401,6 @@ class TopicQuery
 
     result
   end
-
-  def recommended_newcomers_results(options={})
-
-    result = default_results(options)
-    result = remove_muted_topics(result, @user) unless options && options[:state] == "muted".freeze
-    result = remove_muted_categories(result, @user, exclude: options[:category])
-    result = remove_muted_tags(result, @user, options)
-
-    # plugins can remove topics here:
-    self.class.results_filter_callbacks.each do |filter_callback|
-      result = filter_callback.call(:latest, result, @user, options)
-    end
-
-    result
-    # result = TopicQuery.unread_filter(
-    # default_results(options.reverse_merge(unordered: true)),
-    # @user&.id,
-    # staff: @user&.staff?)
-    #          .order('CASE WHEN topics.user_id = tu.user_id THEN 1 ELSE 2 END')
-    #
-    # self.class.results_filter_callbacks.each do |filter_callback|
-    #   result = filter_callback.call(:recommendednewcomers, result, @user, options)
-    # end
-    #
-    # suggested_ordering(result, options)
-
-
-            # result = default_results(options)
-            # result = remove_muted_topics(result, @user) unless options && options[:state] == "muted".freeze
-            # result = remove_muted_categories(result, @user, exclude: options[:category])
-            # result = remove_muted_tags(result, @user, options)
-            #
-            # self.class.results_filter_callbacks.each do |filter_callback|
-            #   result = filter_callback.call(:recommendednewcomers, result, @user, options)
-            # end
-            #
-            # result
-
-    # result = TopicQuery.unread_filter(
-    #   default_results(options.reverse_merge(unordered: true)),
-    #   @user&.id,
-    #   staff: @user&.staff?)
-    #            .order('CASE WHEN topics.user_id = tu.user_id THEN 1 ELSE 2 END')
-    #
-    # self.class.results_filter_callbacks.each do |filter_callback|
-    #   result = filter_callback.call(:recommendednewcomers, result, @user, options)
-    # end
-    #
-    # if !(last_bumped_at = $redis.get(unread_results_redis_key))
-    #   last_bumped_at = result.unscope(:limit, :order).order(:bumped_at).first&.bumped_at
-    #
-    #   $redis.setex(
-    #     unread_results_redis_key,
-    #     1.hour.to_i,
-    #     (last_bumped_at || Time.zone.now).to_s
-    #   )
-    # end
-    #
-    # result = result.where("topics.bumped_at >= ?", last_bumped_at) if last_bumped_at
-    # suggested_ordering(result, options)
-  end
-
 
   def following_results(options={})
     result = default_results(options)

@@ -1,5 +1,5 @@
 class LibraryController < ApplicationController
-  skip_before_filter :check_xhr, only: [:index]
+  skip_before_action :check_xhr, only: [:index]
 
 
   def index

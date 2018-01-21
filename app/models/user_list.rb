@@ -1,25 +1,23 @@
 class UserList
   include ActiveModel::Serialization
 
-  attr_accessor :more_users_url,
-                :prev_users_url,
-                :filter,
+  attr_accessor :filter,
                 :per_page,
-                :current_user,
-                :users
+                :current_user
 
   def initialize(filter, current_user, users, opts = nil)
     @filter = filter
     @current_user = current_user
-    @users = users
+    @users_input = users
     @opts = opts || {}
 
   end
 
   # Lazy initialization
   def users
-    @users ||= []
-    puts @users.size
+    @users = @users_input
+    @users
+
   end
 
   # def load_similar_users
@@ -36,13 +34,7 @@ class UserList
   #   end
   # end
 
-
   def preload_key
       "user_list_#{@filter}"
-  end
-
-
-  def attributes
-    { 'more_users_url' => page }
   end
 end
