@@ -790,7 +790,7 @@ en:
 
       last_posted: "Last Post"
       last_emailed: "Last Emailed"
-      last_seen: "Seen"
+      last_seen: "Last Seen"
       created: "Joined"
       log_out: "Log Out"
       location: "Location"
@@ -3317,10 +3317,10 @@ en:
           new: 'New Users'
           pending: 'Users Pending Review'
           newuser: 'Users at Trust Level 0 (New User)'
-          basic: 'Users at Trust Level 1 (Basic User)'
-          member: 'Users at Trust Level 2 (Member)'
-          regular: 'Users at Trust Level 3 (Regular)'
-          leader: 'Users at Trust Level 4 (Leader)'
+          hotline: 'Users at Trust Level 1 (Hotline User)'  #basic: 'Users at Trust Level 1 (Basic User)'
+          community_member: 'Users at Trust Level 2 (Community Member)' #member: 'Users at Trust Level 2 (Member)'
+          senior_community_member: 'Users at Trust Level 3 (Senior Community Member)' #regular: 'Users at Trust Level 3 (Regular)'
+          curating_community_member: 'Users at Trust Level 4 (Curating Community Member)' #leader: 'Users at Trust Level 4 (Leader)'
           staff: "Staff"
           admins: 'Admin Users'
           moderators: 'Moderators'

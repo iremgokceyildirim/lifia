@@ -866,6 +866,25 @@ trust:
     default: 30
     client: true
   tl1_requires_time_spent_mins: 10
+  tl1_can_view_hotline_category:
+    default: true
+    client: true
+  tl1_can_post_hotline_category:
+    default: true
+    client: true
+  tl1_can_view_all_categories:
+    default: false
+    client: true
+  tl1_can_post_all_categories:
+    default: false
+    client: true
+  tl1_can_use_web:
+    default: false
+    client: true
+  tl1_can_issue_invitation:
+    default: false
+    client: true
+
   tl2_requires_topics_entered: 20
   tl2_requires_read_posts: 100
   tl2_requires_time_spent_mins: 60
@@ -908,6 +927,26 @@ trust:
   tl3_links_no_follow:
     default: false
     client: true
+
+
+#  community_member_can_view_hotline_category:
+#    default: true
+#    client: true
+#  community_member_can_post_hotline_category:
+#    default: true
+#    client: true
+#  community_member_can_view_all_categories:
+#    default: false
+#    client: true
+# community_member_can_post_all_categories:
+#    default: false
+#    client: true
+#  community_member_can_use_web:
+#    default: false
+#    client: true
+#  community_member_can_issue_invitation:
+#    default: false
+#    client: true
 
 security:
   force_https:

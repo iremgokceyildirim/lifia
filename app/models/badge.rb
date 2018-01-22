@@ -4,10 +4,10 @@ class Badge < ActiveRecord::Base
   # NOTE: These badge ids are not in order! They are grouped logically.
   #       When picking an id, *search* for it.
 
-  BasicUser = 1
-  Member = 2
-  Regular = 3
-  Leader = 4
+  Hotline = 1 #BasicUser
+  CommunityMember = 2 #Member
+  SeniorCommunityMember = 3 #Regular
+  CuratingCommunityMember = 4 #Leader
 
   Welcome = 5
   NicePost = 6

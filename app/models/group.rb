@@ -55,8 +55,7 @@ class Group < ActiveRecord::Base
     trust_level_1: 11,
     trust_level_2: 12,
     trust_level_3: 13,
-    trust_level_4: 14,
-    hotline: 15
+    trust_level_4: 14
   }
 
   AUTO_GROUP_IDS = Hash[*AUTO_GROUPS.to_a.flatten.reverse]
@@ -263,7 +262,7 @@ class Group < ActiveRecord::Base
         "SELECT id FROM users WHERE NOT moderator"
       when :staff
         "SELECT id FROM users WHERE NOT admin AND NOT moderator"
-      when :trust_level_0, :trust_level_1, :trust_level_2, :trust_level_3, :trust_level_4
+      when :trust_level_0, :trust_level_1, :trust_level_2, :trust_level_3, :trust_level_4, :hotline
         "SELECT id FROM users WHERE trust_level < #{id - 10}"
       end
 
@@ -283,7 +282,7 @@ class Group < ActiveRecord::Base
         "SELECT id FROM users WHERE moderator"
       when :staff
         "SELECT id FROM users WHERE moderator OR admin"
-      when :trust_level_1, :trust_level_2, :trust_level_3, :trust_level_4
+      when :trust_level_1, :trust_level_2, :trust_level_3, :trust_level_4, :hotline
         "SELECT id FROM users WHERE trust_level >= #{id - 10}"
       when :trust_level_0
         "SELECT id FROM users"

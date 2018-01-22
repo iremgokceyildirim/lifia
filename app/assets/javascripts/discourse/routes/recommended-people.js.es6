@@ -1,7 +1,8 @@
 import { ajax } from 'discourse/lib/ajax';
 export default Discourse.Route.extend({
     model() {
-        return ajax("/recommended/people.json").then(result => result.user_list);
+        //return this.modelFor("user");
+        return ajax("/recommended/people.json").then(result => result);
     },
 
     actions: {

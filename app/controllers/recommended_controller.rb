@@ -9,9 +9,7 @@ class RecommendedController < ApplicationController
   before_action :ensure_logged_in
 
   def people
-    options = nil
     list_opts = build_recommended_list_options
-    list_opts.merge!(options) if options
     user = list_target_user
     list = UserQuery.new(user, list_opts).public_send("list_recommended")
     #list.more_users_url = construct_url_with(:next, list_opts)
@@ -24,6 +22,9 @@ class RecommendedController < ApplicationController
 
   def build_recommended_list_options
     options = {}
+    UserQuery.public_valid_options.each do |key|
+      options[key] = params[key]
+    end
 
     # hacky columns get special handling
     options[:slow_platform] = slow_platform?

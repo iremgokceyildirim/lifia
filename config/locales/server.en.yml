@@ -509,14 +509,14 @@ en:
   trust_levels:
     newuser:
       title: "new user"
-    basic:
-      title: "basic user"
-    member:
-      title: "member"
-    regular:
-      title: "regular"
-    leader:
-      title: "leader"
+    hotline: #basic
+      title: "hotline user" #basic user
+    community_member: #member
+      title: "community member"  #member
+    senior_community_member: #regular
+      title: "senior community member" #regular
+    curating_community_member: #leader
+      title: "curating community member" #leader
     change_failed_explanation: "You attempted to demote %{user_name} to '%{new_trust_level}'. However their trust level is already '%{current_trust_level}'. %{user_name} will remain at '%{current_trust_level}' - if you wish to demote user lock trust level first"
 
   post:
@@ -1238,6 +1238,12 @@ en:
     tl1_requires_topics_entered: "How many topics a new user must enter before promotion to trust level 1."
     tl1_requires_read_posts: "How many posts a new user must read before promotion to trust level 1."
     tl1_requires_time_spent_mins: "How many minutes a new user must read posts before promotion to trust level 1."
+    tl1_can_view_hotline_category: "Can a hotline user view in hotline category?"
+    tl1_can_post_hotline_category: "Can a hotline user post in hotline category?"
+    tl1_can_view_all_categories: "Can a hotline user view all categories?"
+    tl1_can_post_all_categories: "Can a hotline user post in all categories?"
+    tl1_can_use_web: "Can a hotline user use web?"
+    tl1_can_issue_invitation: "Can a hotline user issue an invitation?"
 
     tl2_requires_topics_entered: "How many topics a user must enter before promotion to trust level 2."
     tl2_requires_read_posts: "How many posts a user must read before promotion to trust level 2."

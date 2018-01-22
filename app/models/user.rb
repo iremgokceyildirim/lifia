@@ -638,7 +638,9 @@ class User < ActiveRecord::Base
 
   def story
     story_topic = Topic.find_by(user_id: self.id, story: true)
-    return story_topic
+    if story_topic
+      story_topic.first_post.raw
+    end
   end
 
   def posted_too_much_in_topic?(topic_id)

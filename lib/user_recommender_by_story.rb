@@ -1,19 +1,19 @@
 class UserRecommenderByStory
 
-  def initialize user
+  def initialize (user)
     @current_user = user
-    @users = User.where.not(id:@current_user.id)
+    @users = User.where.not(id:@current_user.id).joins(:primary_email).includes(:user_stat)
     @recommended_users = []
     @users_with_similarities = []
     @similarity_factor = 0.5
   end
 
-  def get_words_of_user_story user
+  def get_words_of_user_story (user)
     #if user.story_field.nil?
     if user.story.nil?
       @words_of_user_story = []
     else
-      @words_of_user_story = user.story.first_post.raw.gsub(/[a-zA-Z]{3,}/).map(&:downcase).uniq.sort#user.story_field.gsub(/[a-zA-Z]{3,}/).map(&:downcase).uniq.sort
+      @words_of_user_story = user.story.gsub(/[a-zA-Z]{3,}/).map(&:downcase).uniq.sort#user.story_field.gsub(/[a-zA-Z]{3,}/).map(&:downcase).uniq.sort
     end
 
   end
@@ -27,7 +27,7 @@ class UserRecommenderByStory
       end
 
       intersection = (get_words_of_user_story(@current_user) & get_words_of_user_story(this_user)).size
-      union = (get_words_of_user_story(@current_user) | get_words_of_user_story(this_user)).size
+      union = (get_words_of_user_story(@current_user) | get_words_of_user_story(this_user)).size #not sure about the later part, we may get the current user's story as basis?
       if union != 0
         jaccard_index = intersection.to_f / union.to_f
       else
@@ -56,9 +56,7 @@ class UserRecommenderByStory
   end
 
   def recommended_users
-    if @users_with_similarities.nil?
-      @users_with_similarities = get_users_with_similarity
-    end
+    update_similarity
     @recommended_users = @users_with_similarities.select { |u| u.jaccard_index >= @similarity_factor }
     @recommended_users
   end

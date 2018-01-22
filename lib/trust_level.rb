@@ -14,7 +14,7 @@ class TrustLevel
     end
 
     def levels
-      @levels ||= Enum.new(:newuser, :basic, :member, :regular, :leader, start: 0)
+      @levels ||= Enum.new(:newuser, :hotline, :community_member, :senior_community_member, :curating_community_member, start: 0) #:newuser, :basic, :member, :regular, :leader
     end
 
     def all

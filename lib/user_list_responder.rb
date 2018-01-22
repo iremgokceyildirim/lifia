@@ -13,7 +13,7 @@ module UserListResponder
         render 'recommended/people'
       end
       format.json do
-        render_serialized(list, UserListSerializer)
+        render_serialized(list.users, UserListSerializer)
       end
     end
   end
