@@ -331,10 +331,10 @@ class UsersController < ApplicationController
       return fail_with("login.reserved_username")
     end
 
-    if params[:phone_number]
+    if params[:phone_number] && params[:phone_number].length > 0
       phone_number_record = PhoneNumber.find_by_number(params[:phone_number])
       if phone_number_record.nil?
-        return fail_with("login.phone_number_not_found")
+        return fail_with("login.phone_number_not_match")
       elsif phone_number_record.verified?
         return fail_with("login.phone_number_already_taken")
       elsif !params[:verification_code] || params[:verification_code] != phone_number_record.verification_code

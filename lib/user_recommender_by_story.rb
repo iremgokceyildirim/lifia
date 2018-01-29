@@ -5,7 +5,7 @@ class UserRecommenderByStory
     @users = User.where.not(id:@current_user.id).joins(:primary_email).includes(:user_stat)
     @recommended_users = []
     @users_with_similarities = []
-    @similarity_factor = 0.5
+    @similarity_factor = SiteSetting.story_similarity_factor.to_f
   end
 
   def get_words_of_user_story (user)

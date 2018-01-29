@@ -91,6 +91,8 @@ const ApplicationRoute = Discourse.Route.extend(OpenComposer, {
 
     showLogin: unlessReadOnly('handleShowLogin', I18n.t("read_only_mode.login_disabled")),
 
+    showAddStory: unlessReadOnly('handleAddStory', I18n.t("read_only_mode.login_disabled")),
+
     showCreateAccount: unlessReadOnly('handleShowCreateAccount', I18n.t("read_only_mode.login_disabled")),
 
     showForgotPassword() {
@@ -173,6 +175,7 @@ const ApplicationRoute = Discourse.Route.extend(OpenComposer, {
   },
 
   handleShowLogin() {
+      alert("show login");
     if (this.siteSettings.enable_sso) {
       const returnPath = encodeURIComponent(window.location.pathname);
       window.location = Discourse.getURL('/session/sso?return_path=' + returnPath);
@@ -189,6 +192,13 @@ const ApplicationRoute = Discourse.Route.extend(OpenComposer, {
       this._autoLogin('createAccount', 'create-account');
     }
   },
+
+    handleAddStory() {
+      alert("Add Story Handler");
+        this._autoLogin('addStory', 'add-story');
+        //showModal('addStory');
+        //this.controllerFor('addStory').set('modalClass', 'add-story');
+    },
 
   _autoLogin(modal, modalClass, notAuto) {
     const methods = findAll(this.siteSettings,

@@ -49,7 +49,6 @@ export default Ember.Controller.extend(ModalFunctionality, PasswordValidation, U
       verificationCode: ''
     });
     this._createUserFields();
-    this._createMobilePhoneField();
   },
 
   submitDisabled: function() {
@@ -219,8 +218,7 @@ export default Ember.Controller.extend(ModalFunctionality, PasswordValidation, U
           });
       },
 
-
-      createAccount() {
+    createAccount() {
       const self = this,
           attrs = this.getProperties('accountName', 'accountEmail', 'accountPassword', 'accountUsername', 'verificationCode', 'accountPhoneNumber', 'accountPasswordConfirm', 'accountChallenge'),
           userFields = this.get('userFields');
@@ -242,7 +240,7 @@ export default Ember.Controller.extend(ModalFunctionality, PasswordValidation, U
           $hidden_login_form.find('input[name=username]').val(attrs.accountUsername);
           $hidden_login_form.find('input[name=password]').val(attrs.accountPassword);
           $hidden_login_form.find('input[name=redirect]').val(userPath('account-created'));
-          $hidden_login_form.submit();
+          //$hidden_login_form.submit();
         } else {
           self.flash(result.message || I18n.t('create_account.failed'), 'error');
           if (result.is_developer) {
@@ -257,11 +255,60 @@ export default Ember.Controller.extend(ModalFunctionality, PasswordValidation, U
           self.set('formSubmitted', false);
         }
         if (result.active && !Discourse.SiteSettings.must_approve_users) {
-          return window.location.reload();
+            return window.location.reload();
+        }
+        else{
+            alert("passive");
+            self.send("showAddStory");
         }
       }, function() {
         self.set('formSubmitted', false);
         return self.flash(I18n.t('create_account.failed'), 'error');
+      });
+    },
+
+    showPhoneVerification() {
+      const self = this,
+          attrs = this.getProperties('accountName', 'accountEmail', 'accountPassword', 'accountUsername', 'verificationCode', 'accountPhoneNumber', 'accountPasswordConfirm', 'accountChallenge'),
+          userFields = this.get('userFields');
+
+      // Add the userfields to the data
+      if (!Ember.isEmpty(userFields)) {
+          attrs.userFields = {};
+          userFields.forEach(function(f) {
+              attrs.userFields[f.get('field.id')] = f.get('value');
+          });
+      }
+
+      this.set('formSubmitted', true);
+      return Discourse.User.createAccount(attrs).then(function(result) {
+          self.set('isDeveloper', false);
+          if (result.success) {
+              // Trigger the browser's password manager using the hidden static login form:
+              const $hidden_login_form = $('#hidden-login-form');
+              $hidden_login_form.find('input[name=username]').val(attrs.accountUsername);
+              $hidden_login_form.find('input[name=password]').val(attrs.accountPassword);
+              $hidden_login_form.find('input[name=redirect]').val(userPath('account-created'));
+              $hidden_login_form.submit();
+          } else {
+              self.flash(result.message || I18n.t('create_account.failed'), 'error');
+              if (result.is_developer) {
+                  self.set('isDeveloper', true);
+              }
+              if (result.errors && result.errors.email && result.errors.email.length > 0 && result.values) {
+                  self.get('rejectedEmails').pushObject(result.values.email);
+              }
+              if (result.errors && result.errors.password && result.errors.password.length > 0) {
+                  self.get('rejectedPasswords').pushObject(attrs.accountPassword);
+              }
+              self.set('formSubmitted', false);
+          }
+          if (result.active && !Discourse.SiteSettings.must_approve_users) {
+              return window.location.reload();
+          }
+      }, function() {
+          self.set('formSubmitted', false);
+          return self.flash(I18n.t('create_account.failed'), 'error');
       });
     }
   }

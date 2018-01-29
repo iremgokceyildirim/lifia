@@ -1737,7 +1737,7 @@ en:
     new_registrations_disabled: "New account registrations are not allowed at this time."
     password_too_long: "Passwords are limited to 200 characters."
     verification_code_not_match: "Verification code does not match!"
-    phone_number_not_found: "This phone number does not match with the one that the verification code was just sent to!" #Phone number not found!"
+    phone_number_not_match: "This phone number does not match with the one that the verification code was just sent to!" #Phone number not found!"
     phone_number_already_taken: "This phone number is already registered to another user!"
     email_too_long: "The email you provided is too long. Mailbox names must be no more than 254 characters, and domain names must be no more than 253 characters."
     reserved_username: "That username is not allowed."

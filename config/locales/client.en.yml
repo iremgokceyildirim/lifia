@@ -1077,9 +1077,13 @@ en:
     create_account:
       disclaimer: "By registering, you agree to the <a href='{{privacy_link}}'>privacy policy</a> and <a href='{{tos_link}}'>terms of service</a>."
       title: "Create New Account"
+      next: "Next"
       failed: "Something went wrong, perhaps this email is already registered, try the forgot password link"
       send_verification_code_to_mobile_phone: "Send Verification Code"
       verification_sent: "Verification code is sent!"
+
+    add_story:
+      title: "Add Your Story"
 
     forgot_password:
       title: "Password Reset"

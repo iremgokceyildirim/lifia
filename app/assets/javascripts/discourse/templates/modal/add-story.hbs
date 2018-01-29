@@ -1,0 +1,41 @@
+{{#add-story email=accountEmail disabled=submitDisabled action="addStory"}}
+  {{#unless complete}}
+    {{#d-modal-body title="add_story.title"}}
+      {{#unless hasAuthOptions}}
+        {{login-buttons action="externalLogin"}}
+      {{/unless}}
+
+        <div>
+          <form>
+          <table>
+
+          <tr class="input">
+                <td class="label"><label for='new-account-email'>Story</label></td>
+                <td>
+                 <textarea rows="4" cols="50">
+                    Story coming here...
+                </textarea>
+                </td>
+          </tr>
+          <tr class="instructions">
+            <td></td>
+            <td><label>{{i18n 'user.email.instructions'}}</label></td>
+          </tr>
+          </table>
+
+          </form>
+        </div>
+        <br>
+    {{/d-modal-body}}
+
+  <div class="modal-footer">
+    <button class='btn btn-large btn-primary' disabled={{submitDisabled}} {{action "createAccount"}}>Submit</button>
+    {{#conditional-loading-spinner condition=formSubmitted size="small"}}
+      <button class="btn btn-large" id="login-link" {{action "showLogin"}}>
+        Skip
+      </button>
+    {{/conditional-loading-spinner}}
+
+  </div>
+  {{/unless}}
+{{/add-story}}
