@@ -12,9 +12,12 @@ import PhoneNumberTypeValidation from "discourse/mixins/phone-number-validation"
 import VerificationCodeValidation from "discourse/mixins/phone-number-validation";
 import PhoneNumberExistenceValidation from "discourse/mixins/phone-number-validation";
 import { userPath } from 'discourse/lib/url';
+import Composer from 'discourse/models/composer';
+import Category from 'discourse/models/category';
 
 export default Ember.Controller.extend(ModalFunctionality, PasswordValidation, UsernameValidation, NameValidation, UserFieldsValidation, PhoneNumberTypeValidation, PhoneNumberExistenceValidation, VerificationCodeValidation,{
   login: Ember.inject.controller(),
+  composer: Ember.inject.controller(),
 
   complete: false,
   accountPasswordConfirm: 0,
@@ -240,6 +243,7 @@ export default Ember.Controller.extend(ModalFunctionality, PasswordValidation, U
           $hidden_login_form.find('input[name=username]').val(attrs.accountUsername);
           $hidden_login_form.find('input[name=password]').val(attrs.accountPassword);
           $hidden_login_form.find('input[name=redirect]').val(userPath('account-created'));
+          self.send("showAddStory");
           //$hidden_login_form.submit();
         } else {
           self.flash(result.message || I18n.t('create_account.failed'), 'error');
@@ -256,10 +260,6 @@ export default Ember.Controller.extend(ModalFunctionality, PasswordValidation, U
         }
         if (result.active && !Discourse.SiteSettings.must_approve_users) {
             return window.location.reload();
-        }
-        else{
-            alert("passive");
-            self.send("showAddStory");
         }
       }, function() {
         self.set('formSubmitted', false);

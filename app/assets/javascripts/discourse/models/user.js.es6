@@ -16,6 +16,7 @@ import { emojiUnescape } from 'discourse/lib/text';
 import PreloadStore from 'preload-store';
 import { defaultHomepage } from 'discourse/lib/utilities';
 import { userPath } from 'discourse/lib/url';
+import Category from "discourse/models/category";
 
 const User = RestModel.extend({
 
@@ -587,10 +588,27 @@ User.reopenClass(Singleton, {
         challenge: attrs.accountChallenge,
         user_fields: attrs.userFields,
         verification_code: attrs.verificationCode
+        //trust_level: 2
       },
       type: 'POST'
     });
-  }
+  },
+
+    addStory(attrs) {
+        //return ajax(userPath(`${attrs.accountUsername}/story`), {
+        //alert(Category.findBySlug("story").id);
+        //return ajax(userPath(`${attrs.accountUsername}/story`), {
+        return ajax("/posts/create_story", {
+            data: {
+                title: attrs.accountUsername + "'s Story",
+                raw: attrs.accountStory,
+                category: 11,
+                username: attrs.accountUsername,
+                story: true
+            },
+            type: 'POST'
+        });
+    }
 });
 
 export default User;

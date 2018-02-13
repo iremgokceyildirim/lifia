@@ -5,22 +5,21 @@
         {{login-buttons action="externalLogin"}}
       {{/unless}}
 
-        <div>
+        <div class="create-account">
           <form>
           <table>
-
-          <tr class="input">
-                <td class="label"><label for='new-account-email'>Story</label></td>
+            <tr class="input">
+                <td class="label"><label for='new-account-story'>{{i18n 'user.story.title'}}</label></td>
                 <td>
-                 <textarea rows="4" cols="50">
-                    Story coming here...
-                </textarea>
+                    {{textarea value=accountStory id="new-account-story" name="story" autofocus="autofocus"}}
+                &nbsp;{{input-tip validation=storyValidation}}
                 </td>
-          </tr>
-          <tr class="instructions">
-            <td></td>
-            <td><label>{{i18n 'user.email.instructions'}}</label></td>
-          </tr>
+            </tr>
+            <tr class="instructions">
+              <td></td>
+              <td><label>{{i18n 'user.story.instructions'}}</label></td>
+            </tr>
+
           </table>
 
           </form>
@@ -29,11 +28,11 @@
     {{/d-modal-body}}
 
   <div class="modal-footer">
-    <button class='btn btn-large btn-primary' disabled={{submitDisabled}} {{action "createAccount"}}>Submit</button>
+    <button class='btn btn-large btn-primary' disabled={{submitDisabled}} {{action "addStory"}}>Submit</button>
     {{#conditional-loading-spinner condition=formSubmitted size="small"}}
-      <button class="btn btn-large" id="login-link" {{action "showLogin"}}>
-        Skip
-      </button>
+      <button class="btn btn-large" id="login-link" {{action "skip"}}>
+      {{i18n 'skip'}}
+    </button>
     {{/conditional-loading-spinner}}
 
   </div>

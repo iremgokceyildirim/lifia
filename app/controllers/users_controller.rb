@@ -4,6 +4,8 @@ require_dependency 'rate_limiter'
 require_dependency 'wizard'
 require_dependency 'wizard/builder'
 require_dependency 'admin_confirmation'
+require_dependency 'new_post_manager'
+require_dependency 'new_post_result_serializer'
 
 class UsersController < ApplicationController
 
@@ -30,7 +32,8 @@ class UsersController < ApplicationController
                                                             :password_reset,
                                                             :confirm_email_token,
                                                             :admin_login,
-                                                            :confirm_admin]
+                                                            :confirm_admin,
+                                                            :add_story]
 
   def index
   end

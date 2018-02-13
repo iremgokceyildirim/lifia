@@ -1585,6 +1585,9 @@ en:
     company_full_name: "Company Name (full)"
     company_domain: "Company Domain"
 
+    story_required: "Story is required in sign up"
+    story_similarity_factor: "How much similarity we want while listing the recommended users, between [0,1]"
+
     errors:
       invalid_email: "Invalid email address."
       invalid_username: "There's no user with that username."

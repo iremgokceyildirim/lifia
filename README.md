@@ -1,4 +1,7 @@
-## Setting Up the Environment for Narrative Matching Social Platform using Discourse
+## Lifia.me Social Support
+The goal in this project is to design and develop a trusted, private online space where social support is available for HIV/AIDS patients. We are using a narrative matching algorithm to pair users based on their shared stories on the system. This way, it is aimed to provide fast and effective communication for users to access the right support they are looking for.
+
+### Setting Up the Environment
 The necessary tools:
 
 - RubyMine
@@ -7,7 +10,7 @@ The necessary tools:
 - Set the database: postgresql-9.3
 - Puma and Nginx
 
-
+This project is derived from:
 <a href="http://www.discourse.org/">![Logo](images/discourse.png)</a>
 
 ##DISCOURSE

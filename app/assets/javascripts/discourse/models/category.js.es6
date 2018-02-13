@@ -222,7 +222,7 @@ Category.reopenClass({
     return Category.list().find(c => Category.slugFor(c) === slug);
   },
 
-  findById(id) {
+                  findById(id) {
     if (!id) { return; }
     return Category.idMap()[id];
   },

@@ -433,6 +433,7 @@ Discourse::Application.routes.draw do
   get "uploads/:site/:id/:sha" => "uploads#show", constraints: { site: /\w+/, id: /\d+/, sha: /\h{16}/ }
 
   get "posts" => "posts#latest", id: "latest_posts"
+  post "posts/create_story" => "posts#create_story"
   get "private-posts" => "posts#latest", id: "private_posts"
   get "posts/by_number/:topic_id/:post_number" => "posts#by_number"
   get "posts/:id/reply-history" => "posts#reply_history"

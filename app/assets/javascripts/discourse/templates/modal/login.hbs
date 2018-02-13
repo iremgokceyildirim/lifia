@@ -26,6 +26,16 @@
               </td>
             </tr>
             <tr>
+              <td>
+                  <label for='login-account-invitation-code'>{{i18n 'login.invitation_code'}}&nbsp;</label>
+              </td>
+              <td>
+                  {{text-field value=loginInvitationCode placeholderKey="login.invitation_code_placeholder" id="login-account-invitation-code" autocorrect="off" autocapitalize="off"}}
+              </td>
+              <td>
+              </td>
+            </tr>
+            <tr>
               <td></td>
               <td><div class="caps-lock-warning {{unless capsLockOn 'invisible'}}">{{d-icon "exclamation-triangle"}} {{i18n 'login.caps_lock_warning'}}</div></td>
               <td></td>
@@ -51,7 +61,6 @@
         <button class="btn btn-large" id="new-account-link" {{action "createAccount"}}>
           {{i18n 'create_account.title'}}
         </button>
-        irem
       {{/if}}
     {{/if}}
 

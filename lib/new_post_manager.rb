@@ -76,7 +76,7 @@ class NewPostManager
 
     return false if exempt_user?(user)
 
-    (user.trust_level <= TrustLevel.levels[:basic] && user.post_count < SiteSetting.approve_post_count) ||
+    (user.trust_level <= TrustLevel.levels[:hotline] && user.post_count < SiteSetting.approve_post_count) ||
     (user.trust_level < SiteSetting.approve_unless_trust_level.to_i) ||
     (manager.args[:title].present? && user.trust_level < SiteSetting.approve_new_topics_unless_trust_level.to_i) ||
     is_fast_typer?(manager) ||
@@ -85,37 +85,39 @@ class NewPostManager
   end
 
   def self.default_handler(manager)
-    if post_needs_approval?(manager)
-      validator = Validators::PostValidator.new
-      post = Post.new(raw: manager.args[:raw])
-      post.user = manager.user
-      validator.validate(post)
-      if post.errors[:raw].present?
-        result = NewPostResult.new(:created_post, false)
-        result.errors[:base] << post.errors[:raw]
-        return result
-      end
-
-      # Can the user create the post in the first place?
-      if manager.args[:topic_id]
-        topic = Topic.unscoped.where(id: manager.args[:topic_id]).first
-
-        unless manager.user.guardian.can_create_post_on_topic?(topic)
+    if manager.args[:story] && manager.args[:story] == false
+      if post_needs_approval?(manager)
+        validator = Validators::PostValidator.new
+        post = Post.new(raw: manager.args[:raw])
+        post.user = manager.user
+        validator.validate(post)
+        if post.errors[:raw].present?
           result = NewPostResult.new(:created_post, false)
-          result.errors[:base] << I18n.t(:topic_not_found)
+          result.errors[:base] << post.errors[:raw]
           return result
         end
+
+        # Can the user create the post in the first place?
+        if manager.args[:topic_id]
+          topic = Topic.unscoped.where(id: manager.args[:topic_id]).first
+
+          unless manager.user.guardian.can_create_post_on_topic?(topic)
+            result = NewPostResult.new(:created_post, false)
+            result.errors[:base] << I18n.t(:topic_not_found)
+            return result
+          end
+        end
+
+        result = manager.enqueue('default')
+
+        if is_fast_typer?(manager)
+          UserBlocker.block(manager.user, Discourse.system_user, keep_posts: true, reason: I18n.t("user.new_user_typed_too_fast"))
+        elsif matches_auto_block_regex?(manager)
+          UserBlocker.block(manager.user, Discourse.system_user, keep_posts: true, reason: I18n.t("user.content_matches_auto_block_regex"))
+        end
+
+        result
       end
-
-      result = manager.enqueue('default')
-
-      if is_fast_typer?(manager)
-        UserBlocker.block(manager.user, Discourse.system_user, keep_posts: true, reason: I18n.t("user.new_user_typed_too_fast"))
-      elsif matches_auto_block_regex?(manager)
-        UserBlocker.block(manager.user, Discourse.system_user, keep_posts: true, reason: I18n.t("user.content_matches_auto_block_regex"))
-      end
-
-      result
     end
   end
 

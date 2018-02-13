@@ -223,6 +223,7 @@ en:
     sign_up: "Sign Up"
     hotline_sign_up: "Hotline"
     log_in: "Log In"
+    skip: "Skip"
     age: "Age"
     joined: "Joined"
     admin_title: "Admin"
@@ -779,6 +780,15 @@ en:
         checking: "Checking username availability..."
         prefilled: "Email matches this registered username"
 
+      story:
+        title: "Story"
+        instructions: "You can add your story here (optional)"
+        instructions_required: "Share your story here"
+        short_instructions: "People can read your story"
+        too_short: "Your story is too short"
+        too_long: "Your story is too long"
+        ok: "We will add this story to your profile, you can change it any time."
+
       locale:
         title: "Interface language"
         instructions: "User interface language. It will change when you refresh the page."
@@ -901,8 +911,6 @@ en:
         same_as_email: "Your password is the same as your email."
         ok: "Your password looks good."
         instructions: "at least %{count} characters"
-
-      story: "Story"
 
       phone_number:
         title: "Mobile phone (Optional)"
@@ -1084,6 +1092,8 @@ en:
 
     add_story:
       title: "Add Your Story"
+      next: "Next"
+      failed: "Something went wrong, perhaps you already added your story, try to login"
 
     forgot_password:
       title: "Password Reset"
@@ -1104,11 +1114,14 @@ en:
       title: "Log In"
       username: "User"
       password: "Password"
+      invitation_code: "(OR) Invitation Code"
+      invitation_code_placeholder: "e.g. 12345"
       email_placeholder: "email or username"
       caps_lock_warning: "Caps Lock is on"
       error: "Unknown error"
       rate_limit: "Please wait before trying to log in again."
       blank_username_or_password: "Please enter your email or username, and password."
+      blank_username_or_password_or_invitation_code: "Please enter your email or username, and password, or enter an invitation code."
       reset_password: 'Reset Password'
       logging_in: "Signing In..."
       or: "Or"
@@ -3571,6 +3584,7 @@ en:
           tags: "Tags"
           search: "Search"
           groups: "Groups"
+          story: 'Stories'
 
       badges:
         title: Badges

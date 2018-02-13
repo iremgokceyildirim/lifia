@@ -175,7 +175,7 @@ const ApplicationRoute = Discourse.Route.extend(OpenComposer, {
   },
 
   handleShowLogin() {
-      alert("show login");
+      //alert("show login");
     if (this.siteSettings.enable_sso) {
       const returnPath = encodeURIComponent(window.location.pathname);
       window.location = Discourse.getURL('/session/sso?return_path=' + returnPath);
@@ -194,10 +194,10 @@ const ApplicationRoute = Discourse.Route.extend(OpenComposer, {
   },
 
     handleAddStory() {
-      alert("Add Story Handler");
-        this._autoLogin('addStory', 'add-story');
-        //showModal('addStory');
-        //this.controllerFor('addStory').set('modalClass', 'add-story');
+      //alert("Add Story Handler");
+      //this._autoLogin('addStory', 'add-story');
+      showModal('addStory');
+      this.controllerFor('modal').set('modalClass', 'add-story');
     },
 
   _autoLogin(modal, modalClass, notAuto) {

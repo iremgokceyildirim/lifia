@@ -928,6 +928,10 @@ trust:
     default: false
     client: true
 
+story:
+  story_required:
+    client: true
+    default: false
   story_similarity_factor:
     default: 0.5
     min: 0

@@ -59,73 +59,77 @@ export default Ember.Controller.extend(ModalFunctionality, {
       const self = this;
       if (this.get('loginDisabled')) { return; }
 
-      if(Ember.isEmpty(this.get('loginName')) || Ember.isEmpty(this.get('loginPassword'))){
-        self.flash(I18n.t('login.blank_username_or_password'), 'error');
-        return;
+      if(Ember.isEmpty(this.get('loginInvitationCode'))){
+          if(Ember.isEmpty(this.get('loginName')) || Ember.isEmpty(this.get('loginPassword'))){
+              self.flash(I18n.t('login.blank_username_or_password_or_invitation_code'), 'error');
+              return;
+          }
       }
 
-      this.set('loggingIn', true);
+      if(!Ember.isEmpty(this.get('loginName')) && !Ember.isEmpty(this.get('loginPassword'))){
+          this.set('loggingIn', true);
 
-      ajax("/session", {
-        data: { login: this.get('loginName'), password: this.get('loginPassword') },
-        type: 'POST'
-      }).then(function (result) {
-        // Successful login
-        if (result.error) {
-          self.set('loggingIn', false);
-          if (result.reason === 'not_activated') {
-            self.send('showNotActivated', {
-              username: self.get('loginName'),
-              sentTo: escape(result.sent_to_email),
-              currentEmail: escape(result.current_email)
-            });
-          } else if (result.reason === 'suspended' ) {
-            self.send("closeModal");
-            bootbox.alert(result.error);
-          } else {
-            self.flash(result.error, 'error');
-          }
-        } else {
-          self.set('loggedIn', true);
-          // Trigger the browser's password manager using the hidden static login form:
-          const $hidden_login_form = $('#hidden-login-form');
-          const destinationUrl = $.cookie('destination_url');
-          const ssoDestinationUrl = $.cookie('sso_destination_url');
-          $hidden_login_form.find('input[name=username]').val(self.get('loginName'));
-          $hidden_login_form.find('input[name=password]').val(self.get('loginPassword'));
+          ajax("/session", {
+              data: { login: this.get('loginName'), password: this.get('loginPassword') },
+              type: 'POST'
+          }).then(function (result) {
+              // Successful login
+              if (result.error) {
+                  self.set('loggingIn', false);
+                  if (result.reason === 'not_activated') {
+                      self.send('showNotActivated', {
+                          username: self.get('loginName'),
+                          sentTo: escape(result.sent_to_email),
+                          currentEmail: escape(result.current_email)
+                      });
+                  } else if (result.reason === 'suspended' ) {
+                      self.send("closeModal");
+                      bootbox.alert(result.error);
+                  } else {
+                      self.flash(result.error, 'error');
+                  }
+              } else {
+                  self.set('loggedIn', true);
+                  // Trigger the browser's password manager using the hidden static login form:
+                  const $hidden_login_form = $('#hidden-login-form');
+                  const destinationUrl = $.cookie('destination_url');
+                  const ssoDestinationUrl = $.cookie('sso_destination_url');
+                  $hidden_login_form.find('input[name=username]').val(self.get('loginName'));
+                  $hidden_login_form.find('input[name=password]').val(self.get('loginPassword'));
 
-          if (ssoDestinationUrl) {
-            $.cookie('sso_destination_url', null);
-            window.location.assign(ssoDestinationUrl);
-            return;
-          } else if (destinationUrl) {
-            // redirect client to the original URL
-            $.cookie('destination_url', null);
-            $hidden_login_form.find('input[name=redirect]').val(destinationUrl);
-          } else {
-            $hidden_login_form.find('input[name=redirect]').val(window.location.href);
-          }
+                  if (ssoDestinationUrl) {
+                      $.cookie('sso_destination_url', null);
+                      window.location.assign(ssoDestinationUrl);
+                      return;
+                  } else if (destinationUrl) {
+                      // redirect client to the original URL
+                      $.cookie('destination_url', null);
+                      $hidden_login_form.find('input[name=redirect]').val(destinationUrl);
+                  } else {
+                      $hidden_login_form.find('input[name=redirect]').val(window.location.href);
+                  }
 
-          if (navigator.userAgent.match(/(iPad|iPhone|iPod)/g) && navigator.userAgent.match(/Safari/g)) {
-            // In case of Safari on iOS do not submit hidden login form
-            window.location.href = $hidden_login_form.find('input[name=redirect]').val();
-          } else {
-            $hidden_login_form.submit();
-          }
-          return;
-        }
+                  if (navigator.userAgent.match(/(iPad|iPhone|iPod)/g) && navigator.userAgent.match(/Safari/g)) {
+                      // In case of Safari on iOS do not submit hidden login form
+                      window.location.href = $hidden_login_form.find('input[name=redirect]').val();
+                  } else {
+                      $hidden_login_form.submit();
+                  }
+                  return;
+              }
 
-      }, function(e) {
-        // Failed to login
-        if (e.jqXHR && e.jqXHR.status === 429) {
-          self.flash(I18n.t('login.rate_limit'), 'error');
-        } else {
-          self.flash(I18n.t('login.error'), 'error');
-        }
-        self.set('loggingIn', false);
-      });
+          }, function(e) {
+              // Failed to login
+              if (e.jqXHR && e.jqXHR.status === 429) {
+                  self.flash(I18n.t('login.rate_limit'), 'error');
+              } else {
+                  self.flash(I18n.t('login.error'), 'error');
+              }
+              self.set('loggingIn', false);
+          });
 
-      return false;
+          return false;
+      }
     },
 
     externalLogin: function(loginMethod){

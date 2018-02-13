@@ -8,9 +8,12 @@ require_dependency 'new_post_result_serializer'
 class PostsController < ApplicationController
 
   # Need to be logged in for all actions here
-  before_action :ensure_logged_in, except: [:show, :replies, :by_number, :short_link, :reply_history, :revisions, :latest_revision, :expand_embed, :markdown_id, :markdown_num, :cooked, :latest, :user_posts_feed]
+  before_action :ensure_logged_in, except: [:show, :replies, :by_number, :short_link, :reply_history, :revisions, :latest_revision, :expand_embed, :markdown_id, :markdown_num, :cooked, :latest, :user_posts_feed, :create_story]
 
-  skip_before_action :preload_json, :check_xhr, only: [:markdown_id, :markdown_num, :short_link, :latest, :user_posts_feed]
+  skip_before_action :preload_json, :check_xhr, only: [:markdown_id, :markdown_num, :short_link, :latest, :user_posts_feed, :create_story]
+
+  skip_before_action :verify_authenticity_token, only: [:create_story]
+  skip_before_action :redirect_to_login_if_required, only: [:create_story]
 
   def markdown_id
     markdown Post.find(params[:id].to_i)
@@ -136,6 +139,36 @@ class PostsController < ApplicationController
 
     @manager_params = create_params
     @manager_params[:first_post_checks] = !is_api?
+
+    manager = NewPostManager.new(current_user, @manager_params)
+
+    if is_api?
+      memoized_payload = DistributedMemoizer.memoize(signature_for(@manager_params), 120) do
+        result = manager.perform
+        MultiJson.dump(serialize_data(result, NewPostResultSerializer, root: false))
+      end
+
+      parsed_payload = JSON.parse(memoized_payload)
+      backwards_compatible_json(parsed_payload, parsed_payload['success'])
+    else
+      result = manager.perform
+      json = serialize_data(result, NewPostResultSerializer, root: false)
+      backwards_compatible_json(json, result.success?)
+    end
+  end
+
+  def create_story
+    params.permit(:title)
+    params.permit(:username)
+    params.permit(:raw)
+    params.permit(:category)
+    params.permit(:story)
+
+    current_user = User.where(username: params[:username]).take
+
+    @manager_params = create_params
+    @manager_params[:first_post_checks] = !is_api?
+    @manager_params[:story] = true
 
     manager = NewPostManager.new(current_user, @manager_params)
 
@@ -593,14 +626,14 @@ class PostsController < ApplicationController
     end
 
     # Staff are allowed to pass `is_warning`
-    if current_user.staff?
+    if current_user && current_user.staff?
       params.permit(:is_warning)
       result[:is_warning] = (params[:is_warning] == "true")
     else
       result[:is_warning] = false
     end
 
-    if current_user.staff? && SiteSetting.enable_whispers? && params[:whisper] == "true"
+    if current_user && current_user.staff? && SiteSetting.enable_whispers? && params[:whisper] == "true"
       result[:post_type] = Post.types[:whisper]
     end
 
