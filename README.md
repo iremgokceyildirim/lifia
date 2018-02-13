@@ -11,6 +11,7 @@ The necessary tools:
 - Puma and Nginx
 
 This project is derived from:
+
 <a href="http://www.discourse.org/">![Logo](images/discourse.png)</a>
 
 ##DISCOURSE
