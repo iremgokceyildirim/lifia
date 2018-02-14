@@ -84,7 +84,7 @@
             </td>
           </tr>
 
-          <tr style="border-top: 1px solid #e9e9e9;" class="input">
+          <tr class="input">
             <td class="label"><label for='new-account-phone-number'>{{i18n 'user.phone_number.title'}}</label></td>
             <td>
             {{input value=accountPhoneNumber id="new-account-phone-number" name="phone_number"  maxlength=maxPhoneNumberLength autocomplete="off" }}
@@ -116,7 +116,17 @@
               </td>
               </tr>
             {{/if}}
-
+              <tr class="input">
+                  <td>
+                      <label for='new-account-invitation-code'>{{i18n 'create_account.invitation_code.title'}}&nbsp;</label>
+                  </td>
+                  <td>
+                      {{input value=invitationCode placeholderKey="create_account.invitation_code.placeholder" maxlength=invitationCodeLength id="new-account-invitation-code" autocorrect="off" autocapitalize="off"}}
+                      {{input-tip validation=invitationCodeValidation id="invitation-code-validation"}}
+                  </td>
+                  <td>
+                  </td>
+              </tr>
 
           </table>
 

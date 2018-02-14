@@ -1,9 +1,9 @@
 class CreateInvitationCodes < ActiveRecord::Migration[5.1]
   def up
     create_table :invitation_codes do |t|
-      t.integer :user_id, null: false
-      t.integer :sent_user_id, null: true
-      t.string :code, limit: 5, null: false
+      t.integer :owner_user_id, null: false
+      t.integer :sent_user_id, default: nil, null: true
+      t.string :code, limit: 6, null: false
       t.boolean :isSent, default: false, null: false
       t.boolean :isUsed, default: false, null: false
       t.datetime :sent_at, default: DateTime.now, null: false

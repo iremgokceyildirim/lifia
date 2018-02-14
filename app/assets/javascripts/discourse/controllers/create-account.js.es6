@@ -11,11 +11,12 @@ import UserFieldsValidation from "discourse/mixins/user-fields-validation";
 import PhoneNumberTypeValidation from "discourse/mixins/phone-number-validation";
 import VerificationCodeValidation from "discourse/mixins/phone-number-validation";
 import PhoneNumberExistenceValidation from "discourse/mixins/phone-number-validation";
+import InvitationCodeValidation from "discourse/mixins/invitation-code-validation";
 import { userPath } from 'discourse/lib/url';
 import Composer from 'discourse/models/composer';
 import Category from 'discourse/models/category';
 
-export default Ember.Controller.extend(ModalFunctionality, PasswordValidation, UsernameValidation, NameValidation, UserFieldsValidation, PhoneNumberTypeValidation, PhoneNumberExistenceValidation, VerificationCodeValidation,{
+export default Ember.Controller.extend(ModalFunctionality, PasswordValidation, UsernameValidation, NameValidation, UserFieldsValidation, PhoneNumberTypeValidation, PhoneNumberExistenceValidation, VerificationCodeValidation, InvitationCodeValidation,{
   login: Ember.inject.controller(),
   composer: Ember.inject.controller(),
 
@@ -28,6 +29,7 @@ export default Ember.Controller.extend(ModalFunctionality, PasswordValidation, U
   userFields: null,
   accountPhoneNumber: '',
   verificationCode: '',
+  invitationCode: '',
   isDeveloper: false,
 
   hasAuthOptions: Em.computed.notEmpty('authOptions'),
@@ -49,7 +51,8 @@ export default Ember.Controller.extend(ModalFunctionality, PasswordValidation, U
       rejectedPasswords: [],
       prefilledUsername: null,
       isDeveloper: false,
-      verificationCode: ''
+      verificationCode: '',
+      invitationCode: ''
     });
     this._createUserFields();
   },
@@ -62,10 +65,11 @@ export default Ember.Controller.extend(ModalFunctionality, PasswordValidation, U
     if (this.get('usernameValidation.failed')) return true;
     if (this.get('passwordValidation.failed')) return true;
     if (this.get('phoneNumberExistenceValidation.failed')) return true;
+    if (this.get('invitationCodeValidation.failed')) return true;
     if (this.get('userFieldsValidation.failed')) return true;
 
     return false;
-  }.property('passwordRequired', 'nameValidation.failed', 'emailValidation.failed', 'usernameValidation.failed', 'passwordValidation.failed', 'phoneNumberExistenceValidation.failed', 'userFieldsValidation.failed', 'formSubmitted'),
+  }.property('passwordRequired', 'nameValidation.failed', 'emailValidation.failed', 'usernameValidation.failed', 'passwordValidation.failed', 'phoneNumberExistenceValidation.failed', 'invitationCodeValidation.failed', 'userFieldsValidation.failed', 'formSubmitted'),
 
 
     sendVerificationDisabled: function() {
@@ -223,7 +227,7 @@ export default Ember.Controller.extend(ModalFunctionality, PasswordValidation, U
 
     createAccount() {
       const self = this,
-          attrs = this.getProperties('accountName', 'accountEmail', 'accountPassword', 'accountUsername', 'verificationCode', 'accountPhoneNumber', 'accountPasswordConfirm', 'accountChallenge'),
+          attrs = this.getProperties('accountName', 'accountEmail', 'accountPassword', 'accountUsername', 'verificationCode', 'invitationCode', 'accountPhoneNumber', 'accountPasswordConfirm', 'accountChallenge'),
           userFields = this.get('userFields');
 
       // Add the userfields to the data

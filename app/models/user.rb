@@ -67,6 +67,8 @@ class User < ActiveRecord::Base
   has_many :group_users, dependent: :destroy
   has_many :groups, through: :group_users
   has_many :secure_categories, through: :groups, source: :categories
+  has_many :invitation_codes_owned, dependent: :destroy, foreign_key: :owner_user_id, class_name: 'InvitationCode'
+  has_many :invitation_codes_sent, foreign_key: :sent_user_id, class_name: 'InvitationCode'
 
   has_many :muted_user_records, class_name: 'MutedUser'
   has_many :muted_users, through: :muted_user_records

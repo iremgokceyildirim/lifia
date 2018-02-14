@@ -921,7 +921,6 @@ en:
         instructions: "e.g. 111-111-1111   Phone Number used for Hotline Access (If you previously posted via Hotline Service, please fill out your phone number here if you wish to connect your history with your profile)"
         too_short: "Phone number should have 10 digits."
 
-
       summary:
         title: "Summary"
         stats: "Stats"
@@ -1089,6 +1088,13 @@ en:
       failed: "Something went wrong, perhaps this email is already registered, try the forgot password link"
       send_verification_code_to_mobile_phone: "Send Verification Code"
       verification_sent: "Verification code is sent!"
+      invitation_code:
+        title: "Invitation Code"
+        placeholder: "e.g. abc12"
+        empty: "Enter an invitation code."
+        length_error: "Invitation code should have %{count} digits."
+        ok: "Invitation code format is correct."
+        instructions: "Enter the invitation code you received from another Lifia.me Community Member"
 
     add_story:
       title: "Add Your Story"
@@ -1116,8 +1122,6 @@ en:
       title: "Log In"
       username: "User"
       password: "Password"
-      invitation_code: "(OR) Invitation Code"
-      invitation_code_placeholder: "e.g. 12345"
       email_placeholder: "email or username"
       caps_lock_warning: "Caps Lock is on"
       error: "Unknown error"

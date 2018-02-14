@@ -317,6 +317,7 @@ class UsersController < ApplicationController
     params.permit(:user_fields)
     params.permit(:phone_number)
     params.permit(:verification_code)
+    params.permit(:invitation_code)
 
     unless SiteSetting.allow_new_registrations
       return fail_with("login.new_registrations_disabled")
@@ -328,6 +329,14 @@ class UsersController < ApplicationController
 
     if params[:email].length > 254 + 1 + 253
       return fail_with("login.email_too_long")
+    end
+
+    if !InvitationCode.invitation_code_exist?(params[:invitation_code])
+      return fail_with("login.invitation_code_not_exist")
+    end
+
+    if InvitationCode.used_invitation_code?(params[:invitation_code])
+      return fail_with("login.invitation_code_already_used")
     end
 
     if User.reserved_username?(params[:username])

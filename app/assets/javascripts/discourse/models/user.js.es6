@@ -587,7 +587,8 @@ User.reopenClass(Singleton, {
         password_confirmation: attrs.accountPasswordConfirm,
         challenge: attrs.accountChallenge,
         user_fields: attrs.userFields,
-        verification_code: attrs.verificationCode
+        verification_code: attrs.verificationCode,
+        invitation_code: attrs.invitationCode
         //trust_level: 2
       },
       type: 'POST'

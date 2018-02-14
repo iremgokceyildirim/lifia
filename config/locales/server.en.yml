@@ -1747,6 +1747,8 @@ en:
     missing_user_field: "You have not completed all the user fields"
     close_window: "Authentication is complete. Close this window to continue."
     already_logged_in: "Oops, looks like you are attempting to accept an invitation for another user. If you are not %{current_user}, please log out and try again."
+    invitation_code_not_exist: "That invitation code does not exist."
+    invitation_code_already_used: "That invitation code is already used."
 
   user:
     no_accounts_associated: "No accounts associated"
