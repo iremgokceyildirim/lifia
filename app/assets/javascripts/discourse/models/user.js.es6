@@ -602,7 +602,7 @@ User.reopenClass(Singleton, {
             data: {
                 title: attrs.accountUsername + "'s Story",
                 raw: attrs.accountStory,
-                category: 11,
+                category: attrs.category,
                 username: attrs.accountUsername,
                 story: true
             },

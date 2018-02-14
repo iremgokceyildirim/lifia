@@ -781,7 +781,7 @@ en:
         prefilled: "Email matches this registered username"
 
       story:
-        title: "Story"
+        title: "My Story"
         instructions: "You can add your story here (optional)"
         instructions_required: "Share your story here"
         short_instructions: "People can read your story"
@@ -1092,6 +1092,8 @@ en:
 
     add_story:
       title: "Add Your Story"
+      subtitle: "We encourage sharing"
+      description: "Hi there! Welcome to Lifia.me! In this community, we encourage people to share their own stories because we want to know about you. By sharing your stories, you can find more people who have similar experiences with you and make connections more quickly."
       next: "Next"
       failed: "Something went wrong, perhaps you already added your story, try to login"
 

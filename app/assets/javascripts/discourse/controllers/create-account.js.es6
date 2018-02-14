@@ -244,6 +244,8 @@ export default Ember.Controller.extend(ModalFunctionality, PasswordValidation, U
           $hidden_login_form.find('input[name=password]').val(attrs.accountPassword);
           $hidden_login_form.find('input[name=redirect]').val(userPath('account-created'));
           self.send("showAddStory");
+          self.resetForm();
+          self.set('formSubmitted', false);
           //$hidden_login_form.submit();
         } else {
           self.flash(result.message || I18n.t('create_account.failed'), 'error');

@@ -2,20 +2,14 @@ import { ajax } from 'discourse/lib/ajax';
 import ModalFunctionality from 'discourse/mixins/modal-functionality';
 import { setting } from 'discourse/lib/computed';
 import { on } from 'ember-addons/ember-computed-decorators';
-import InputValidation from 'discourse/models/input-validation';
 import StoryValidation from "discourse/mixins/story-validation";
 import { userPath } from 'discourse/lib/url';
-import Category from 'discourse/models/category';
+//import Category from 'discourse/models/category';
 
 export default Ember.Controller.extend(ModalFunctionality, StoryValidation,{
-    login: Ember.inject.controller(),
-
     complete: false,
     formSubmitted: false,
     accountStory: null,
-
-    hasAuthOptions: Em.computed.notEmpty('authOptions'),
-    canCreateLocal: setting('enable_local_logins'),
 
     resetForm() {
         // We wrap the fields in a structure so we can assign a value
@@ -56,18 +50,15 @@ export default Ember.Controller.extend(ModalFunctionality, StoryValidation,{
         },
 
         skip() {
-            const self = this,
-                attrs = this.getProperties('accountUsername', 'accountStory');
             const $hidden_login_form = $('#hidden-login-form');
-            $hidden_login_form.find('input[name=username]').val(attrs.accountUsername);
-            $hidden_login_form.find('input[name=password]').val(attrs.accountPassword);
-            $hidden_login_form.find('input[name=redirect]').val(userPath('account-created'));
             $hidden_login_form.submit();
         },
 
         addStory() {
             const self = this,
                 attrs = this.getProperties('accountStory');
+
+            attrs.category = 11; //TODO: Discourse.Category.findBySlug("story").id;
 
             const $hidden_login_form = $('#hidden-login-form');
             attrs.accountUsername = $hidden_login_form.find('input[name=username]').val();
@@ -77,24 +68,24 @@ export default Ember.Controller.extend(ModalFunctionality, StoryValidation,{
             //     e.send('createNewTopicViaParams', attrs.accountUsername + "'s Story", attrs.accountStory, Category.findBySlug("story").id, Category.findBySlug("story"), null);
             // });
             return Discourse.User.addStory(attrs).then(function(result) {
-                alert(result);
-                self.set('isDeveloper', false);
-                if (result.errors) {
-                    alert("there are errors");
-                    self.flash(result.errors[0] || I18n.t('add_story.failed'), 'error');
-                    self.set('formSubmitted', false);
-                } else {
+                if (result.success) {
                     alert("Successfully submitted your story!");
                     const $hidden_login_form = $('#hidden-login-form');
                     $hidden_login_form.submit();
+                } else {
+                    self.set('formSubmitted', false);
+                    if (result.errors)
+                        self.flash(result.errors[0], 'error');
+                    else
+                        self.flash(I18n.t('add_story.failed'), 'error');
                 }
-                if (result.active && !Discourse.SiteSettings.must_approve_users) {
-                    return window.location.reload();
-                }
-            }, function() {
-                alert("problem!");
+            }, function(e) {
                 self.set('formSubmitted', false);
-                return self.flash(I18n.t('add_story.failed'), 'error');
+                if (e.jqXHR.responseJSON && e.jqXHR.responseJSON.errors) {
+                    return self.flash(e.jqXHR.responseJSON.errors[0], 'error');
+                } else {
+                    return self.flash(I18n.t('add_story.failed'), 'error');
+                }
             });
         }
     }

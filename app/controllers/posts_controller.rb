@@ -183,7 +183,7 @@ class PostsController < ApplicationController
     else
       result = manager.perform
       json = serialize_data(result, NewPostResultSerializer, root: false)
-      backwards_compatible_json(json, result.success?)
+      render json: json, status: (!!result.success?) ? 200 : 422
     end
   end
 

@@ -18,6 +18,9 @@ class TopicCreator
   end
 
   def valid?
+    # if @opts[:story].present?
+    #   @opts[:skip_validations] = true
+    # end
     topic = Topic.new(setup_topic_params)
     # validate? will clear the error hash
     # so we fire the validation event after
@@ -38,6 +41,10 @@ class TopicCreator
   end
 
   def create
+    # if @opts[:story].present?
+    #   @opts[:skip_validations] = true
+    # end
+
     topic = Topic.new(setup_topic_params)
     setup_tags(topic)
 
@@ -105,7 +112,7 @@ class TopicCreator
       visible: @opts[:visible]
     }
 
-    [:subtype, :archetype, :meta_data, :import_mode].each do |key|
+    [:subtype, :archetype, :meta_data, :import_mode, :story].each do |key|
       topic_params[key] = @opts[key] if @opts[key].present?
     end
 
