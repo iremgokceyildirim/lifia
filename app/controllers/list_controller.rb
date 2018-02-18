@@ -2,7 +2,6 @@ require_dependency 'topic_list_responder'
 
 class ListController < ApplicationController
   include TopicListResponder
-  include UserListResponder
 
   skip_before_action :check_xhr
 
