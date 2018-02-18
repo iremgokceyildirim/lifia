@@ -42,10 +42,10 @@ Badge.exec_sql <<-SQL.squish
 SQL
 
 [
-  [Badge::BasicUser, "Basic User", BadgeType::Bronze],
-  [Badge::Member,    "Member",     BadgeType::Bronze],
-  [Badge::Regular,   "Regular",    BadgeType::Silver],
-  [Badge::Leader,    "Leader",     BadgeType::Gold],
+  [Badge::Hotline, "Hotline (Basic User)", BadgeType::Bronze],
+  [Badge::CommunityMember,    "CommunityMember (Member)",     BadgeType::Bronze],
+  [Badge::SeniorCommunityMember,   "SeniorCommunityMember (Regular)",    BadgeType::Silver],
+  [Badge::CuratingCommunityMember,    "CuratingCommunityMember (Leader)",     BadgeType::Gold],
 ].each do |id, name, type|
   Badge.seed do |b|
     b.id = id
