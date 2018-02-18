@@ -197,24 +197,12 @@ export default Ember.Controller.extend(ModalFunctionality, PasswordValidation, U
               sentSMS: false
           });
 
-          // userFields = this.get('userFields');
-          // entered_mobile_phone = "";
-          //
-          // // Add the userfields to the data
-          // if (!Ember.isEmpty(userFields)) {
-          //     userFields.forEach(function(f) {
-          //         if(f.get('field.name') == "Mobile phone")
-          //             entered_mobile_phone = f.get('value');
-          //     });
-          // }
-
           ajax("/send_verification_sms", {
               type: 'POST',
               data: { phone_number: this.get('accountPhoneNumber').replace(/\D/g, '')}
           }).then(function () {
               self.set('sentSMS', true);
           }, function(e) {
-              //alert(e["errors"]);
               if (e.jqXHR.responseJSON && e.jqXHR.responseJSON.errors) {
                   bootbox.alert(I18n.t('sms.error', { server_error: e.jqXHR.responseJSON.errors[0] }));
               } else {

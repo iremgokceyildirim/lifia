@@ -6,13 +6,13 @@ export default Ember.Mixin.create({
     invitationCodeLength: 6,
 
     @computed('invitationCode')
-    invitationCodeValidation(invitationCode) {
+    invitationCodeValidation() {
 
         // If blank, fail without a reason
-        if (Ember.isEmpty(invitationCode)) {
+        if (Ember.isEmpty(this.get('invitationCode'))) {
             return InputValidation.create({
                 failed: true,
-                reason: I18n.t('create_account.invitation_code.empty')
+                //reason: I18n.t('create_account.invitation_code.empty')
             });
         }
 

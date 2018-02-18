@@ -914,7 +914,7 @@ en:
 
       phone_number:
         title: "Mobile phone (Optional)"
-        format_error: "This phone number format is not recognized. Please use the given format."
+        format_error: "Phone number format is not recognized, use given format."
         verification_code_empty: "Enter verification code."
         verification_code_length_error: "Verification code should have %{count} digits."
         ok: "Phone number format is correct."
