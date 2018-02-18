@@ -8,7 +8,7 @@ module Jobs
     sidekiq_options queue: 'critical'
 
     def execute(args)
-      print "aydin**********************"
+      print "sending message..."
       raise Discourse::InvalidParameters.new(:to_address) unless args[:to_address].present?
 
       message = TestMailer.send_test(args[:to_address])

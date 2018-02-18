@@ -6,7 +6,7 @@ module Jobs
     sidekiq_options queue: 'critical'
 
     def verify(args)
-      print "aydin**********************"
+      print "sending verification code..."
       raise Discourse::InvalidParameters.new(:to_number) unless args[:to_number].present?
 
       #message = TestMailer.send_test(args[:to_address]) //verification code
