@@ -400,12 +400,18 @@ class UsersController < ApplicationController
     # this is the case for Twitter
     user.password = SecureRandom.hex if user.password.blank? && authentication.has_authenticator?
 
+
+
+
     if user.save
       authentication.finish
       activation.finish
       if phone_number_record
         phone_number_record.update(user: user, verified: true)
       end
+      invitation = InvitationCode.where(code: params[:invitation_code]).take
+      invitation.update(sent_user: user, isUsed: true)
+
       # save user email in session, to show on account-created page
       session["user_created_message"] = activation.message
       session[SessionController::ACTIVATE_USER_KEY] = user.id
