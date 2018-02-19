@@ -1,4 +1,5 @@
 require_dependency 'user_list_responder'
+require_dependency 'user_query'
 
 class RecommendedController < ApplicationController
   include UserListResponder
