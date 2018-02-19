@@ -1,5 +1,6 @@
 require_dependency 'user_list'
 require_dependency 'trust_level'
+require_dependency 'user_recommender_by_story'
 
 
 class UserQuery
