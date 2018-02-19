@@ -3,6 +3,23 @@ require_dependency 'trust_level'
 
 
 class UserQuery
+  def self.public_valid_options
+    @public_valid_options ||=
+      %i(page
+         order
+         ascending
+         slow_platform)
+  end
+
+  def self.valid_options
+    @valid_options ||=
+      public_valid_options +
+        %i(limit
+         page
+         per_page)
+  end
+
+
   def initialize(user = nil, options = {}, klass = User, trust_levels = TrustLevel.levels)
     @options = options
     @user = user
