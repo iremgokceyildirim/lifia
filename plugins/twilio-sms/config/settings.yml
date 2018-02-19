@@ -1,0 +1,14 @@
+plugins:
+  twilio_sms_enabled:
+    default: true
+    client: true
+  twilio_sms_account_sid:
+    default: ""
+    client: true
+  twilio_sms_auth_token:
+    default: ""
+    client: true
+  twilio_sms_phone_number:
+    default: ""
+    client: true
+

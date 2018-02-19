@@ -1,0 +1,6 @@
+en:
+  site_settings:
+    twilio_sms_enabled: "Enable SMS notifications?"
+    twilio_sms_account_sid: "Enter your twilio account_sid"
+    twilio_sms_auth_token: "Enter your twilio auth_token"
+    twilio_sms_phone_number: "Enter your twilio phone number"
