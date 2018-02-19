@@ -54,7 +54,7 @@ bootsnap-compile-cache/
 !/plugins/discourse-details/
 !/plugins/discourse-nginx-performance-report
 !/plugins/discourse-narrative-bot
-!/plugins/twilio
+!/plugins/twilio-sms
 !/plugins/discourse-presence
 /plugins/*/auto_generated/
 
