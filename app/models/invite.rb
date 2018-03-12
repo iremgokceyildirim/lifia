@@ -16,10 +16,11 @@ class Invite < ActiveRecord::Base
   has_many :topic_invites
   has_many :topics, through: :topic_invites, source: :topic
   validates_presence_of :invited_by_id
-  validates :email, email: true
+  #validates :email, email: true
 
   before_create do
-    self.invite_key ||= SecureRandom.hex
+    self.invite_key ||= SecureRandom.hex(3)
+    self.custom_message += "\nInvitation Code: " + self.invite_key
   end
 
   before_validation do
@@ -70,47 +71,78 @@ class Invite < ActiveRecord::Base
     end
   end
 
-  def self.invite_by_email(email, invited_by, topic = nil, group_ids = nil, custom_message = nil)
-    create_invite_by_email(email, invited_by,
-      topic: topic,
-      group_ids: group_ids,
-      custom_message: custom_message,
-      send_email: true
+  def self.invite_by_email(email, label, invited_by, topic = nil, group_ids = nil, custom_message = nil)
+
+    invite = create_invite_by_email(email, label, invited_by,
+                           topic: topic,
+                           group_ids: group_ids,
+                           custom_message: custom_message,
+                           send_email: true
     )
+
+    "#{invite.invite_key}" if invite
+  end
+
+  def self.invite_by_sms(phone_number, label, invited_by, topic = nil, group_ids = nil, custom_message = nil)
+
+    invite = create_invite_by_sms(phone_number, label, invited_by,
+                           topic: topic,
+                           group_ids: group_ids,
+                           custom_message: custom_message,
+                           send_sms: true
+    )
+
+    "#{invite.invite_key}" if invite
   end
 
   # generate invite link
-  def self.generate_invite_link(email, invited_by, topic = nil, group_ids = nil)
+  def self.generate_invite_link(email, invited_by, topic = nil, group_ids = nil, custom_message = nil)
     invite = create_invite_by_email(email, invited_by,
       topic: topic,
       group_ids: group_ids,
+      custom_message: custom_message,
       send_email: false
     )
 
     "#{Discourse.base_url}/invites/#{invite.invite_key}" if invite
   end
 
+  # generate invite code
+  def self.generate_invitation_code(label, invited_by, custom_message = nil, topic = nil, group_ids = nil)
+    invite = create_invite_by_label(label, invited_by,
+                                    topic: topic,
+                                    group_ids: group_ids,
+                                    custom_message: custom_message,
+                                    send_email: false
+    )
+
+    "#{invite.invite_key}" if invite
+  end
+
   # Create an invite for a user, supplying an optional topic
   #
   # Return the previously existing invite if already exists. Returns nil if the invite can't be created.
-  def self.create_invite_by_email(email, invited_by, opts = nil)
+  def self.create_invite_by_email(email, label, invited_by, opts = nil)
     opts ||= {}
 
     topic = opts[:topic]
     group_ids = opts[:group_ids]
     send_email = opts[:send_email].nil? ? true : opts[:send_email]
     custom_message = opts[:custom_message]
-    lower_email = Email.downcase(email)
 
-    if user = User.find_by_email(lower_email)
+    lower_email = Email.downcase(email)
+    user = User.find_by_email(lower_email)
+
+    if user
       extend_permissions(topic, user, invited_by) if topic
       raise UserExists.new I18n.t("invite.user_exists", email: lower_email, username: user.username)
     end
 
     invite = Invite.with_deleted
-      .where(email: lower_email, invited_by_id: invited_by.id)
-      .order('created_at DESC')
-      .first
+       .where(email: lower_email, invited_by_id: invited_by.id)
+       .order('created_at DESC')
+       .first
+
 
     if invite && (invite.expired? || invite.deleted_at)
       invite.destroy
@@ -120,7 +152,7 @@ class Invite < ActiveRecord::Base
     invite.update_columns(created_at: Time.zone.now, updated_at: Time.zone.now) if invite
 
     if !invite
-      create_args = { invited_by: invited_by, email: lower_email }
+      create_args = { invited_by: invited_by, email: lower_email, label: label}
       create_args[:moderator] = true if opts[:moderator]
       create_args[:custom_message] = custom_message if custom_message
       invite = Invite.create!(create_args)
@@ -144,7 +176,123 @@ class Invite < ActiveRecord::Base
       end
     end
 
-    Jobs.enqueue(:invite_email, invite_id: invite.id) if send_email
+    #Jobs.enqueue(:invite_email, invite_id: invite.id) if send_email
+    Jobs::InviteEmail.new.execute(invite_id: invite.id) if send_email
+
+    invite.reload
+    invite
+  end
+
+  def self.create_invite_by_sms(phone_number, label, invited_by, opts = nil)
+    opts ||= {}
+
+    topic = opts[:topic]
+    group_ids = opts[:group_ids]
+    send_sms = opts[:send_sms].nil? ? true : opts[:send_sms]
+    custom_message = opts[:custom_message]
+
+    user = User.find_by_phone_number(phone_number)
+
+
+    if user
+      extend_permissions(topic, user, invited_by) if topic
+      raise UserExists.new I18n.t("invite.user_exists", email: phone_number, username: user.username)
+
+    end
+
+    invite = Invite.with_deleted
+                 .where(phone_number: phone_number, invited_by_id: invited_by.id)
+                 .order('created_at DESC')
+                 .first
+
+    if invite && (invite.expired? || invite.deleted_at)
+      invite.destroy
+      invite = nil
+    end
+
+    invite.update_columns(created_at: Time.zone.now, updated_at: Time.zone.now) if invite
+
+    if !invite
+      create_args = { invited_by: invited_by, phone_number: phone_number, label: label}
+      create_args[:moderator] = true if opts[:moderator]
+      create_args[:custom_message] = custom_message if custom_message
+      invite = Invite.create!(create_args)
+    end
+
+    if topic && !invite.topic_invites.pluck(:topic_id).include?(topic.id)
+      invite.topic_invites.create!(invite_id: invite.id, topic_id: topic.id)
+      # to correct association
+      topic.reload
+    end
+
+    if group_ids.present?
+      group_ids = group_ids - invite.invited_groups.pluck(:group_id)
+      group_ids.each do |group_id|
+        invite.invited_groups.create!(group_id: group_id)
+      end
+    else
+      if topic && topic.category # && Guardian.new(invited_by).can_invite_to?(topic)
+        group_ids = topic.category.groups.pluck(:id) - invite.invited_groups.pluck(:group_id)
+        group_ids.each { |group_id| invite.invited_groups.create!(group_id: group_id) }
+      end
+    end
+
+    Jobs::SendSms.new.execute(invite_id: invite.id, reason: "send_invitation") if send_sms
+
+    #Jobs.enqueue(:send_sms, invite_id: invite.id, reason: "send_invitation") if send_sms
+
+    invite.reload
+    invite
+  end
+
+  # Return the previously existing invite if already exists. Returns nil if the invite can't be created.
+  def self.create_invite_by_label(label, invited_by, opts = nil)
+    opts ||= {}
+
+    topic = opts[:topic]
+    group_ids = opts[:group_ids]
+    custom_message = opts[:custom_message]
+
+    invite = Invite.with_deleted
+               .where(label: label, invited_by_id: invited_by.id)
+               .order('created_at DESC')
+               .first
+
+
+    if invite && (invite.expired? || invite.deleted_at)
+      invite.destroy
+      invite = nil
+    end
+
+    invite.update_columns(created_at: Time.zone.now, updated_at: Time.zone.now) if invite
+
+    if !invite
+      create_args = { invited_by: invited_by,label: label}
+      create_args[:moderator] = true if opts[:moderator]
+      create_args[:custom_message] = custom_message if custom_message
+      invite = Invite.create!(create_args)
+    end
+
+    if topic && !invite.topic_invites.pluck(:topic_id).include?(topic.id)
+      invite.topic_invites.create!(invite_id: invite.id, topic_id: topic.id)
+      # to correct association
+      topic.reload
+    end
+
+    if group_ids.present?
+      group_ids = group_ids - invite.invited_groups.pluck(:group_id)
+      group_ids.each do |group_id|
+        invite.invited_groups.create!(group_id: group_id)
+      end
+    else
+      if topic && topic.category # && Guardian.new(invited_by).can_invite_to?(topic)
+        group_ids = topic.category.groups.pluck(:id) - invite.invited_groups.pluck(:group_id)
+        group_ids.each { |group_id| invite.invited_groups.create!(group_id: group_id) }
+      end
+    end
+
+    #Jobs.enqueue(:invite_email, invite_id: invite.id) if send_email
+    #Jobs::InviteEmail.new.execute(invite_id: invite.id) if send_email
 
     invite.reload
     invite
@@ -163,8 +311,8 @@ class Invite < ActiveRecord::Base
   end
 
   def self.find_all_invites_from(inviter, offset = 0, limit = SiteSetting.invites_per_page)
+    #Invite.where('invites.email IS NOT NULL').or(Invite.where('invites.phone_number IS NOT NULL'))
     Invite.where(invited_by_id: inviter.id)
-      .where('invites.email IS NOT NULL')
       .includes(user: :user_stat)
       .order('CASE WHEN invites.user_id IS NOT NULL THEN 0 ELSE 1 END',
                  'user_stats.time_read DESC',
@@ -220,7 +368,13 @@ class Invite < ActiveRecord::Base
 
   def resend_invite
     self.update_columns(created_at: Time.zone.now, updated_at: Time.zone.now)
-    Jobs.enqueue(:invite_email, invite_id: self.id)
+    if self.email.nil?
+      Jobs::SendSms.new.execute(invite_id: self.id, reason: "send_invitation")
+    else
+      Jobs::InviteEmail.new.execute(invite_id: self.id)
+    end
+
+    #Jobs.enqueue(:invite_email, invite_id: self.id)
   end
 
   def self.resend_all_invites_from(user_id)
@@ -250,6 +404,42 @@ class Invite < ActiveRecord::Base
     File.open(path, "wb") { |f| f << file.tempfile.read }
     path
   end
+
+
+  def self.invitation_code_exist?(code)
+    if Invite.where(invite_key: code).size > 0
+      return true
+    else
+      return false
+    end
+  end
+
+  def self.used_invitation_code?(code)
+    invitation = Invite.where(invite_key: code).take
+    if invitation.redeemed?
+        return true
+    end
+
+    return false
+  end
+
+  def self.is_invitation_code_for_me?(code, email, phone_number)
+    invitation = Invite.where(invite_key: code).take
+    if invitation
+      if !invitation.redeemed?
+        if (invitation.email && (invitation.email == email)) || (invitation.phone_number && invitation.phone_number == phone_number)
+          puts invitation.email
+          puts email
+          puts invitation.phone_number
+          puts phone_number
+          return true
+        end
+      end
+
+    end
+
+    return false
+  end
 end
 
 # == Schema Information
@@ -259,6 +449,8 @@ end
 #  id             :integer          not null, primary key
 #  invite_key     :string(32)       not null
 #  email          :string
+#  phone_number   :string
+#  label          :string
 #  invited_by_id  :integer          not null
 #  user_id        :integer
 #  redeemed_at    :datetime

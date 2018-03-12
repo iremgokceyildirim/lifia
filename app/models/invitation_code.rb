@@ -29,13 +29,18 @@ class InvitationCode < ActiveRecord::Base
     return false
   end
 
-  def generate_code
+  def self.generate_code
     code_generated = SecureRandom.hex(3)
-    while InvitationCode.select(:code).map(&:code).include?(code_generated)
+    invitation_code_list = InvitationCode.select(:code).map(&:code)
+    while invitation_code_list.include?(code_generated)
       code_generated = SecureRandom.hex(3)
     end
 
     self.code = code_generated
+  end
+
+  def expired?
+    created_at < SiteSetting.invite_expiry_days.days.ago
   end
 end
 
@@ -51,6 +56,8 @@ end
 #  isSent             :boolean          default(FALSE), not null
 #  isUsed             :boolean          default(FALSE), not null
 #  sent_at            :timestamp
+#  created_at         :datetime         not null
+#  updated_at         :datetime         not null
 #
 # Indexes
 #

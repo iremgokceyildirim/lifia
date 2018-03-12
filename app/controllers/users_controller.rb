@@ -223,8 +223,14 @@ class UsersController < ApplicationController
     # end
   end
 
+  def invitation_codes
+    invitation_codes = InvitationCode.find_by(owner_user: current_user)
+    render_json_dump invitation_codes: serialize_data(invitation_codes.to_a, InvitationCodeSerializer)
+  end
+
   def invited
     inviter = fetch_user_from_params
+    puts inviter.username
     offset = params[:offset].to_i || 0
     filter_by = params[:filter]
 
@@ -235,6 +241,7 @@ class UsersController < ApplicationController
     end
 
     invites = invites.filter_by(params[:search])
+    puts invites.to_a.size
     render_json_dump invites: serialize_data(invites.to_a, InviteSerializer),
                      can_see_invite_details: guardian.can_see_invite_details?(inviter)
   end
@@ -331,12 +338,16 @@ class UsersController < ApplicationController
       return fail_with("login.email_too_long")
     end
 
-    if !InvitationCode.invitation_code_exist?(params[:invitation_code])
+    if !Invite.invitation_code_exist?(params[:invitation_code])
       return fail_with("login.invitation_code_not_exist")
     end
 
-    if InvitationCode.used_invitation_code?(params[:invitation_code])
+    if Invite.used_invitation_code?(params[:invitation_code])
       return fail_with("login.invitation_code_already_used")
+    end
+
+    if !Invite.is_invitation_code_for_me?(params[:invitation_code], params[:email], params[:phone_number])
+      return fail_with("login.invitation_code_not_for_you")
     end
 
     if User.reserved_username?(params[:username])
@@ -400,17 +411,14 @@ class UsersController < ApplicationController
     # this is the case for Twitter
     user.password = SecureRandom.hex if user.password.blank? && authentication.has_authenticator?
 
-
-
-
     if user.save
       authentication.finish
       activation.finish
       if phone_number_record
         phone_number_record.update(user: user, verified: true)
       end
-      invitation = InvitationCode.where(code: params[:invitation_code]).take
-      invitation.update(sent_user: user, isUsed: true)
+      invitation = Invite.where(invite_key: params[:invitation_code]).take
+      invitation.update(redeemed_at: Time.now, user: user)
 
       # save user email in session, to show on account-created page
       session["user_created_message"] = activation.message

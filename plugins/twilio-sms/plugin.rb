@@ -25,13 +25,15 @@ after_initialize do
       "+#{SiteSetting.twilio_sms_phone_number}"
     end
 
-    def self.send_verification_sms (number, code) #e.g. number:1111111111, code:111111
+    def self.send_sms (number, message) #e.g. number:1111111111, code:111111
+      puts number
+      puts message
       client = Twilio::REST::Client.new account_sid, auth_token
 
       client.account.messages.create(
         :from => twilio_phone_number,
         :to => "+1#{number}",
-        :body => "Verification Code: #{code}"
+        :body => "#{message}"
       )
     end
   end

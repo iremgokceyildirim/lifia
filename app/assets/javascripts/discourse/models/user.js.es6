@@ -416,19 +416,45 @@ const User = RestModel.extend({
            Discourse.SiteSettings['newuser_max_' + type + 's'] > 0;
   },
 
-  createInvite(email, group_names, custom_message) {
-    return ajax('/invites', {
-      type: 'POST',
-      data: { email, group_names, custom_message }
-    });
+  createInvite(email_or_phone_number, label, group_names, custom_message) {
+      if(email_or_phone_number.includes("@")){
+          var email = email_or_phone_number;
+          return ajax('/invites', {
+              type: 'POST',
+              data: { email, label, group_names, custom_message }
+          });
+      }
+      else{
+          var phone_number = email_or_phone_number;
+          return ajax('/invites', {
+              type: 'POST',
+              data: { phone_number, label, group_names, custom_message }
+          });
+      }
   },
 
-  generateInviteLink(email, group_names, topic_id) {
-    return ajax('/invites/link', {
-      type: 'POST',
-      data: { email, group_names, topic_id }
-    });
+  generateInviteLink(email_or_phone_number, group_names, topic_id) {
+     if(email_or_phone_number.includes("@")){
+         var email = email_or_phone_number;
+         return ajax('/invites/link', {
+             type: 'POST',
+             data: { email, group_names, topic_id }
+         });
+     } else {
+         var phone_number = email_or_phone_number;
+         return ajax('/invites/link', {
+             type: 'POST',
+             data: { phone_number, group_names, topic_id }
+         });
+     }
   },
+
+    generateInvitationCode(label, custom_message, group_names, topic_id) {
+        return ajax('/invites/code', {
+            type: 'POST',
+            data: {label, custom_message, group_names, topic_id }
+        });
+    },
 
   @observes("muted_category_ids")
   updateMutedCategories() {

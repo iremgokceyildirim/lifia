@@ -5,21 +5,33 @@ import { userPath } from 'discourse/lib/url';
 const Invite = Discourse.Model.extend({
 
   rescind() {
-    ajax('/invites', {
-      type: 'DELETE',
-      data: { email: this.get('email') }
-    });
-    this.set('rescinded', true);
+      return ajax('/invites', {
+          type: 'DELETE',
+          data: { label: this.get('label') }
+      });
+
+
+    //this.set('rescinded', true);
   },
 
   reinvite() {
     const self = this;
-    return ajax('/invites/reinvite', {
-      type: 'POST',
-      data: { email: this.get('email') }
-    }).then(function() {
-      self.set('reinvited', true);
-    }).catch(popupAjaxError);
+      if (this.get('email')){
+          return ajax('/invites/reinvite', {
+              type: 'POST',
+              data: { email: this.get('email') }
+          }).then(function() {
+              self.set('reinvited', true);
+          }).catch(popupAjaxError);
+      }
+      else{
+          return ajax('/invites/reinvite', {
+              type: 'POST',
+              data: { phone_number: this.get('phone_number') }
+          }).then(function() {
+              self.set('reinvited', true);
+          }).catch(popupAjaxError);
+      }
   }
 
 });

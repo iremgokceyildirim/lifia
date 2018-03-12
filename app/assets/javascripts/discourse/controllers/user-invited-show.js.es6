@@ -8,6 +8,7 @@ export default Ember.Controller.extend({
   model: null,
   filter: null,
   totalInvites: null,
+  leftInvitationCount: null,
   invitesCount: null,
   canLoadMore: true,
   invitesLoading: false,
@@ -82,8 +83,17 @@ export default Ember.Controller.extend({
 
   actions: {
 
+      calculateLeftInvitationCount() {
+          var self = this;
+          Invite.findInvitedBy(this.get("user"), this.get('filter')).then(function(invite_model) {
+              self.set('leftInvitationCount', Discourse.SiteSettings.max_invites_per_month - invite_model.invites.length);
+          });
+          //alert("cagirildi");
+          //this.set('leftInvitationCount', Discourse.SiteSettings.max_invites_per_month - Invite.findInvitedBy(this.modelFor("user"), this.get('filter')));
+      },
+
     rescind(invite) {
-      invite.rescind();
+      invite.rescind().then(() => {invite.set('rescinded', true); this.send('calculateLeftInvitationCount');});
       return false;
     },
 

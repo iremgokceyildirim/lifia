@@ -391,6 +391,7 @@ Discourse::Application.routes.draw do
     get "#{root_path}/:username/invited/:filter" => "users#invited", constraints: { username: USERNAME_ROUTE_FORMAT }
     post "#{root_path}/action/send_activation_email" => "users#send_activation_email"
     get "#{root_path}/:username/story" => "users#story", constraints: {username: USERNAME_ROUTE_FORMAT}
+    get "#{root_path}/:username/invitation-codes" => "users#invitation_codes", constraints: { username: USERNAME_ROUTE_FORMAT }
     get "#{root_path}/:username/summary" => "users#show", constraints: { username: USERNAME_ROUTE_FORMAT }
     get "#{root_path}/:username/activity/topics.rss" => "list#user_topics_feed", format: :rss, constraints: { username: USERNAME_ROUTE_FORMAT }
     get "#{root_path}/:username/activity.rss" => "posts#user_posts_feed", format: :rss, constraints: { username: USERNAME_ROUTE_FORMAT }
@@ -671,6 +672,7 @@ Discourse::Application.routes.draw do
   post "invites/reinvite" => "invites#resend_invite"
   post "invites/reinvite-all" => "invites#resend_all_invites"
   post "invites/link" => "invites#create_invite_link"
+  post "invites/code" => "invites#create_invitation_code"
   delete "invites" => "invites#destroy"
   put "invites/show/:id" => "invites#perform_accept_invitation", as: 'perform_accept_invite'
 

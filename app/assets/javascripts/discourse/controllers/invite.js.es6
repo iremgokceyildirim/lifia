@@ -9,10 +9,12 @@ export default Ember.Controller.extend(ModalFunctionality, {
 
   // If this isn't defined, it will proxy to the user model on the preferences
   // page which is wrong.
-  emailOrUsername: null,
+  label: null,
+  emailOrUsernameOrPhoneNumber: null,
   hasCustomMessage: false,
   customMessage: null,
   inviteIcon: "envelope",
+  invitation_code: null,
   invitingExistingUserToTopic: false,
 
   @computed('isMessage', 'invitingToTopic')
@@ -31,37 +33,56 @@ export default Ember.Controller.extend(ModalFunctionality, {
     return this.currentUser.admin;
   },
 
-  @computed('isAdmin', 'emailOrUsername', 'invitingToTopic', 'isPrivateTopic', 'model.groupNames', 'model.saving', 'model.details.can_invite_to')
-  disabled(isAdmin, emailOrUsername, invitingToTopic, isPrivateTopic, groupNames, saving, can_invite_to) {
+  @computed('isAdmin', 'label', 'emailOrUsernameOrPhoneNumber', 'invitingToTopic', 'isPrivateTopic', 'model.groupNames', 'model.saving', 'model.details.can_invite_to')
+  disabled(isAdmin, label, emailOrUsernameOrPhoneNumber, invitingToTopic, isPrivateTopic, groupNames, saving, can_invite_to) {
     if (saving) return true;
-    if (Ember.isEmpty(emailOrUsername)) return true;
-    const emailTrimmed = emailOrUsername.trim();
+    if(Ember.isEmpty(label)) return true;
+    if (Ember.isEmpty(emailOrUsernameOrPhoneNumber)) return true;
+    if (emailOrUsernameOrPhoneNumber.includes("@")){
+        const emailTrimmed = emailOrUsernameOrPhoneNumber.trim();
 
-    // when inviting to forum, email must be valid
-    if (!invitingToTopic && !emailValid(emailTrimmed)) return true;
-    // normal users (not admin) can't invite users to private topic via email
-    if (!isAdmin && isPrivateTopic && emailValid(emailTrimmed)) return true;
-    // when inviting to private topic via email, group name must be specified
-    if (isPrivateTopic && Ember.isEmpty(groupNames) && emailValid(emailTrimmed)) return true;
+        // when inviting to forum, email must be valid
+        if (!invitingToTopic && !emailValid(emailTrimmed)) return true;
+        // normal users (not admin) can't invite users to private topic via email
+        if (!isAdmin && isPrivateTopic && emailValid(emailTrimmed)) return true;
+        // when inviting to private topic via email, group name must be specified
+        if (isPrivateTopic && Ember.isEmpty(groupNames) && emailValid(emailTrimmed)) return true;
+    }
+    else if (emailOrUsernameOrPhoneNumber.length < 10) //TODO: add phone_number validations here
+        return true;
+
 
     if (can_invite_to) return false;
     return false;
   },
 
-  @computed('isAdmin', 'emailOrUsername', 'model.saving', 'isPrivateTopic', 'model.groupNames', 'hasCustomMessage')
-  disabledCopyLink(isAdmin, emailOrUsername, saving, isPrivateTopic, groupNames, hasCustomMessage) {
+  @computed('isAdmin', 'label', 'emailOrUsernameOrPhoneNumber', 'model.saving', 'isPrivateTopic', 'model.groupNames', 'hasCustomMessage')
+  disabledCopyLink(isAdmin, label, emailOrUsernameOrPhoneNumber, saving, isPrivateTopic, groupNames, hasCustomMessage) {
     if (hasCustomMessage) return true;
     if (saving) return true;
-    if (Ember.isEmpty(emailOrUsername)) return true;
-    const email = emailOrUsername.trim();
-    // email must be valid
-    if (!emailValid(email)) return true;
-    // normal users (not admin) can't invite users to private topic via email
-    if (!isAdmin && isPrivateTopic && emailValid(email)) return true;
-    // when inviting to private topic via email, group name must be specified
-    if (isPrivateTopic && Ember.isEmpty(groupNames) && emailValid(email)) return true;
+    if(Ember.isEmpty(label)) return true;
+    if (Ember.isEmpty(emailOrUsernameOrPhoneNumber)) return true;
+    if (emailOrUsernameOrPhoneNumber.includes("@")){
+        const email = emailOrUsernameOrPhoneNumber.trim();
+        // email must be valid
+        if (!emailValid(email)) return true;
+        // normal users (not admin) can't invite users to private topic via email
+        if (!isAdmin && isPrivateTopic && emailValid(email)) return true;
+        // when inviting to private topic via email, group name must be specified
+        if (isPrivateTopic && Ember.isEmpty(groupNames) && emailValid(email)) return true;
+    } else if (emailOrUsernameOrPhoneNumber.length < 10){
+        return true;
+    }
+
     return false;
   },
+
+    @computed('isAdmin', 'label', 'emailOrUsernameOrPhoneNumber', 'model.saving', 'isPrivateTopic', 'model.groupNames', 'hasCustomMessage')
+    disabledGenerateInvitation(isAdmin, label, emailOrUsernameOrPhoneNumber, saving, isPrivateTopic, groupNames, hasCustomMessage) {
+        if (!Ember.isEmpty(emailOrUsernameOrPhoneNumber)) return true;
+        if(Ember.isEmpty(label)) return true;
+        return false;
+    },
 
   @computed('model.saving')
   buttonTitle(saving) {
@@ -158,18 +179,22 @@ export default Ember.Controller.extend(ModalFunctionality, {
     return Group.findAll({ term: term, ignore_automatic: true });
   },
 
-  @computed('isMessage', 'emailOrUsername', 'invitingExistingUserToTopic')
-  successMessage(isMessage, emailOrUsername, invitingExistingUserToTopic) {
+  @computed('isMessage', 'emailOrUsernameOrPhoneNumber', 'invitingExistingUserToTopic')
+  successMessage(isMessage, emailOrUsernameOrPhoneNumber, invitingExistingUserToTopic) {
     if (this.get('hasGroups')) {
       return I18n.t('topic.invite_private.success_group');
     } else if (isMessage) {
       return I18n.t('topic.invite_private.success');
     } else if (invitingExistingUserToTopic) {
-      return I18n.t('topic.invite_reply.success_existing_email', { emailOrUsername });
-    } else if (emailValid(emailOrUsername)) {
-      return I18n.t('topic.invite_reply.success_email', { emailOrUsername });
+      return I18n.t('topic.invite_reply.success_existing_email', { emailOrUsernameOrPhoneNumber });
+    } else if (emailOrUsernameOrPhoneNumber.includes("@") && emailValid(emailOrUsernameOrPhoneNumber)) {
+      return I18n.t('topic.invite_reply.success_email', { emailOrUsernameOrPhoneNumber });
+    } else if (/^\d+$/.test(emailOrUsernameOrPhoneNumber)) {
+        return I18n.t('topic.invite_reply.success_sms', { emailOrUsernameOrPhoneNumber });
+    } else if (emailOrUsernameOrPhoneNumber){
+        return I18n.t('topic.invite_reply.success_username');
     } else {
-      return I18n.t('topic.invite_reply.success_username');
+      return "Copy this code down and give it to the contact directly. Once you dismiss this dialog, you will no longer be able to recover this code."
     }
   },
 
@@ -192,9 +217,11 @@ export default Ember.Controller.extend(ModalFunctionality, {
 
   // Reset the modal to allow a new user to be invited.
   reset() {
-    this.set('emailOrUsername', null);
+    this.set('label', null);
+    this.set('emailOrUsernameOrPhoneNumber', null);
     this.set('hasCustomMessage', false);
     this.set('customMessage', null);
+    this.set('invitation_code', null);
     this.set('invitingExistingUserToTopic', false);
     this.get('model').setProperties({
       groupNames: null,
@@ -227,7 +254,7 @@ export default Ember.Controller.extend(ModalFunctionality, {
       };
 
       if (this.get('hasGroups')) {
-        return this.get('model').createGroupInvite(this.get('emailOrUsername').trim()).then((data) => {
+        return this.get('model').createGroupInvite(this.get('emailOrUsernameOrPhoneNumber').trim()).then((data) => {
           model.setProperties({ saving: false, finished: true });
           this.get('model.details.allowed_groups').pushObject(Ember.Object.create(data.group));
           this.appEvents.trigger('post-stream:refresh');
@@ -236,22 +263,66 @@ export default Ember.Controller.extend(ModalFunctionality, {
 
       } else {
 
-        return this.get('model').createInvite(this.get('emailOrUsername').trim(), groupNames, this.get('customMessage')).then(result => {
-              model.setProperties({ saving: false, finished: true });
+        return this.get('model').createInvite(this.get('emailOrUsernameOrPhoneNumber').trim(), this.get('label'), groupNames, this.get('customMessage')).then(result => {
+
               if (!this.get('invitingToTopic')) {
                 Invite.findInvitedBy(this.currentUser, userInvitedController.get('filter')).then(invite_model => {
                   userInvitedController.set('model', invite_model);
                   userInvitedController.set('totalInvites', invite_model.invites.length);
+                  //alert(result);
+                  this.set('invitation_code', result);
+                  //alert(invite_model.invites[0].invite_key);
+                  //userInvitedController.set('leftInvitationCount', Discourse.SiteSettings.max_invites_per_month - invite_model.invites.length);
+                  userInvitedController.send('calculateLeftInvitationCount');
+                  //this.set('invitation_code', invite_model.invites[0].invite_key);
+                  //TODO: Update left invitation number
                 });
               } else if (this.get('isMessage') && result && result.user) {
                 this.get('model.details.allowed_users').pushObject(Ember.Object.create(result.user));
                 this.appEvents.trigger('post-stream:refresh');
-              } else if (this.get('invitingToTopic') && emailValid(this.get('emailOrUsername').trim()) && result && result.user) {
+              } else if (this.get('invitingToTopic') && emailValid(this.get('emailOrUsernameOrPhoneNumber').trim()) && result && result.user) {
                 this.set('invitingExistingUserToTopic', true);
               }
+
+              model.setProperties({ saving: false, finished: true });
             }).catch(onerror);
       }
     },
+
+      generateInvitationCode() {
+          const self = this;
+
+          const groupNames = this.get('model.groupNames'),
+              userInvitedController = this.get('userInvitedShow'),
+              model = this.get('model');
+
+          var topicId = null;
+          if (this.get('invitingToTopic')) {
+              topicId = this.get('model.id');
+          }
+
+          model.setProperties({ saving: true, error: false });
+
+          return this.get('model').generateInvitationCode(this.get('label').trim(), this.get('customMessage'), groupNames, topicId).then(result => {
+              model.setProperties({ saving: false, finished: true, inviteCode: result});
+              Invite.findInvitedBy(this.currentUser, 'pending').then(invite_model => {
+                  userInvitedController.set('model', invite_model);
+                  userInvitedController.set('totalInvites', invite_model.invites.length);
+                  //alert(result);
+                  this.set('invitation_code', result);
+                  this.set('label', invite_model.invites[0].label)
+                  userInvitedController.send('calculateLeftInvitationCount');
+                  //this.set('invitation_code', invite_model.invites[0].invite_key); // or result
+              });
+          }).catch(function(e) {
+              if (e.jqXHR.responseJSON && e.jqXHR.responseJSON.errors) {
+                  self.set("errorMessage", e.jqXHR.responseJSON.errors[0]);
+              } else {
+                  self.set("errorMessage", self.get('isMessage') ? I18n.t('topic.invite_private.error') : I18n.t('topic.invite_reply.error'));
+              }
+              model.setProperties({ saving: false, error: true });
+          });
+      },
 
     generateInvitelink() {
       const self = this;
@@ -269,11 +340,14 @@ export default Ember.Controller.extend(ModalFunctionality, {
 
       model.setProperties({ saving: true, error: false });
 
-      return this.get('model').generateInviteLink(this.get('emailOrUsername').trim(), groupNames, topicId).then(result => {
+      return this.get('model').generateInviteLink(this.get('emailOrUsernameOrPhoneNumber').trim(), groupNames, topicId).then(result => {
               model.setProperties({ saving: false, finished: true, inviteLink: result });
               Invite.findInvitedBy(this.currentUser, userInvitedController.get('filter')).then(invite_model => {
                 userInvitedController.set('model', invite_model);
                 userInvitedController.set('totalInvites', invite_model.invites.length);
+                //alert(result);
+                this.set('invitation_code', result);
+                userInvitedController.send('calculateLeftInvitationCount');
               });
             }).catch(function(e) {
               if (e.jqXHR.responseJSON && e.jqXHR.responseJSON.errors) {

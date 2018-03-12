@@ -4,7 +4,7 @@ require_dependency 'user_query'
 class RecommendedController < ApplicationController
   include UserListResponder
 
-  #skip_before_action :check_xhr
+  skip_before_action :check_xhr
 
   before_action :ensure_logged_in
 

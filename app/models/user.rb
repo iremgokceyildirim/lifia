@@ -67,8 +67,6 @@ class User < ActiveRecord::Base
   has_many :group_users, dependent: :destroy
   has_many :groups, through: :group_users
   has_many :secure_categories, through: :groups, source: :categories
-  has_many :invitation_codes_owned, dependent: :destroy, foreign_key: :owner_user_id, class_name: 'InvitationCode'
-  has_many :invitation_codes_sent, foreign_key: :sent_user_id, class_name: 'InvitationCode'
 
   has_many :muted_user_records, class_name: 'MutedUser'
   has_many :muted_users, through: :muted_user_records
@@ -133,6 +131,8 @@ class User < ActiveRecord::Base
   attr_accessor :import_mode
 
   scope :with_email, ->(email) { joins(:user_emails).where(user_emails: { email: email }) }
+
+  scope :with_phone_number, ->(phone_number) { joins(:phone_numbers).where(phone_numbers: { number: phone_number }) }
 
   scope :human_users, -> { where('users.id > 0') }
 
@@ -242,6 +242,14 @@ class User < ActiveRecord::Base
 
   def self.find_by_email(email)
     self.with_email(Email.downcase(email)).first
+  end
+
+  def self.find_by_phone_number(phone_number)
+    p = PhoneNumber.where(number: phone_number).take
+    if p
+       p.user
+    end
+    #self.with_phone_number(phone_number).first
   end
 
   def self.find_by_username(username)

@@ -588,6 +588,7 @@ en:
         confirm: "Are you sure you want to download your posts?"
         success: "Download initiated, you will be notified via message when the process is complete."
         rate_limit_error: "Posts can be downloaded once per day, please try again tomorrow."
+      new_invitation_code: "New Invitation Code"
       new_private_message: "New Message"
       private_message: "Message"
       private_messages: "Messages"
@@ -895,9 +896,12 @@ en:
         time_read: "Read Time"
         days_visited: "Days Visited"
         account_age_days: "Account age in days"
-        create: "Send an Invite"
+        create: "Generate Invitation"
+        #Send an Invite
         generate_link: "Copy Invite Link"
+        generate_code: "Generate Invitation"
         link_generated: "Invite link generated successfully!"
+        code_generated: "Invitation code generated successfully!"
         valid_for: "Invite link is only valid for this email address: %{email}"
         bulk_invite:
           none: "You haven't invited anyone here yet. Send individual invites, or invite many people at once by <a href='https://meta.discourse.org/t/send-bulk-invites/16468'>uploading a CSV file</a>."
@@ -1822,7 +1826,7 @@ en:
         username_placeholder: "username"
         action: 'Send Invite'
         help: 'invite others to this topic via email or notifications'
-        to_forum: "We'll send a brief email allowing your friend to immediately join by clicking a link, no login required."
+        to_forum: "We'll send a brief email/sms allowing your friend to immediately join by clicking a link in the email or using the invitation code sent via SMS, no login required."
         sso_enabled: "Enter the username of the person you'd like to invite to this topic."
         to_topic_blank: "Enter the username or email address of the person you'd like to invite to this topic."
         to_topic_email: "You've entered an email address. We'll email an invitation that allows your friend to immediately reply to this topic."
@@ -1830,7 +1834,8 @@ en:
         to_username: "Enter the username of the person you'd like to invite. We'll send a notification with a link inviting them to this topic."
 
         email_placeholder: 'name@example.com'
-        success_email: "We mailed out an invitation to <b>{{emailOrUsername}}</b>. We'll notify you when the invitation is redeemed. Check the invitations tab on your user page to keep track of your invites."
+        success_email: "We mailed out an invitation to <b>{{emailOrUsernameOrPhoneNumber}}</b> with the code generated. We'll notify you when the invitation is redeemed. Check the invitations tab on your user page to keep track of your invites."
+        success_sms: "We sent an sms with the invitation code to <b>{{emailOrUsernameOrPhoneNumber}}</b>. We'll notify you when the invitation is redeemed. Check the invitations tab on your user page to keep track of your invites."
         success_username: "We've invited that user to participate in this topic."
         error: "Sorry, we couldn't invite that person. Perhaps they have already been invited? (Invites are rate limited)"
         success_existing_email: "A user with email <b>{{emailOrUsername}}</b> already exists. We've invited that user to participate in this topic."

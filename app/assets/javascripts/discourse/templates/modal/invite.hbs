@@ -7,12 +7,19 @@
   {{/if}}
   {{#if model.finished}}
     {{#if model.inviteLink}}
-      {{generated-invite-link link=model.inviteLink email=emailOrUsername}}
+      {{generated-invite-link link=model.inviteLink email=emailOrUsernameOrPhoneNumber}}
     {{else}}
-      {{{successMessage}}}
+        {{#if model.inviteCode}}
+            {{generated-invite-code code=model.inviteCode}}
+        {{else}}
+            <h3> Generated Invitation Code:
+                {{invitation_code}}
+            </h3><br>
+            {{{successMessage}}}
+        {{/if}}
     {{/if}}
   {{else}}
-    <label>{{inviteInstructions}}</label>
+    <label>{{inviteInstructions}}</label><br>
     {{#if allowExistingMembers}}
       {{#if isPrivateTopic}}
         {{user-selector single="true"
@@ -35,7 +42,28 @@
             autocomplete="off"}}
       {{/if}}
     {{else}}
-      {{text-field value=emailOrUsername placeholderKey="topic.invite_reply.email_placeholder"}}
+        <table>
+
+        <tr class="input">
+            <td class="label" style="white-space: nowrap;"><label>For whom</label></td>
+            <td> {{text-field value=label placeholder="e.g. For Bob in Lansing"}}</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td> <label style="color: grey;">This will only be seen by you, so you can remember who it was for!</label></td>
+        </tr>
+        <tr><td>&nbsp;</td></tr>
+        <tr class="input">
+            <td class="label" style="white-space: nowrap;"><label>SMS / Email</label></td>
+            <td> {{text-field value=emailOrUsernameOrPhoneNumber placeholderKey="topic.invite_reply.email_placeholder"}}</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><label style="color: grey;">The system send this invitation directly if you know the person’s contact info. Otherwise, be sure to copy the code down so you can give it to the person directly.</label></td>
+        </tr>
+
+        </table>
+        <br>
     {{/if}}
     {{#if showGroups}}
       <label><span class={{showGroupsClass}}>{{i18n 'topic.automatically_add_to_groups'}}</span></label>
@@ -56,7 +84,7 @@
   {{else}}
     {{d-button icon=inviteIcon action="createInvite" class="btn-primary" disabled=disabled label=buttonTitle}}
     {{#if showCopyInviteButton}}
-      {{d-button icon="link" action="generateInvitelink" class="btn-primary" disabled=disabledCopyLink label='user.invited.generate_link'}}
+      {{d-button icon="link" action="generateInvitationCode" class="btn-primary" disabled=disabledGenerateInvitation label='user.invited.generate_code'}}
     {{/if}}
   {{/if}}
 </div>

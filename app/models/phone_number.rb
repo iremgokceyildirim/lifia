@@ -11,7 +11,8 @@ class PhoneNumber < ActiveRecord::Base
   end
 
   def send_code
-    TwilioSMS.send_verification_sms(self.number, self.verification_code)
+    message = "Verification Code: " + self.verification_code
+    TwilioSMS.send_sms(self.number, message)
   end
 
   # def verify(entered_code)

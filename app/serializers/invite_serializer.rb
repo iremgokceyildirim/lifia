@@ -1,6 +1,6 @@
 class InviteSerializer < ApplicationSerializer
 
-  attributes :email, :created_at, :redeemed_at, :expired, :user
+  attributes :email, :created_at, :redeemed_at, :expired, :user, :phone_number, :label, :invite_key
 
   def include_email?
     !object.redeemed?
