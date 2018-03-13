@@ -11,6 +11,8 @@ export default Ember.Controller.extend(CanCheckEmails, PreferencesTabController,
 
   canEditName: setting('enable_names'),
 
+    canEditPhoneNumber: setting('phone_number_editable'),
+
   newNameInput: null,
 
   passwordProgress: null,
@@ -38,11 +40,6 @@ export default Ember.Controller.extend(CanCheckEmails, PreferencesTabController,
   canChangePassword() {
     return !this.siteSettings.enable_sso && this.siteSettings.enable_local_logins;
   },
-
-    // @computed()
-    // canChangePhoneNumber() {
-    //     return this.siteSettings.enable_change_phone_number;
-    // },
 
   actions: {
     save() {

@@ -198,6 +198,13 @@ const User = RestModel.extend({
     });
   },
 
+    changePhoneNumber(phone_number) {
+        return ajax(userPath(`${this.get('username_lower')}/preferences/phone_number`), {
+            type: 'PUT',
+            data: { phone_number }
+        });
+    },
+
   copy() {
     return Discourse.User.create(this.getProperties(Object.keys(this)));
   },

@@ -115,6 +115,7 @@ export default function() {
 
       this.route('username');
       this.route('email');
+      this.route('phone');
       this.route('about', { path: '/about-me' });
       this.route('badgeTitle', { path: '/badge_title' });
       this.route('card-badge', { path: '/card-badge' });

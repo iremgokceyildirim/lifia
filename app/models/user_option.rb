@@ -31,6 +31,8 @@ class UserOption < ActiveRecord::Base
     self.email_previous_replies = SiteSetting.default_email_previous_replies
     self.email_in_reply_to = SiteSetting.default_email_in_reply_to
 
+    self.enable_phone_number = SiteSetting.default_enable_phone_number
+
     self.enable_quoting = SiteSetting.default_other_enable_quoting
     self.external_links_in_new_tab = SiteSetting.default_other_external_links_in_new_tab
     self.dynamic_favicon = SiteSetting.default_other_dynamic_favicon
@@ -162,6 +164,7 @@ end
 #  notification_level_when_replying :integer
 #  theme_key                        :string
 #  theme_key_seq                    :integer          default(0), not null
+#  enable_phone_number              :boolean          default(FALSE), not null
 #
 # Indexes
 #

@@ -68,16 +68,23 @@
 
 
 <div class="control-group pref-phone-number">
+
     <label class="control-label">{{i18n 'user.phone_number.title'}}</label>
     <div class="controls">
-        <span class='static'>{{model.phone_number}}</span>
-
-            {{#link-to "preferences.email" class="btn btn-small pad-left no-text"}}{{d-icon "pencil"}}{{/link-to}}
-
+        {{#if model.phone_number}}
+            <span class='static'>{{model.phone_number}}</span>
+        {{else}}
+            <span class='static'>No phone number added yet.</span> <!-- TODO: Add locale-->
+        {{/if}}
+        {{#if canEditPhoneNumber}}
+            {{#link-to "preferences.phone" class="btn btn-small pad-left no-text"}}{{d-icon "pencil"}}{{/link-to}}
+        {{/if}}
     </div>
     <div class='instructions'>
         {{i18n 'user.phone_number.instructions'}}
     </div>
+    {{preference-checkbox labelKey="user.phone_number.enable" checked=model.user_option.enable_phone_number}}
+
 </div>
 
 

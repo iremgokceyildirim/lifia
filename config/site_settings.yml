@@ -362,6 +362,9 @@ users:
   block_common_passwords: true
   username_change_period: 3
   email_editable: true
+  phone_number_editable:
+    client: true
+    default: true
   logout_redirect:
     client: true
     default: ''
@@ -1410,6 +1413,7 @@ uncategorized:
     min: 0
 
 user_preferences:
+  default_enable_phone_number: false
   default_email_digest_frequency:
     enum: 'DigestEmailSiteSetting'
     default: 10080

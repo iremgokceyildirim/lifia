@@ -620,7 +620,7 @@ en:
       theme_default_on_all_devices: "Make this my default theme on all my devices"
       external_links_in_new_tab: "Open all external links in a new tab"
       enable_quoting: "Enable quote reply for highlighted text"
-      change: "change"
+      change: "Change"
       moderator: "{{user}} is a moderator"
       admin: "{{user}} is an admin"
       moderator_tooltip: "This user is a moderator"
@@ -732,6 +732,12 @@ en:
         error: "There was an error changing your email. Perhaps that address is already in use?"
         success: "We've sent an email to that address. Please follow the confirmation instructions."
         success_staff: "We've sent an email to your current address. Please follow the confirmation instructions."
+
+      change_phone_number:
+        title: "Change Phone Number"
+        taken: "Sorry, that phone number is already registered to another user."
+        error: "There was an error changing your phone number. Perhaps that phone number is already in use?"
+        success: "We've sent an sms to that phone number. Please enter the verification code for confirmation."
 
       change_avatar:
         title: "Change your profile picture"
@@ -924,8 +930,9 @@ en:
         verification_code_empty: "Enter verification code."
         verification_code_length_error: "Verification code should have %{count} digits."
         ok: "Phone number format is correct."
-        instructions: "e.g. 111-111-1111   Phone Number used for Hotline Access (If you previously posted via Hotline Service, please fill out your phone number here if you wish to connect your history with your profile)"
+        instructions: "e.g. 111-111-1111  Phone Number used for Hotline Access (if you previously posted via Hotline Service, please fill out your phone number here if you wish to connect your history with your profile)"
         too_short: "Phone number should have 10 digits."
+        enable: "Show the user's phone number on their profile, user card, and emails. Disable to hide phone number everywhere."
 
       summary:
         title: "Summary"
