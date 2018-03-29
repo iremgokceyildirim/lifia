@@ -42,6 +42,7 @@ Discourse::Application.routes.draw do
   get "recommended/people" => "recommended#people"
 
   get "following/topics" => "list#topics_followed_by", as: "topics_followed_by"# "following#topics"
+  get "following/categories" => "categories#followed_by"
 
   get "finish-installation" => "finish_installation#index"
   get "finish-installation/register" => "finish_installation#register"
@@ -593,6 +594,7 @@ Discourse::Application.routes.draw do
   get "topics/feature_stats"
   get "topics/story/:username" => "list#story_by", as: "story_by", constraints: { username: USERNAME_ROUTE_FORMAT }
   get "topics/created-by/:username" => "list#topics_by", as: "topics_by", constraints: { username: USERNAME_ROUTE_FORMAT }
+  #get "topics/followed-by/" => "list#topics_followed_by", as: "topics_followed_by"
   get "topics/private-messages/:username" => "list#private_messages", as: "topics_private_messages", constraints: { username: USERNAME_ROUTE_FORMAT }
   get "topics/private-messages-sent/:username" => "list#private_messages_sent", as: "topics_private_messages_sent", constraints: { username: USERNAME_ROUTE_FORMAT }
   get "topics/private-messages-archive/:username" => "list#private_messages_archive", as: "topics_private_messages_archive", constraints: { username: USERNAME_ROUTE_FORMAT }

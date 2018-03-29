@@ -2373,6 +2373,12 @@ en:
           one: "Following Topics (1)"
           other: "Following Topics ({{count}})"
         help: "following topics"
+      categories:
+        title: "Following Categories"
+        title_with_count:
+          one: "Following Categories (1)"
+          other: "Following Categories ({{count}})"
+        help: "following categories"
 
     filters:
       with_topics: "%{filter} topics"

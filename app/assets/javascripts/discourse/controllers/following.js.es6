@@ -1,7 +1,7 @@
 
 
 export default Ember.Controller.extend({
-    folllowingTopics: Ember.inject.controller('following/topics'),
+    followingTopics: Ember.inject.controller('following/topics'),
     navigationCategory: Ember.inject.controller('navigation/category'),
     application: Ember.inject.controller(),
 

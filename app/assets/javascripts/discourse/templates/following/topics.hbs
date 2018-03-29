@@ -19,7 +19,7 @@
     {{#each model.topics as |topic|}}
         <tr>
             <td>{{topic.title}}</td>
-            <td>{{topic.category}}</td>
+            <td>{{raw "list/category-column" category=topic.category}}</td>
             {{raw "list/posters-column" posters=topic.posters}}
             <td>{{topic.reply_count}}</td>
             <td>{{topic.views}}</td>
@@ -28,7 +28,6 @@
     {{/each}}
     </tbody>
 </table>
-
 
 
 

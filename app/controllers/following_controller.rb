@@ -7,7 +7,7 @@ class FollowingController < ApplicationController
   before_action :ensure_logged_in
 
   def topics
-    @title = I18n.t('js.following.topic.title')
+    @title = I18n.t('js.following.topics.title')
     list_opts = build_topic_list_options
     user = list_target_user
     list = generate_list_for("topics_followed_by", user, list_opts)

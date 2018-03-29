@@ -48,6 +48,27 @@ class CategoriesController < ApplicationController
     end
   end
 
+  def followed_by
+    discourse_expires_in 1.minute
+
+    category_options = {
+      is_homepage: current_homepage == "categories".freeze,
+      parent_category_id: params[:parent_category_id],
+      include_topics: false
+    }
+
+    result = CategoryList.new(guardian, category_options)
+    result.draft_key = Draft::NEW_TOPIC
+    result.draft_sequence = DraftSequence.current(current_user, Draft::NEW_TOPIC)
+    result.draft = Draft.get(current_user, Draft::NEW_TOPIC, result.draft_sequence) if current_user
+
+    category_list = Category.find(CategoryUser.where(user: current_user, notification_level: CategoryUser.notification_levels[:watching]).pluck(:category_id))
+
+    result.categories = category_list
+
+    render_serialized(result, CategoryListSerializer, root: false)
+  end
+
   def categories_and_latest
     discourse_expires_in 1.minute
 

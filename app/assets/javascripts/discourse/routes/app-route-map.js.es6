@@ -12,6 +12,7 @@ export default function() {
 
     this.route('following', {path: '/following', resetNamespace: true}, function() {
         this.route('topics');
+        this.route('categories');
     });
 
   // Topic routes

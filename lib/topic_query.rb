@@ -225,7 +225,7 @@ class TopicQuery
   end
 
   def list_topics_followed_by(user)
-    # #@options[:filtered_to_user] = user.id
+    @options[:filtered_to_user] = user.id
     # create_list(:following_topics) do |topics|
     #   # topics = TopicUser.joins(:topic)
     #   #   .where(:user => user,

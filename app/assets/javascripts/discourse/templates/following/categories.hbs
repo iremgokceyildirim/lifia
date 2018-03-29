@@ -1,0 +1,25 @@
+<h3>{{d-icon "topics"}} {{i18n 'following.categories.title'}}</h3>
+
+<table class="topic-list">
+    <thead>
+        <tr>
+            <th class="category">Category</th>
+            <th class="topics">Topics</th>
+        </tr>
+
+    <!---->
+    </thead>
+    <tbody>
+    {{#each model.categories as |category|}}
+        <tr>
+            <td><span class="category-name">{{category.name}}</span></td>
+            <td><span class="category-name">{{category.topics_all_time}}</span></td>
+        </tr>
+    {{/each}}
+    </tbody>
+</table>
+
+
+
+
+
