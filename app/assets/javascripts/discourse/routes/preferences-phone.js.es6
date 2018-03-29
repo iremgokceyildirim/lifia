@@ -10,13 +10,13 @@ export default RestrictedUserRoute.extend({
     },
 
     setupController: function(controller, model) {
-        controller.setProperties({ model: model, accountPhoneNumber: model.get('phone_number') });
-    },
+        var phone_number = model.get('phone_number');
+        if(phone_number){
+            var phone_number_a = phone_number.match(/^(\d{3})(\d{3})(\d{4})$/);
+            phone_number = phone_number_a[1] + "-" + phone_number_a[2] + "-" + phone_number_a[3];
+        }
 
-    // A bit odd, but if we leave to /preferences we need to re-render that outlet
-    deactivate: function() {
-        this._super();
-        this.render('preferences', { into: 'user', controller: 'preferences' });
+        controller.setProperties({ model: model, accountPhoneNumber: phone_number });
     }
 });
 

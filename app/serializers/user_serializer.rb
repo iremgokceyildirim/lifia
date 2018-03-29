@@ -49,6 +49,7 @@ class UserSerializer < BasicUserSerializer
              :can_edit_username,
              :can_edit_email,
              :can_edit_name,
+             :can_show_phone_number,
              #:can_edit_phone_number,
              :stats,
              :can_send_private_messages,
@@ -220,6 +221,10 @@ class UserSerializer < BasicUserSerializer
 
   def can_edit_username
     scope.can_edit_username?(object)
+  end
+
+  def can_show_phone_number
+    scope.can_show_phone_number?(object)
   end
 
   def can_edit_email

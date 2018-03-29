@@ -7,7 +7,7 @@ import { popupAjaxError } from 'discourse/lib/ajax-error';
 
 export default Ember.Controller.extend(CanCheckEmails, PreferencesTabController, {
 
-  saveAttrNames: ['name'],
+  saveAttrNames: ['name', 'enable_phone_number'],
 
   canEditName: setting('enable_names'),
 

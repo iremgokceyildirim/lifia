@@ -32,6 +32,7 @@ class UserAnonymizer
       options.email_digests = false
       options.email_private_messages = false
       options.email_direct = false
+      options.enable_phone_number = false
       options.save
 
       profile = @user.user_profile

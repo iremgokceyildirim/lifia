@@ -198,10 +198,10 @@ const User = RestModel.extend({
     });
   },
 
-    changePhoneNumber(phone_number) {
-        return ajax(userPath(`${this.get('username_lower')}/preferences/phone_number`), {
+    changePhoneNumber(phone_number, verification_code) {
+        return ajax(userPath(`${this.get('username_lower')}/preferences/phone`), {
             type: 'PUT',
-            data: { phone_number }
+            data: { phone_number, verification_code }
         });
     },
 
@@ -251,7 +251,8 @@ const User = RestModel.extend({
       'notification_level_when_replying',
       'like_notification_frequency',
       'include_tl0_in_digests',
-      'theme_key'
+      'theme_key',
+      'enable_phone_number'
     ];
 
     if (fields) {

@@ -493,7 +493,7 @@ en:
         none: "None"
       notifications:
         watching:
-          title: "Watching"
+          title: "Following"
           description: "You will be notified of every new post in every message, and a count of new replies will be shown."
         watching_first_post:
           title: "Watching First Post"
@@ -521,8 +521,8 @@ en:
       "1": "Likes Given"
       "2": "Likes Received"
       "3": "Bookmarks"
-      "4": "Topics"
-      "5": "Replies"
+      "4": "My Topics"
+      "5": "My Replies"
       "6": "Responses"
       "7": "Mentions"
       "9": "Quotes"
@@ -530,6 +530,7 @@ en:
       "12": "Sent Items"
       "13": "Inbox"
       "14": "Pending"
+      "15": "Following"
 
     categories:
       all: "All Categories"
@@ -590,6 +591,7 @@ en:
         rate_limit_error: "Posts can be downloaded once per day, please try again tomorrow."
       new_invitation_code: "New Invitation Code"
       new_private_message: "New Message"
+      new_private_message_to_admin: "Send Message to Admin"
       private_message: "Message"
       private_messages: "Messages"
       activity_stream: "Activity"
@@ -737,7 +739,8 @@ en:
         title: "Change Phone Number"
         taken: "Sorry, that phone number is already registered to another user."
         error: "There was an error changing your phone number. Perhaps that phone number is already in use?"
-        success: "We've sent an sms to that phone number. Please enter the verification code for confirmation."
+        success: "Successfully updated!"
+        success_staff: "Your phone number is successfully updated!"
 
       change_avatar:
         title: "Change your profile picture"
@@ -790,7 +793,7 @@ en:
         prefilled: "Email matches this registered username"
 
       story:
-        title: "My Story"
+        title: "Story"
         instructions: "You can add your story here (optional)"
         instructions_required: "Share your story here"
         short_instructions: "People can read your story"
@@ -1717,10 +1720,10 @@ en:
           "0_2": 'You are ignoring all notifications on this topic.'
           "0": 'You are ignoring all notifications on this topic.'
         watching_pm:
-          title: "Watching"
+          title: "Following"
           description: "You will be notified of every new reply in this message, and a count of new replies will be shown."
         watching:
-          title: "Watching"
+          title: "Following"
           description: "You will be notified of every new reply in this topic, and a count of new replies will be shown."
         tracking_pm:
           title: "Tracking"
@@ -2198,7 +2201,7 @@ en:
       parent: "Parent Category"
       notifications:
         watching:
-          title: "Watching"
+          title: "Following"
           description: "You will automatically watch all topics in these categories. You will be notified of every new post in every topic, and a count of new replies will be shown."
         watching_first_post:
           title: "Watching First Post"
@@ -2357,6 +2360,19 @@ en:
           one: "Recommended People (1)"
           other: "Recommended People ({{count}})"
         help: "recommended people"
+
+    following:
+      title: "Following"
+      title_with_count:
+        one: "Following (1)"
+        other: "Following ({{count}})"
+      help: "all followings"
+      topics:
+        title: "Following Topics"
+        title_with_count:
+          one: "Following Topics (1)"
+          other: "Following Topics ({{count}})"
+        help: "following topics"
 
     filters:
       with_topics: "%{filter} topics"
@@ -2576,7 +2592,7 @@ en:
 
       notifications:
         watching:
-          title: "Watching"
+          title: "Following"
           description: "You will automatically watch all topics in this tag. You will be notified of all new posts and topics, plus the count of unread and new posts will also appear next to the topic."
         watching_first_post:
           title: "Watching First Post"

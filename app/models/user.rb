@@ -882,7 +882,7 @@ class User < ActiveRecord::Base
   end
 
   def phone_number
-    phone_number = PhoneNumber.find_by_user_id(self.id)
+    phone_number = PhoneNumber.where(user_id: self.id).last
     if phone_number.present?
      return phone_number.number
     else

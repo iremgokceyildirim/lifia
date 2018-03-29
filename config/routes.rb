@@ -41,6 +41,8 @@ Discourse::Application.routes.draw do
 
   get "recommended/people" => "recommended#people"
 
+  get "following/topics" => "list#topics_followed_by", as: "topics_followed_by"# "following#topics"
+
   get "finish-installation" => "finish_installation#index"
   get "finish-installation/register" => "finish_installation#register"
   post "finish-installation/register" => "finish_installation#register"

@@ -168,15 +168,15 @@ class TopicQuery
     create_list(:recommended, {}, recommended_results(search:"community"))#search keyword for recommendation based on narrative matching
   end
 
-  # The following topics
-  def list_following
-    create_list(:following, {}, following_results(filter:['bookmarked','liked']))
-  end
-
-  # The justme topics
-  def list_justme
-    create_list(:justme) {|l| l.where('tu.posted') }
-  end
+  # # The following topics
+  # def list_following
+  #   create_list(:following, {}, following_results(filter:['bookmarked','liked']))
+  # end
+  #
+  # # The justme topics
+  # def list_justme
+  #   create_list(:justme) {|l| l.where('tu.posted') }
+  # end
 
   # The latest view of topics
   def list_latest
@@ -222,6 +222,17 @@ class TopicQuery
     create_list(:user_topics) do |topics|
       topics.where(user_id: user.id)
     end
+  end
+
+  def list_topics_followed_by(user)
+    # #@options[:filtered_to_user] = user.id
+    # create_list(:following_topics) do |topics|
+    #   # topics = TopicUser.joins(:topic)
+    #   #   .where(:user => user,
+    #   #          :notification_level => TopicUser.notification_levels[:watching])
+    #   topics.where("tu.notification_level >= :watching")
+    # end
+    create_list(:following_topics) { |l| l.where('tu.notification_level >= :watching', watching: TopicUser.notification_levels[:watching]) }
   end
 
   def list_story_by(user)

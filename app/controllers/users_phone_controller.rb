@@ -14,6 +14,7 @@ class UsersPhoneController < ApplicationController
 
   def update
     params.require(:phone_number)
+    params.require(:verification_code)
 
 
     if params[:phone_number] && params[:phone_number].length > 0
@@ -32,25 +33,17 @@ class UsersPhoneController < ApplicationController
     end
 
     if phone_number_record.errors.present?
-      return render_json_error(updater.errors.full_messages)
+      return render_json_error(phone_number_record.errors.full_messages)
+    else
+      render json: {success: true}
     end
-
-    render body: nil
-  rescue RateLimiter::LimitExceeded
-    render_json_error(I18n.t("rate_limiter.slow_down"))
   end
 
-  def confirm
-    expires_now
-    updater = EmailUpdater.new
-    @update_result = updater.confirm(params[:token])
+  private
 
-    if @update_result == :complete
-      updater.user.user_stat.reset_bounce_score!
-      log_on_user(updater.user)
+    def fail_with(key)
+      render json: { success: false, message: I18n.t(key) }
     end
 
-    render layout: 'no_ember'
-  end
 
 end

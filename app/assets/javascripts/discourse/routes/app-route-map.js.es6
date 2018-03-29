@@ -10,6 +10,10 @@ export default function() {
       this.route('people');
   });
 
+    this.route('following', {path: '/following', resetNamespace: true}, function() {
+        this.route('topics');
+    });
+
   // Topic routes
   this.route('topic', { path: '/t/:slug/:id', resetNamespace: true }, function() {
     this.route('fromParams', { path: '/' });

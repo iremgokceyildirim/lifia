@@ -86,7 +86,7 @@ export default Ember.Mixin.create({
             });
         }
 
-        else if (this.get('sentSMS') == true && this.get('verificationCode')=='') {
+        else if (this.get('sentSMS') == false || (this.get('sentSMS') == true && this.get('verificationCode')=='')) {
             return InputValidation.create({
                 failed: true,
                 reason: I18n.t('user.phone_number.verification_code_empty')

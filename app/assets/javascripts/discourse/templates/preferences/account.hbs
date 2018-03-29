@@ -85,6 +85,16 @@
     </div>
     {{preference-checkbox labelKey="user.phone_number.enable" checked=model.user_option.enable_phone_number}}
 
+    <br>
+    <div class="control-label">
+        <a class='btn btn-primary' {{action "composePrivateMessage"}}>
+            {{d-icon "envelope"}}
+            {{i18n 'user.new_private_message_to_admin'}}
+        </a>
+    </div>
+    <div class='instructions'>
+        If you no longer have access the current phone, send an email to the admin. <!-- TODO: Add locale-->
+    </div>
 </div>
 
 

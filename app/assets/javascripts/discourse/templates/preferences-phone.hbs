@@ -31,7 +31,7 @@
             <div class="control-group">
                 <label class="control-label">{{i18n 'user.phone_number.title'}}</label>
                 <div class="controls">
-                    {{input value=accountPhoneNumber id="change-phone-number" name="phone_number"  maxlength=maxPhoneNumberLength autocomplete="off" classNames="input-xxlarge" autofocus="autofocus"}}
+                    {{input type=tel value=accountPhoneNumber disabled=sentSMS id="change-phone-number" name="phone_number"  maxlength=maxPhoneNumberLength autocomplete="off" classNames="input-xxlarge" autofocus="autofocus"}}
                     &nbsp;{{input-tip validation=phoneNumberTypeValidation id="phone-number-validation"}}
                 </div>
                 <div class='instructions'>
@@ -51,12 +51,13 @@
                     {{#conditional-loading-spinner condition=sendingSMS size="small"}}{{/conditional-loading-spinner}}
                     {{#if sentSMS}}<span class='result-message'>{{i18n 'create_account.verification_sent'}}</span>{{/if}}
 
-
+                    <br><br>
                     {{#if sentSMS}}
                         <label for='new-account-phone-verification'>Verification Code</label>
                         {{input value=verificationCode id="new-account-phone-verification" name="verification_code" maxlength=verificationCodeLength autocomplete="off"}}
                         &nbsp;{{input-tip validation=verificationCodeValidation id="verification-code-validation"}}
                     {{/if}}
+                    <br><br>
                     <button class="btn btn-primary" {{action "updatePhoneNumber"}} disabled={{saveDisabled}}>{{saveButtonText}}</button>
                 </div>
             </div>

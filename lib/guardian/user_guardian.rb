@@ -26,6 +26,11 @@ module UserGuardian
     can_edit?(user)
   end
 
+  def can_show_phone_number?(user)
+    return true if user.user_option.enable_phone_number
+    return false
+  end
+
   # def can_edit_phone_number?(user)
   #   # return false if not(SiteSetting.enable_change_phone_number?)
   #   #return true if is_staff?
