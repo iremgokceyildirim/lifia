@@ -1,8 +1,11 @@
 import { ajax } from 'discourse/lib/ajax';
+import TopicList from 'discourse/models/topic-list';
+
 export default Discourse.Route.extend({
     model() {
         //return this.modelFor("user");
-        return ajax("/following/topics").then(result => result.topic_list);
+        //return ajax("/following/topics").then(result => Ember.Object.create(result.topic_list));
+        return ajax("/following/topics").then(result => TopicList.create(result));
         //return this.store.findFiltered('topicList', {filter: 'topics/followed-by/'});
     },
 

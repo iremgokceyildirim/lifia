@@ -20,6 +20,7 @@ export default Discourse.Route.extend(OpenComposer, {
     }
 
     this.controllerFor('navigation/default').set('isFollowingActive', '');
+    this.controllerFor('navigation/default').set('isRecommendedActive', '');
   },
 
   actions: {

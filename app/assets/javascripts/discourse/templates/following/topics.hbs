@@ -1,35 +1,18 @@
 <h3>{{d-icon "topics"}} {{i18n 'following.topics.title'}}</h3>
 
-<table class="topic-list">
-    <thead>
-    {{raw "topic-list-header" currentUser=currentUser
-          canBulkSelect=canBulkSelect
-          toggleInTitle=toggleInTitle
-          hideCategory=hideCategory
-          showPosters=showPosters
-          showLikes=showLikes
-          showOpLikes=showOpLikes
-          showParticipants=showParticipants
-          order=order
-          ascending=ascending
-          sortable=sortable
-          bulkSelectEnabled=bulkSelectEnabled}}
-    </thead>
-    <tbody>
-    {{#each model.topics as |topic|}}
-        <tr>
-            <td>{{topic.title}}</td>
-            <td>{{raw "list/category-column" category=topic.category}}</td>
-            {{raw "list/posters-column" posters=topic.posters}}
-            <td>{{topic.reply_count}}</td>
-            <td>{{topic.views}}</td>
-            {{raw "list/activity-column" topic=topic class="num" tagName="td"}}
-        </tr>
-    {{/each}}
-    </tbody>
-</table>
-
-
+{{#if hasTopics}}
+{{topic-list
+        highlightLastVisited=true
+        top=top
+        showPosters=true
+        currentUser=currentUser
+        hideCategory=false
+        changeSort="changeSort"
+        order=order
+        ascending=ascending
+        category=category
+        topics=model.topics}}
+{{/if}}
 
 
 

@@ -66,7 +66,14 @@ class CategoriesController < ApplicationController
 
     result.categories = category_list
 
-    render_serialized(result, CategoryListSerializer, root: false)
+    respond_to do |format|
+      format.html do
+
+      end
+
+      format.json { render_serialized(result, CategoryListSerializer) }
+    end
+
   end
 
   def categories_and_latest

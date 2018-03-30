@@ -81,6 +81,7 @@ export default Ember.Component.extend({
     // this is more efficient cause we keep appending to list
     // work backwards
     let start = 0;
+    //alert(topics[start].get('pinned'));
     while(topics[start] && topics[start].get('pinned')) {
       start++;
     }
