@@ -6,6 +6,20 @@ export default Discourse.Route.extend({
         //return this.store.findFiltered('topicList', {filter: 'topics/followed-by/'});
     },
 
+    setupController(controller, model) {
+        controller.set("model", model);
+
+        this.controllerFor('navigation/default').setProperties({
+            'canCreateTopic': false,
+            'isFollowingActive': 'active'
+        });
+    },
+
+    renderTemplate() {
+        this.render();
+        this.render("navigation/default", { outlet: "navigation-bar" });
+    },
+
     actions: {
         didTransition() {
             this.controllerFor("application").set("showFooter", true);

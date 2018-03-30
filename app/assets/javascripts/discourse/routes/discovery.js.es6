@@ -18,6 +18,8 @@ export default Discourse.Route.extend(OpenComposer, {
       const period = Discourse.User.currentProp("redirect_to_top.period") || "all";
       this.replaceWith(`discovery.top${period.capitalize()}`);
     }
+
+    this.controllerFor('navigation/default').set('isFollowingActive', '');
   },
 
   actions: {

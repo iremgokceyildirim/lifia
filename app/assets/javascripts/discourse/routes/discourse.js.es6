@@ -6,6 +6,8 @@ const DiscourseRoute = Ember.Route.extend({
   // changes
   resfreshQueryWithoutTransition: false,
 
+
+
   refresh() {
     if (!this.refreshQueryWithoutTransition) { return this._super(); }
 
