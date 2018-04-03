@@ -23,6 +23,16 @@ class User < ActiveRecord::Base
   has_many :notifications, dependent: :destroy
   has_many :topic_users, dependent: :destroy
   has_many :category_users, dependent: :destroy
+  has_and_belongs_to_many :followers,
+                          class_name: "User",
+                          join_table: :following_users,
+                          foreign_key: "followee_user_id",
+                          association_foreign_key: "follower_user_id"
+  has_and_belongs_to_many :followees,
+                          class_name: "User",
+                          join_table: :following_users,
+                          foreign_key: "follower_user_id",
+                          association_foreign_key: "followee_user_id"
   has_many :tag_users, dependent: :destroy
   has_many :user_api_keys, dependent: :destroy
   has_many :topics
@@ -242,6 +252,10 @@ class User < ActiveRecord::Base
 
   def self.find_by_email(email)
     self.with_email(Email.downcase(email)).first
+  end
+
+  def unfollow (user)     #for Following Users
+    FollowingUser.where(follower_user: self, followee_user: user).update(notification_level: NotificationLevels.user_levels[:regular])
   end
 
   def self.find_by_phone_number(phone_number)

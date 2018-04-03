@@ -13,4 +13,11 @@ module NotificationLevels
                                tracking: 2,
                                watching: 3)
   end
+
+  def self.user_levels
+    @user_levels ||= Enum.new(muted: 0,
+                               regular: 1,
+                               tracking: 2,
+                               following: 3)
+  end
 end
