@@ -41,8 +41,10 @@ Discourse::Application.routes.draw do
 
   get "recommended/people" => "recommended#people"
 
-  get "following/topics" => "list#topics_followed_by", as: "topics_followed_by"# "following#topics"
-  get "following/categories" => "categories#followed_by"
+
+  get "following/topics" => "following#topics"
+  get "following/categories" => "categories#followed"
+  get "following/people" => "following#people"
 
   get "finish-installation" => "finish_installation#index"
   get "finish-installation/register" => "finish_installation#register"
@@ -396,6 +398,8 @@ Discourse::Application.routes.draw do
     get "#{root_path}/:username/invited/:filter" => "users#invited", constraints: { username: USERNAME_ROUTE_FORMAT }
     post "#{root_path}/action/send_activation_email" => "users#send_activation_email"
     get "#{root_path}/:username/story" => "users#story", constraints: {username: USERNAME_ROUTE_FORMAT}
+    post "#{root_path}/:username/follow" => "users#follow", constraints: {username: USERNAME_ROUTE_FORMAT}
+    post "#{root_path}/:username/unfollow" => "users#unfollow", constraints: {username: USERNAME_ROUTE_FORMAT}
     get "#{root_path}/:username/invitation-codes" => "users#invitation_codes", constraints: { username: USERNAME_ROUTE_FORMAT }
     get "#{root_path}/:username/summary" => "users#show", constraints: { username: USERNAME_ROUTE_FORMAT }
     get "#{root_path}/:username/activity/topics.rss" => "list#user_topics_feed", format: :rss, constraints: { username: USERNAME_ROUTE_FORMAT }

@@ -1,0 +1,22 @@
+<h3>{{d-icon "topics"}} {{i18n 'following.people.title'}}</h3>
+<div class="container">
+    <div class='directory'>
+{{#conditional-loading-spinner condition=model.loading}}
+    {{#if model}}
+        <div class='total-rows'>{{i18n "directory.total_rows" count=model.length}}</div>
+
+        {{user-list
+            currentUser=currentUser
+            changeSort="changeSort"
+            order=order
+            ascending=ascending
+            category=category
+            users=model}}
+        {{conditional-loading-spinner condition=model.loadingMore}}
+    {{else}}
+        <div class='clearfix'></div>
+        <p>{{i18n "directory.no_results"}}</p>
+    {{/if}}
+{{/conditional-loading-spinner}}
+    </div>
+</div>

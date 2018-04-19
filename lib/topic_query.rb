@@ -413,34 +413,6 @@ class TopicQuery
     result
   end
 
-  def following_results(options={})
-    result = default_results(options)
-    result = remove_muted_topics(result, @user) unless options && options[:state] == "muted".freeze
-    result = remove_muted_categories(result, @user, exclude: options[:category])
-    result = remove_muted_tags(result, @user, options)
-
-    # plugins can remove topics here:
-    self.class.results_filter_callbacks.each do |filter_callback|
-      result = filter_callback.call(:following, result, @user, options)
-    end
-
-    result
-  end
-
-  def justme_results(options={})
-    result = default_results(options)
-    result = remove_muted_topics(result, @user) unless options && options[:state] == "muted".freeze
-    result = remove_muted_categories(result, @user, exclude: options[:category])
-    result = remove_muted_tags(result, @user, options)
-
-    # plugins can remove topics here:
-    self.class.results_filter_callbacks.each do |filter_callback|
-      result = filter_callback.call(:justme, result, @user, options)
-    end
-
-    result
-  end
-
   def latest_results(options = {})
     result = default_results(options)
     result = remove_muted_topics(result, @user) unless options && options[:state] == "muted".freeze

@@ -26,7 +26,6 @@ class ListController < ApplicationController
 
   before_action :ensure_logged_in, except: [
     :topics_by,
-    :topics_followed_by,
     :story_by,
     # anonymous filters
     Discourse.anonymous_filters,
@@ -131,16 +130,6 @@ class ListController < ApplicationController
     list = generate_list_for("topics_by", target_user, list_opts)
     list.more_topics_url = url_for(construct_url_with(:next, list_opts))
     list.prev_topics_url = url_for(construct_url_with(:prev, list_opts))
-    respond_with_list(list)
-  end
-
-  def topics_followed_by
-    @title = I18n.t('js.following.topics.title')
-    list_opts = build_topic_list_options
-    user = list_target_user
-    list = generate_list_for("topics_followed_by", user, list_opts)
-    list.more_topics_url = construct_url_with(:next, list_opts)
-    list.prev_topics_url = construct_url_with(:prev, list_opts)
     respond_with_list(list)
   end
 

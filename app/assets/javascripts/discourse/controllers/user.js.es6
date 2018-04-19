@@ -1,6 +1,9 @@
 import CanCheckEmails from 'discourse/mixins/can-check-emails';
 import computed from 'ember-addons/ember-computed-decorators';
 import User from 'discourse/models/user';
+import { ajax } from 'discourse/lib/ajax';
+import { userPath } from 'discourse/lib/url';
+
 
 export default Ember.Controller.extend(CanCheckEmails, {
   indexStream: false,
@@ -80,6 +83,22 @@ export default Ember.Controller.extend(CanCheckEmails, {
     }
   },
 
+
+    isFollowed: function() {
+      console.log('followingStatus');
+      const followersIds = this.get('model.followers').map(user => {return user.id});
+      if (followersIds.includes(this.currentUser.id))
+          return true;
+      else
+          return false;
+    }.property('model.followers.@each.id'),
+
+    isfollowingStatusChanged: Ember.observer('isFollowed', function() {
+        //alert("b");ember
+        // deal with the change
+        console.log(`isFollowed changed to: ${this.get('isFollowed')}`);
+    }),
+
   actions: {
     expandProfile() {
       this.set('forceExpand', true);
@@ -90,6 +109,31 @@ export default Ember.Controller.extend(CanCheckEmails, {
       const AdminUser = requirejs('admin/models/admin-user').default;
       AdminUser.find(this.get('model.id')).then(user => user.destroy({deletePosts: true}));
     },
+
+      followUser(user) {
+          const recipient = user ? user.get('username_lower') : '';
+          //alert(recipient);
+          //alert(this.currentUser.username);
+          //alert(user.get('username_lower'));
+          ajax(userPath(`${this.currentUser.username}/follow`), {data: {followee: recipient}, method: 'POST' }).then((result) => { //:username => this.currentUser.username, :followee => recipient
+              alert("Successfully Followed!");
+              //alert(result.success);
+              this.set('isFollowed', true);
+          });
+      },
+
+      unfollowUser(user) {
+          console.log("user controller");
+          const recipient = user ? user.get('username_lower') : '';
+          //alert(recipient);
+          //alert(this.currentUser.username);
+          //alert(user.get('username_lower'));
+          ajax(userPath(`${this.currentUser.username}/unfollow`), {data: {followee: recipient}, method: 'POST' }).then((result) => { //:username => this.currentUser.username, :followee => recipient
+              alert("Successfully Unfollowed!");
+              //alert(result.success);
+              this.set('isFollowed', false);
+          });
+      },
 
   }
 });

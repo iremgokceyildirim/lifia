@@ -6,6 +6,7 @@ import { default as computed, observes } from 'ember-addons/ember-computed-decor
 import DiscourseURL from 'discourse/lib/url';
 import User from 'discourse/models/user';
 import { userPath } from 'discourse/lib/url';
+import { ajax } from 'discourse/lib/ajax';
 
 const clickOutsideEventName = "mousedown.outside-user-card";
 const clickDataExpand = "click.discourse-user-card";
@@ -29,6 +30,7 @@ export default Ember.Component.extend(CleansUp, {
   showDelete: Ember.computed.and("viewingAdmin", "showName", "user.canBeDeleted"),
   linkWebsite: Ember.computed.not('user.isBasic'),
   hasLocationOrWebsite: Ember.computed.or('user.location', 'user.website_name'),
+    notMe: propertyNotEqual('user.username', 'currentUser.username'),
 
   visible: false,
   user: null,
@@ -40,6 +42,7 @@ export default Ember.Component.extend(CleansUp, {
 
   // If inside a topic
   topicPostCount: null,
+  //followingPeopleController: Ember.inject.controller('following-people'),
 
   @computed('user.name')
   nameFirst(name) {
@@ -247,6 +250,21 @@ export default Ember.Component.extend(CleansUp, {
     $('#main').off(clickDataExpand).off(clickMention);
   },
 
+    isFollowed: function() {
+        console.log('followingStatus');
+        const followersIds = this.get('user.followers').map(user => {return user.id});
+        if (followersIds.includes(this.currentUser.id))
+            return true;
+        else
+            return false;
+    }.property('user.followers.@each.id'),
+
+    isfollowingStatusChanged: Ember.observer('isFollowed', function() {
+        //alert("b");ember
+        // deal with the change
+        console.log(`fullName changed to: ${this.get('isFollowed')}`);
+    }),
+
   actions: {
     cancelFilter() {
       const postStream = this.get('postStream');
@@ -271,6 +289,42 @@ export default Ember.Component.extend(CleansUp, {
     showUser() {
       this.sendAction('showUser', this.get('user'));
       this._close();
-    }
+    },
+
+      followUser() {
+          const self = this;
+          const followee = this.get('user.username_lower');
+          //alert(followee);
+          //alert(this.currentUser.username);
+          ajax(userPath(`${this.currentUser.username}/follow`), {data: {followee: followee}, method: 'POST' }).then((result) => { //:username => this.currentUser.username, :followee => recipient
+              alert("Successfully Followed!");
+              //alert(result.success);
+              this.set('isFollowed', true);
+              // const target = self.get('cardTarget');
+              // self._close();
+              // target.focus();
+          });
+      },
+
+      unfollowUser() {
+        console.log("user card contents component");
+        //this.sendAction('removeFollowingUser', this.get('user'));
+          const self = this;
+          const followee = this.get('user.username_lower');
+          //alert(followee);
+          //alert(this.currentUser.username);
+          ajax(userPath(`${this.currentUser.username}/unfollow`), {data: {followee: followee}, method: 'POST' }).then((result) => { //:username => this.currentUser.username, :followee => recipient
+              alert("Successfully Unfollowed!");
+              //alert(result.success);
+              this.set('isFollowed', false);
+              const target = self.get('cardTarget');
+              self.sendAction('removeFollowingUser', this.get('user'));
+              self._close();
+              target.focus();
+              //return window.location.reload();
+
+          });
+      },
+
   }
 });

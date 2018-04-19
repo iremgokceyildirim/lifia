@@ -223,6 +223,26 @@ class UsersController < ApplicationController
     # end
   end
 
+  def follow
+    puts params
+    followee = User.find_by(username_lower: params[:followee])
+    if current_user.follow(followee)
+      render json: { success: true}
+    else
+      render json: { success: false}
+    end
+  end
+
+  def unfollow
+    puts params
+    followee = User.find_by(username_lower: params[:followee])
+    if current_user.unfollow(followee)
+      render json: { success: true}
+    else
+      render json: { success: false}
+    end
+  end
+
   def invitation_codes
     invitation_codes = InvitationCode.find_by(owner_user: current_user)
     render_json_dump invitation_codes: serialize_data(invitation_codes.to_a, InvitationCodeSerializer)

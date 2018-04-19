@@ -54,7 +54,6 @@ const ApplicationRoute = Discourse.Route.extend(OpenComposer, {
     },
 
     composePrivateMessage(user, post) {
-
       const recipient = user ? user.get('username') : '',
           reply = post ? window.location.protocol + "//" + window.location.host + post.get("url") : null;
 

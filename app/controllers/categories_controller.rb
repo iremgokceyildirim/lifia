@@ -48,7 +48,7 @@ class CategoriesController < ApplicationController
     end
   end
 
-  def followed_by
+  def followed
     discourse_expires_in 1.minute
 
     category_options = {

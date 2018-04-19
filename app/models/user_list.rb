@@ -4,7 +4,9 @@ class UserList
   attr_accessor :filter,
                 :per_page,
                 :current_user,
-                :users
+                :users,
+                :more_users_url,
+                :prev_users_url
 
   def initialize(filter, current_user, users, opts = nil)
     @filter = filter

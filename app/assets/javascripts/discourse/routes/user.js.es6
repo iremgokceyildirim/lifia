@@ -65,7 +65,7 @@ export default Discourse.Route.extend({
     this.searchService.set('searchContext', user.get('searchContext'));
 
     const composerController = this.controllerFor("composer");
-    controller.set("model", user);
+    controller.set("model", user); //TODO: what was that?
     if (this.currentUser) {
       Draft.get("new_private_message").then(function(data) {
         if (data.draft) {

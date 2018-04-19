@@ -81,6 +81,10 @@ class UserSerializer < BasicUserSerializer
   has_one  :card_badge, embed: :object, serializer: BadgeSerializer
   has_one :user_option, embed: :object, serializer: UserOptionSerializer
 
+  has_many :followers, embed: :object, serializer: BasicUserSerializer
+  has_many :followees, embed: :object, serializer: BasicUserSerializer
+
+
   def include_user_option?
     can_edit
   end

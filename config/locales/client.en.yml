@@ -593,6 +593,8 @@ en:
       new_private_message: "New Message"
       new_private_message_to_admin: "Send Message to Admin"
       private_message: "Message"
+      follow: "Follow"
+      unfollow: "Unfollow"
       private_messages: "Messages"
       activity_stream: "Activity"
       preferences: "Preferences"
@@ -2379,6 +2381,12 @@ en:
           one: "Following Categories (1)"
           other: "Following Categories ({{count}})"
         help: "following categories"
+      people:
+        title: "Following People"
+        title_with_count:
+          one: "Following People (1)"
+          other: "Following People ({{count}})"
+        help: "following people"
 
     filters:
       with_topics: "%{filter} topics"

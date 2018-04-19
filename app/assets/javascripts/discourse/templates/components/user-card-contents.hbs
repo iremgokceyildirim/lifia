@@ -36,6 +36,25 @@
     </div>
 
     <ul class="usercard-controls">
+      {{#if notMe}}
+            {{#if isFollowed}}
+            <li>
+                {{d-button
+                        class="btn-primary"
+                        action=(action "unfollowUser")
+                        icon="user-times"
+                        label="user.unfollow"}}
+            </li>
+            {{else}}
+            <li>
+                {{d-button
+                        class="btn-primary"
+                        action=(action "followUser")
+                        icon="user-plus"
+                        label="user.follow"}}
+            </li>
+            {{/if}}
+      {{/if}}
       {{#if user.can_send_private_message_to_user}}
         <li>
           {{d-button

@@ -13,6 +13,7 @@ export default function() {
     this.route('following', {path: '/following', resetNamespace: true}, function() {
         this.route('topics');
         this.route('categories');
+        this.route('people');
     });
 
   // Topic routes
@@ -82,6 +83,8 @@ export default function() {
   this.route('user', { path: '/u/:username', resetNamespace: true }, function() {
     this.route('summary');
     this.route('story');
+    this.route('follow');
+    this.route('unfollow');
     this.route('userActivity', { path: '/activity', resetNamespace: true }, function() {
       this.route('topics');
       this.route('replies');

@@ -28,7 +28,8 @@ export default Discourse.Route.extend({
 
         this.controllerFor('navigation/default').setProperties({
             'canCreateTopic': false,
-            'isFollowingActive': 'active'
+            'isFollowingActive': 'active',
+            'isRecommendedActive': ''
         });
     },
 

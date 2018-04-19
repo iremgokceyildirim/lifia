@@ -10,7 +10,7 @@ module UserListResponder
       format.html do
         @users = list.users
         #store_preloaded(list.preload_key, MultiJson.dump(UserListSerializer.new(list, scope: guardian)))
-        render 'recommended/people'
+        render 'list/list_users'
       end
       format.json do
         render_serialized(list.users, UserListSerializer)

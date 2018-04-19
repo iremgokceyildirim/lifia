@@ -255,7 +255,20 @@ class User < ActiveRecord::Base
   end
 
   def unfollow (user)     #for Following Users
-    FollowingUser.where(follower_user: self, followee_user: user).update(notification_level: NotificationLevels.user_levels[:regular])
+    #FollowingUser.where(follower_user: self, followee_user: user).update(notification_level: NotificationLevels.user_levels[:regular])
+    FollowingUser.where(follower_user: self, followee_user: user).destroy_all
+  end
+
+  def follow (user)
+    FollowingUser.create(follower_user: self, followee_user: user, notification_level: NotificationLevels.user_levels[:following])
+  end
+
+  def is_following (user)
+    if FollowingUser.where(follower_user: self, followee_user: user).take.nil?
+      return false
+    else
+      return true
+    end
   end
 
   def self.find_by_phone_number(phone_number)

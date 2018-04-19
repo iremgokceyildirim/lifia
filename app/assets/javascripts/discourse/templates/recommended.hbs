@@ -1,0 +1,23 @@
+<div class="container">
+    {{discourse-banner user=currentUser banner=site.banner}}
+</div>
+
+<div class="list-controls">
+    <div class="container">
+        {{outlet "navigation-bar"}}
+    </div>
+</div>
+
+{{conditional-loading-spinner condition=loading}}
+
+<div class="container list-container {{if loading "hidden"}}">
+    <div class="row">
+        <div class="full-width">
+            <div id="list-area">
+                {{outlet}}
+            </div>
+        </div>
+    </div>
+</div>
+
+{{plugin-outlet name="discovery-below"}}

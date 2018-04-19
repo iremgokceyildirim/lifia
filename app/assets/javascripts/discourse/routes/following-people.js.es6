@@ -1,12 +1,8 @@
 import { ajax } from 'discourse/lib/ajax';
-import TopicList from 'discourse/models/topic-list';
-
 export default Discourse.Route.extend({
     model() {
         //return this.modelFor("user");
-        //return ajax("/following/topics").then(result => Ember.Object.create(result.topic_list));
-        return ajax("/following/topics").then(result => TopicList.create(result));
-        //return this.store.findFiltered('topicList', {filter: 'topics/followed-by/'});
+        return ajax("/following/people.json").then(result => result);
     },
 
     setupController(controller, model) {
@@ -28,6 +24,16 @@ export default Discourse.Route.extend({
         didTransition() {
             this.controllerFor("application").set("showFooter", true);
             return true;
-        }
+        },
+
+        removeFollowingUser(user) {
+            console.log("following people route");
+            //let userToRemove = model.findBy('id', user.id)
+
+            //alert(userToRemove.id);
+            //model.removeObject(user);
+            //alert(model.length);
+            this.refresh();
+        },
     }
 });

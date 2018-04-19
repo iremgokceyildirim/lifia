@@ -150,23 +150,23 @@ class UserQuery
          slow_platform)
   end
 
-
-
-
-
-
-
-
-
-
   def list_recommended
     create_list(:recommended, {}, recommended_results)
   end
 
-  def recommended_results(options = {})
+  def list_following
+    create_list(:following, {}, following_results)
+  end
+
+  def recommended_results
     recommender = UserRecommenderByStory.new(@user)
     #recommender.update_similarity
     result = recommender.recommended_users
+    result
+  end
+
+  def following_results
+    result = @user.followees
     result
   end
 
