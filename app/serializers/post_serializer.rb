@@ -31,7 +31,10 @@ class PostSerializer < BasicPostSerializer
              :topic_slug,
              :topic_title,
              :topic_html_title,
+             :topic_url,
              :category_id,
+             :category_title,
+             :category_url,
              :display_username,
              :primary_group_name,
              :primary_group_flair_url,
@@ -69,7 +72,8 @@ class PostSerializer < BasicPostSerializer
              :is_auto_generated,
              :action_code,
              :action_code_who,
-             :last_wiki_edit
+             :last_wiki_edit,
+             :url
 
   def initialize(object, opts)
     super(object, opts)
@@ -96,12 +100,24 @@ class PostSerializer < BasicPostSerializer
     @add_title
   end
 
+  def category_title
+    object.topic.category.name
+  end
+
+  def category_url
+    object.topic.category.url
+  end
+
   def topic_title
     object.topic.title
   end
 
   def topic_html_title
     object.topic.fancy_title
+  end
+
+  def topic_url
+    object.topic.url
   end
 
   def category_id

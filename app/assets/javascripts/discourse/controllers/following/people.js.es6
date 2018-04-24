@@ -1,3 +1,4 @@
+
 export default Ember.Controller.extend({
     // update: function() {
     //     console.log('model changed');

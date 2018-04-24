@@ -27,10 +27,28 @@ class FollowingController < ListController
     list_opts[:slow_platform] = slow_platform?
     user = current_user
     list = UserQuery.new(user, list_opts).public_send("list_following")
+    list_latest_posts = []
+    list.users.each do |user|
+      if user.posts
+        list_latest_posts << user.posts.last
+        # if posts.last.last_version_at < current_user.last_seen_at
+        #
+        # end
+      end
+    end
+
     list.more_users_url = construct_url_with(:next, list_opts)
     list.prev_users_url = construct_url_with(:prev, list_opts)
     @title = "Following People"
     respond_with_user_list(list)
+    # respond_to do |format|
+    #   format.html do
+    #     render html: '', layout: true
+    #   end
+    #   format.json do
+    #     render_serialized(list_latest_posts, PostSerializer)
+    #   end
+    # end
   end
 
   private

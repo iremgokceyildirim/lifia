@@ -5,14 +5,39 @@
     {{#if model}}
         <div class='total-rows'>{{i18n "directory.total_rows" count=model.length}}</div>
 
-        {{user-list
-            currentUser=currentUser
-            changeSort="changeSort"
-            order=order
-            ascending=ascending
-            category=category
-            users=model}}
-        {{conditional-loading-spinner condition=model.loadingMore}}
+
+        <table>
+            <thead>
+                <th>Category</th>
+                <th>Topic</th>
+                <th>Post</th>
+                <th>User</th>
+                <th>Time</th>
+            </thead>
+
+        <tbody>
+        {{#each model as |user|}}
+            <td class='category'>
+                <a href="{{unbound user.latest_post.category_url}}" class="fancy-title">
+                {{{user.latest_post.category_title}}}
+                </a>
+                {{raw "list/category-column" category=user.latest_post.category}}
+                {{user.latest_post.category}}
+            </td>
+            <td>
+                <a href="{{unbound user.latest_post.topic_url}}" class="fancy-title">
+                    {{{user.latest_post.topic_title}}}
+                </a>
+            </td>
+            <td><span>
+                    <a class='permalink' href="{{user.latest_post.url}}" class="raw-link raw-topic-link">{{text-overflow class="overflow" text=user.latest_post.cooked}}</a>
+                </span>
+            </td>
+            <td>{{user-info user=user}}</td>
+            <td>{{user.latest_post.created_at}}</td>
+        {{/each}}
+        </tbody>
+        </table>
     {{else}}
         <div class='clearfix'></div>
         <p>{{i18n "directory.no_results"}}</p>

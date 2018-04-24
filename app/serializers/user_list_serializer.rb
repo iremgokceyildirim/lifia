@@ -20,12 +20,21 @@ class UserListSerializer < BasicUserSerializer
              :approved,
              :blocked,
              :time_read,
-             :staged
+             :staged,
+             :latest_post
 
   [:days_visited, :topics_entered, :topic_count, :topic_reply_count, :likes_received, :likes_given].each do |sym|
     attributes sym
     define_method sym do
       object.user_stat.send(sym)
+    end
+  end
+
+  def latest_post
+    if object.posts
+      puts "irem"
+      puts scope
+      PostSerializer.new(object.posts.last, scope: scope, root: false, add_title: true).as_json
     end
   end
 
