@@ -26,16 +26,29 @@ class RecommendedController < ApplicationController
   def categories
     @title = I18n.t('js.recommended.categories.title') #TODO: add locale
     story_topic = current_user.story_topic
-    @categories = []
+    categories = []
     suggested_topics = TopicQuery.new(current_user).list_suggested_for(story_topic)
     if suggested_topics.topics
       suggested_topics.topics.each do |t|
-        if @categories.include?(t.category)
+        if categories.include?(t.category)
         else
-          @categories << t.category
+          categories << t.category
         end
       end
     end
+
+    category_options = {
+      is_homepage: current_homepage == "categories".freeze,
+      parent_category_id: params[:parent_category_id],
+      include_topics: false
+    }
+
+    result = CategoryList.new(guardian, category_options)
+    result.draft_key = Draft::NEW_TOPIC
+    result.draft_sequence = DraftSequence.current(current_user, Draft::NEW_TOPIC)
+    result.draft = Draft.get(current_user, Draft::NEW_TOPIC, result.draft_sequence) if current_user
+
+    result.categories = categories
 
     respond_to do |format|
       format.html do
@@ -43,7 +56,7 @@ class RecommendedController < ApplicationController
         render 'recommended/topics'
       end
       format.json do
-        render_serialized(@categories, CategorySerializer)
+        render_serialized(result, CategoryListSerializer)
       end
     end
   end
