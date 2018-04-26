@@ -4,7 +4,7 @@ module Jobs
 
     def execute(args)
       if(args[:user].nil?)
-        users = User.all
+        users = User.all #where(admin: false, moderator: false)
         users.each do |user|
           UserRecommenderByStory.new(user).update_similarity
         end

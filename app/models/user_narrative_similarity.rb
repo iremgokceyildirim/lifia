@@ -1,6 +1,18 @@
 class UserNarrativeSimilarity < ActiveRecord::Base
-  belongs_to :user1, class_name: 'User'
-  belongs_to :user2, class_name: 'User'
+  belongs_to :user1, class_name: 'User', dependent: :destroy
+  belongs_to :user2, class_name: 'User', dependent: :destroy
+
+  validate :validate_users_are_unique, on: :create
+
+  private
+
+  def validate_users_are_unique
+    if self.class.where(user1_id: user1.id, user2_id: user2.id)
+         .or(self.class.where(user1_id: user2.id, user2_id: user1.id))
+         .exists?
+      errors.add(:base, 'User 1 and User 2 combination exists!')
+    end
+  end
 end
 
 

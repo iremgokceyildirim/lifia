@@ -1,8 +1,6 @@
 
 export default Ember.Controller.extend({
-    // update: function() {
-    //     console.log('model changed');
-    // }.property('model'),
+    hasUsers: Em.computed.gt('model.users.length', 0),
 
     actions: {
         removeFollowingUser(user){

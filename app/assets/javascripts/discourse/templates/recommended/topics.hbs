@@ -1,7 +1,7 @@
-<h3>{{d-icon "topics"}} {{i18n 'following.people.title'}}</h3>
+<h3>{{d-icon "topics"}} {{i18n 'recommended.topics.title'}}</h3>
 
-{{#if hasUsers}}
-    {{user-with-post-list
+{{#if hasTopics}}
+    {{topic-list
             highlightLastVisited=true
             top=top
             showPosters=true
@@ -11,8 +11,5 @@
             order=order
             ascending=ascending
             category=category
-            users=model.users}}
-{{else}}
-    <div class='clearfix'></div>
-    <p>{{i18n "directory.no_results"}}</p>
+            topics=model.topics}}
 {{/if}}

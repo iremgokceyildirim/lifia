@@ -8,7 +8,7 @@ class FollowingController < ListController
   end
 
   def topics
-    @title = I18n.t('js.following.topics.title')
+    @title = I18n.t('js.following.topics.title') #TODO: add locale
     list_opts = build_topic_list_options
     user = current_user
     list = generate_list_for("topics_followed_by", user, list_opts)
@@ -40,7 +40,7 @@ class FollowingController < ListController
     list.more_users_url = construct_url_with(:next, list_opts)
     list.prev_users_url = construct_url_with(:prev, list_opts)
     @title = "Following People"
-    respond_with_user_list(list)
+    respond_with_user_list(list, {is_following: true})
     # respond_to do |format|
     #   format.html do
     #     render html: '', layout: true

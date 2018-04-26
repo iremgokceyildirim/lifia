@@ -1,20 +1,65 @@
 {{#unless skipHeader}}
     <thead>
-        <th>&nbsp;</th>
-        {{directory-toggle field="seen" order=order asc=asc}}
-        {{directory-toggle field="likes_received" order=order asc=asc icon="heart"}}
-        {{directory-toggle field="likes_given" order=order asc=asc icon="heart"}}
-        {{directory-toggle field="topic_count" order=order asc=asc}}
-        {{directory-toggle field="post_count" order=order asc=asc}}
+    {{! raw "user-list-header" TODO: use this instead
+          order=order
+          ascending=ascending
+          showSeen=showSeen
+          showLikesReceived=showLikesReceived
+          showLikesGiven=showLikesGiven
+          showTopicCount=showTopicCount
+          showPostCount=showPostCount
+          showTopicsEntered=showTopicsEntered
+          showPostsRead=showPostsRead
+          showTimeRead=showTimeRead
+          showCreated=showCreated
+          showDaysVisited=showDaysVisited}}
+    <th></th>
+    {{#if showSeen}}
+        {{directory-toggle field="seen" order=order ascending=ascending}}
+    {{/if}}
+    {{#if showLikesReceived}}
+        {{directory-toggle field="likes_received" order=order ascending=ascending icon="heart"}}
+    {{/if}}
+    {{#if showLikesGiven}}
+        {{directory-toggle field="likes_given" order=order ascending=ascending icon="heart"}}
+    {{/if}}
+    {{#if showTopicCount}}
+        {{directory-toggle field="topic_count" order=order ascending=ascending}}
+    {{/if}}
+    {{#if showPostCount}}
+        {{directory-toggle field="post_count" order=order ascending=ascending}}
+    {{/if}}
+    {{#if showTopicsEntered}}
         {{directory-toggle field="topics_entered" order=order ascending=ascending}}
+    {{/if}}
+    {{#if showPostsRead}}
         {{directory-toggle field="posts_read" order=order ascending=ascending}}
+    {{/if}}
+    {{#if showTimeRead}}
         {{directory-toggle field="time_read" order=order ascending=ascending}}
+    {{/if}}
+    {{#if showCreated}}
         {{directory-toggle field="created" order=order ascending=ascending}}
-        {{directory-toggle field="days_visited" order=order asc=asc}}
+    {{/if}}
+    {{#if showDaysVisited}}
+        {{directory-toggle field="days_visited" order=order ascending=ascending}}
+    {{/if}}
+
     </thead>
 {{/unless}}
 <tbody>
 {{#each users as |user|}}
-    {{recommended-user-list-item tagName="tr" item=user}}
+    {{user-list-item user=user
+                     showSeen=showSeen
+                     showLikesReceived=showLikesReceived
+                     showLikesGiven=showLikesGiven
+                     showTopicCount=showTopicCount
+                     showPostCount=showPostCount
+                     showTopicsEntered=showTopicsEntered
+                     showPostsRead=showPostsRead
+                     showTimeRead=showTimeRead
+                     showCreated=showCreated
+                     showDaysVisited=showDaysVisited}}
+    {{! raw "list/visited-line" lastVisitedUser=lastVisitedUser user=user}}
 {{/each}}
 </tbody>

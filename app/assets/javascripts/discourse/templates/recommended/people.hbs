@@ -4,29 +4,28 @@
           <div class='directory'>
 
             {{#conditional-loading-spinner condition=model.loading}}
-              {{#if model}}
-                <div class='total-rows'>{{i18n "directory.total_rows" count=model.length}}</div>
+              {{#if model.users}}
+                <div class='total-rows'>{{i18n "directory.total_rows" count=model.users.length}}</div>
 
-                <table>
-                  <thead>
-                    <th>&nbsp;</th>
-                    {{directory-toggle field="seen" order=order asc=asc}}
-                    {{directory-toggle field="likes_received" order=order asc=asc icon="heart"}}
-                    {{directory-toggle field="likes_given" order=order asc=asc icon="heart"}}
-                    {{directory-toggle field="topic_count" order=order asc=asc}}
-                    {{directory-toggle field="post_count" order=order asc=asc}}
-                    {{directory-toggle field="topics_entered" order=order ascending=ascending}}
-                    {{directory-toggle field="posts_read" order=order ascending=ascending}}
-                    {{directory-toggle field="time_read" order=order ascending=ascending}}
-                    {{directory-toggle field="created" order=order ascending=ascending}}
-                    {{directory-toggle field="days_visited" order=order asc=asc}}
-                  </thead>
-                  <tbody>
-                    {{#each model as |item|}}
-                        {{recommended-user-list-item tagName="tr" item=item}} <!-- TODO: Change name to user-list-item -->
-                    {{/each}}
-                  </tbody>
-                </table>
+                  {{#if hasUsers}}
+                      {{user-list
+                              highlightLastVisited=true
+                              changeSort="changeSort"
+                              order=order
+                              ascending=ascending
+                              showSeen=true
+                              showLikesReceived=true
+                              showLikesGiven=true
+                              showTopicCount=true
+                              showPostCount=true
+                              showTopicsEntered=true
+                              showPostsRead=true
+                              showTimeRead=true
+                              showCreated=true
+                              showDaysVisited=true
+                              users=model.users}}
+                  {{/if}}
+
 
                 {{conditional-loading-spinner condition=model.loadingMore}}
               {{else}}

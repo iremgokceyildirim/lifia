@@ -36,20 +36,22 @@
           {{bound-avatar model "huge"}}
           <section class='controls'>
             <ul>
-                {{#if isFollowed}}
-                    <li>
-                        <a class='btn btn-primary' {{action "unfollowUser" model}}>
-                            {{d-icon "user-times"}}
-                            {{i18n 'user.unfollow'}}
-                        </a>
-                    </li>
-                {{else}}
-                    <li>
-                        <a class='btn btn-primary' {{action "followUser" model}}>
-                            {{d-icon "user-plus"}}
-                            {{i18n 'user.follow'}}
-                        </a>
-                    </li>
+                {{#if notMe}}
+                    {{#if isFollowed}}
+                        <li>
+                            <a class='btn btn-primary' {{action "unfollowUser" model}}>
+                                {{d-icon "user-times"}}
+                                {{i18n 'user.unfollow'}}
+                            </a>
+                        </li>
+                    {{else}}
+                        <li>
+                            <a class='btn btn-primary' {{action "followUser" model}}>
+                                {{d-icon "user-plus"}}
+                                {{i18n 'user.follow'}}
+                            </a>
+                        </li>
+                    {{/if}}
                 {{/if}}
               {{#if model.can_send_private_message_to_user}}
               <li>

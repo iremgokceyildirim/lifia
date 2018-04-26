@@ -2,9 +2,8 @@ class UserRecommenderByStory
 
   def initialize (user)
     @current_user = user
-    @users = User.where.not(id:@current_user.id).joins(:primary_email).includes(:user_stat)
+    @users = User.where.not(id:@current_user.id)#, admin: true, moderator: true)
     @recommended_users = []
-    @users_with_similarities = []
     @similarity_factor = SiteSetting.story_similarity_factor.to_f
   end
 
@@ -18,46 +17,59 @@ class UserRecommenderByStory
 
   end
 
-  def get_users_with_similarity
-    @users.each do |this_user|
-      this_user.define_singleton_method(:jaccard_index) do @jaccard_index  end
+  def calculate_jaccard_for (user)
+    # user.define_singleton_method(:jaccard_index) do @jaccard_index  end
+    #
+    # user.define_singleton_method("jaccard_index=") do |index|
+    #   @jaccard_index = index || 0.0
+    # end
 
-      this_user.define_singleton_method("jaccard_index=") do |index|
-        @jaccard_index = index || 0.0
-      end
+    intersection = (get_words_of_user_story(@current_user) & get_words_of_user_story(user)).size
+    union = (get_words_of_user_story(@current_user) | get_words_of_user_story(user)).size #TODO:not sure about the later part, we may get the current user's story as basis?
+    if union != 0
+      jaccard_index = intersection.to_f / union.to_f
+    else
+      jaccard_index = 0.0
+    end
 
-      intersection = (get_words_of_user_story(@current_user) & get_words_of_user_story(this_user)).size
-      union = (get_words_of_user_story(@current_user) | get_words_of_user_story(this_user)).size #not sure about the later part, we may get the current user's story as basis?
-      if union != 0
-        jaccard_index = intersection.to_f / union.to_f
-      else
-        jaccard_index = 0.0
-      end
+    # user.jaccard_index = jaccard_index
+    jaccard_index
+  end
 
-      this_user.jaccard_index = jaccard_index
-      this_user
-    end.sort_by { |user| 1 - user.jaccard_index }
+  def update_jaccard_for(user, user_s)
+    jaccard_index = calculate_jaccard_for (user)
+    user_s.index = '%.2f' % jaccard_index
+    user_s.recommended_at = DateTime.now
+    user_s.save
   end
 
   def update_similarity
-    @users_with_similarities = get_users_with_similarity
-    @users_with_similarities.each do |u|
-      if @current_user.id != u.id
-        puts "#{u.username} (#{'%.2f' % u.jaccard_index})"
-        user_s = UserNarrativeSimilarity.find_by(user1_id:@current_user.id, user2_id:u.id)
-        if user_s.nil?
-          user_s = UserNarrativeSimilarity.find_or_create_by(user1_id:u.id, user2_id:@current_user.id)
+    @users.each do |this_user|
+      user_s = UserNarrativeSimilarity.where(user1_id: @current_user.id, user2_id: this_user.id).or(UserNarrativeSimilarity.where(user2_id: @current_user.id, user1_id: this_user.id)).first
+
+      if user_s
+        if this_user.story_updated_at && (this_user.story_updated_at > user_s.recommended_at)
+          update_jaccard_for(this_user, user_s)
         end
-        user_s.index = '%.2f' % u.jaccard_index
-        user_s.recommended_at = DateTime.now
-        user_s.save
+      else
+        user_s = UserNarrativeSimilarity.create(user1_id:@current_user.id, user2_id:this_user.id)
+        update_jaccard_for(this_user, user_s)
       end
+
     end
   end
 
   def recommended_users
-    update_similarity
-    @recommended_users = @users_with_similarities.select { |u| u.jaccard_index >= @similarity_factor }
+    @recommended_users = []
+    user_s = UserNarrativeSimilarity.where("user1_id = ? AND index >= ?", @current_user.id, @similarity_factor).or(UserNarrativeSimilarity.where("user2_id = ? AND index >= ?", @current_user.id, @similarity_factor)).order(index: :desc)
+
+    user_s.each do |u_s|
+      if u_s.user1 == @current_user
+        @recommended_users << u_s.user2
+      else
+        @recommended_users << u_s.user1
+      end
+    end
     @recommended_users
   end
 

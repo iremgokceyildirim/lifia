@@ -8,6 +8,8 @@ export default function() {
 
   this.route('recommended', { path: '/recommended', resetNamespace: true }, function() {
       this.route('people');
+      this.route('topics');
+      this.route('categories');
   });
 
     this.route('following', {path: '/following', resetNamespace: true}, function() {

@@ -40,6 +40,8 @@ Discourse::Application.routes.draw do
   resources :library
 
   get "recommended/people" => "recommended#people"
+  get "recommended/topics" => "recommended#topics"
+  get "recommended/categories" => "recommended#categories"
 
 
   get "following/topics" => "following#topics"

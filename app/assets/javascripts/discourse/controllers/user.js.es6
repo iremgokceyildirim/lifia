@@ -1,5 +1,6 @@
 import CanCheckEmails from 'discourse/mixins/can-check-emails';
 import computed from 'ember-addons/ember-computed-decorators';
+import { propertyNotEqual, setting } from 'discourse/lib/computed';
 import User from 'discourse/models/user';
 import { ajax } from 'discourse/lib/ajax';
 import { userPath } from 'discourse/lib/url';
@@ -10,6 +11,7 @@ export default Ember.Controller.extend(CanCheckEmails, {
   application: Ember.inject.controller(),
   userNotifications: Ember.inject.controller('user-notifications'),
   currentPath: Ember.computed.alias('application.currentPath'),
+    notMe: propertyNotEqual('model.username', 'currentUser.username'),
 
   @computed("content.username")
   viewingSelf(username) {

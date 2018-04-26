@@ -1,5 +1,5 @@
 module UserListResponder
-  def respond_with_user_list(list)
+  def respond_with_user_list(list, opt)
     discourse_expires_in 1.minute
 
     #list.draft_key = Draft::NEW_TOPIC
@@ -13,7 +13,7 @@ module UserListResponder
         render 'list/list_users'
       end
       format.json do
-        render_serialized(list.users, UserListSerializer)
+        render_serialized(list, UserListSerializer, opt)
       end
     end
   end

@@ -321,7 +321,7 @@ export default Ember.Component.extend(CleansUp, {
               self.sendAction('removeFollowingUser', this.get('user'));
               self._close();
               target.focus();
-              //return window.location.reload();
+              return window.location.reload();
 
           });
       },

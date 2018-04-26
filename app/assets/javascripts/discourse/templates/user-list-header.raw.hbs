@@ -1,0 +1,31 @@
+<th></th>
+{{#if showSeen}}
+    {{directory-toggle field="seen" order=order ascending=ascending}}
+{{/if}}
+{{#if showLikesReceived}}
+    {{directory-toggle field="likes_received" order=order ascending=ascending icon="heart"}}
+{{/if}}
+{{#if showLikesGiven}}
+    {{directory-toggle field="likes_given" order=order ascending=ascending icon="heart"}}
+{{/if}}
+{{#if showTopicCount}}
+    {{directory-toggle field="topic_count" order=order ascending=ascending}}
+{{/if}}
+{{#if showPostCount}}
+    {{directory-toggle field="post_count" order=order ascending=ascending}}
+{{/if}}
+{{#if showTopicsEntered}}
+    {{directory-toggle field="topics_entered" order=order ascending=ascending}}
+{{/if}}
+{{#if showPostsRead}}
+    {{directory-toggle field="posts_read" order=order ascending=ascending}}
+{{/if}}
+{{#if showTimeRead}}
+    {{directory-toggle field="time_read" order=order ascending=ascending}}
+{{/if}}
+{{#if showCreated}}
+    {{directory-toggle field="created" order=order ascending=ascending}}
+{{/if}}
+{{#if showDaysVisited}}
+    {{directory-toggle field="days_visited" order=order ascending=ascending}}
+{{/if}}

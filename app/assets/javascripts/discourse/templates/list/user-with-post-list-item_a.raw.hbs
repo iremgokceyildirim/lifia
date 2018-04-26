@@ -1,0 +1,28 @@
+{{raw "list/category-column" category=user.latest_post.category}}
+
+<td class='main-link clearfix' colspan="1">
+  <span class='link-top-line'>
+    {{raw-plugin-outlet name="topic-list-before-status"}}
+      {{raw "topic-status" topic=user.latest_post.topic}}
+      {{topic-link user.latest_post.topic class="raw-link raw-topic-link"}}
+      {{#if user.latest_post.topic.featured_link}}
+          {{topic-featured-link user.latest_post.topic}}
+      {{/if}}
+      {{raw-plugin-outlet name="topic-list-after-title"}}
+  </span>
+</td>
+
+<td class='main-link clearfix' colspan="1">
+    <a class='title' href="{{unbound user.latest_post.url}}">
+        {{text-overflow class="overflow" text=user.latest_post.cooked}}
+    </a>
+</td>
+
+
+<td class="posters">{{user-info user=user}}</td>
+
+{{raw "list/posts-count-column" topic=user.latest_post.topic}}
+
+<td class="num views {{user.latest_post.topic.viewsHeat}}">{{number user.latest_post.topic.views numberKey="views_long"}}</td>
+
+{{raw "list/activity-column" topic=user.latest_post.topic class="num" tagName="td"}}

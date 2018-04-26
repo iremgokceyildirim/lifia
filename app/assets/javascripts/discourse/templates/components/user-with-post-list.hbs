@@ -1,0 +1,14 @@
+{{#unless skipHeader}}
+    <thead>
+    {{raw "user-with-post-list-header"
+          order=order
+          ascending=ascending
+          sortable=sortable}}
+    </thead>
+{{/unless}}
+<tbody>
+{{#each users as |user|}}
+    {{user-with-post-list-item user=user}}
+    {{!raw "list/visited-line" lastVisitedUser=lastVisitedUser user=user}}
+{{/each}}
+</tbody>

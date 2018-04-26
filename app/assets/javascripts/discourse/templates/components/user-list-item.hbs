@@ -1,0 +1,40 @@
+<td>{{user-info user=user}}</td>
+
+
+{{#if showSeen}}
+    <td><span class='time-read'>{{unbound user.last_seen_age}}</span></td>
+{{/if}}
+{{#if showLikesReceived}}
+    <td>{{number user.likes_received}}</td>
+{{/if}}
+{{#if showLikesGiven}}
+    <td>{{number user.likes_given}}</td>
+{{/if}}
+{{#if showTopicCount}}
+    <td>{{number user.topic_count}}</td>
+{{/if}}
+{{#if showPostCount}}
+    <td>{{number user.post_count}}</td>
+{{/if}}
+{{#if showTopicsEntered}}
+    <td>{{number user.topics_entered}}</td>
+{{/if}}
+{{#if showPostsRead}}
+    <td>{{number user.posts_read}}</td>
+{{/if}}
+{{#if showTimeRead}}
+    <td><span class='time-read'>{{unbound user.time_read}}</span></td>
+{{/if}}
+{{#if showCreated}}
+    <td><span class='time-read'>{{{unbound user.created_at_age}}}</span></td>
+{{/if}}
+{{#if showDaysVisited}}
+    <td>{{number user.days_visited}}</td>
+{{/if}}
+
+
+
+
+
+
+

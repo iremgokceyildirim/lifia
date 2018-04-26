@@ -673,10 +673,22 @@ class User < ActiveRecord::Base
     topics_allowed.where(archetype: Archetype.private_message).count
   end
 
+  def story_topic
+    story_topic = Topic.find_by(user_id: self.id, story: true)
+    story_topic
+  end
+
   def story
     story_topic = Topic.find_by(user_id: self.id, story: true)
     if story_topic
       story_topic.first_post.raw
+    end
+  end
+
+  def story_updated_at
+    story_topic = Topic.find_by(user_id: self.id, story: true)
+    if story_topic
+      story_topic.first_post.updated_at
     end
   end
 

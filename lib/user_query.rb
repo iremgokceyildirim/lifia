@@ -138,7 +138,7 @@ class UserQuery
     @query
   end
 
-  def self.public_valid_options
+  def self.public_valid_options  #TODO: Isn't it already defined?
     @public_valid_options ||=
       %i(page
          before

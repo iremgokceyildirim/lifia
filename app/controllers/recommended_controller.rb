@@ -8,6 +8,46 @@ class RecommendedController < ApplicationController
 
   before_action :ensure_logged_in
 
+  def topics
+    @title = I18n.t('js.recommended.topics.title') #TODO: add locale
+    story_topic = current_user.story_topic
+    @topic_view = TopicView.new(story_topic.id, current_user)
+    respond_to do |format|
+      format.html do
+        #store_preloaded(list.preload_key, MultiJson.dump(TopicViewSerializer.new(@topic_view, scope: scope, root: false)))
+        render 'recommended/topics'
+      end
+      format.json do
+        render_serialized(@topic_view, TopicViewSerializer)
+      end
+    end
+  end
+
+  def categories
+    @title = I18n.t('js.recommended.categories.title') #TODO: add locale
+    story_topic = current_user.story_topic
+    @categories = []
+    suggested_topics = TopicQuery.new(current_user).list_suggested_for(story_topic)
+    if suggested_topics.topics
+      suggested_topics.topics.each do |t|
+        if @categories.include?(t.category)
+        else
+          @categories << t.category
+        end
+      end
+    end
+
+    respond_to do |format|
+      format.html do
+        #store_preloaded(list.preload_key, MultiJson.dump(TopicViewSerializer.new(@topic_view, scope: scope, root: false)))
+        render 'recommended/topics'
+      end
+      format.json do
+        render_serialized(@categories, CategorySerializer)
+      end
+    end
+  end
+
   def people
     list_opts = build_recommended_list_options
     user = list_target_user
@@ -16,7 +56,7 @@ class RecommendedController < ApplicationController
     #list.prev_users_url = construct_url_with(:prev, list_opts)
     @title = I18n.t("js.recommended.people.title", count: 0)
     #render_serialized(list, UserListSerializer)
-    respond_with_user_list(list)
+    respond_with_user_list(list, {is_recommended: true})
 
   end
 
@@ -28,6 +68,7 @@ class RecommendedController < ApplicationController
 
     # hacky columns get special handling
     options[:slow_platform] = slow_platform?
+    options[:is_recommended] = true
 
     options
   end
